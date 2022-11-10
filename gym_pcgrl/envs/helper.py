@@ -374,3 +374,21 @@ def get_range_reward(new_value, old_value, low, high):
         return high - new_value + old_value - low
     if new_value < low and old_value > high:
         return high - old_value + new_value - low
+
+"""
+A Method to get a int map with the border tiles
+
+Parameters:
+    map (any[][]): the current map
+    border_tile (string): the name of the border tile type
+"""
+def get_int_map(map, border_tile):
+    border_vertical = np.full((map.shape[0], 1), border_tile)
+    map = np.insert(map, 0, border_tile, axis=1)
+    map = np.append(map, border_vertical, 1)
+
+    border_horizontal = np.full(map.shape[1], border_tile)
+    map = np.insert(map, 0, border_tile, axis=0)
+    map = np.append(map, [border_horizontal], 0)
+
+    return map
