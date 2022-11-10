@@ -19,35 +19,41 @@ def infer(game, representation, model_path, **kwargs):
     elif game == "zelda":
         model.FullyConvPolicy = model.FullyConvPolicyBigMap
         kwargs['cropped_size'] = 22
-    elif game == "sokoban":
+    elif game == "sokoban" or game == "robosoko":
         model.FullyConvPolicy = model.FullyConvPolicySmallMap
         kwargs['cropped_size'] = 10
     kwargs['render'] = True
 
     agent = PPO2.load(model_path)
     env = make_vec_envs(env_name, representation, None, 1, **kwargs)
-    obs = env.reset()
-    obs = env.reset()
-    dones = False
-    for i in range(kwargs.get('trials', 1)):
-        while not dones:
-            action, _ = agent.predict(obs)
-            obs, _, dones, info = env.step(action)
-            if kwargs.get('verbose', False):
-                print(info[0])
-            if dones:
-                break
-        time.sleep(0.2)
+
+    for j in range(kwargs.get('num_executions', 1)):
+        obs = env.reset()
+        dones = False
+
+        for i in range(kwargs.get('trials', 1)):
+            while not dones:
+                action, _ = agent.predict(obs)
+                obs, _, dones, info = env.step(action)
+                if kwargs.get('verbose', False):
+                    print(info[0])
+                if dones:
+                    break
+            time.sleep(0.2)
 
 ################################## MAIN ########################################
-game = 'binary'
-representation = 'narrow'
-model_path = 'models/{}/{}/model_1.pkl'.format(game, representation)
+game = 'robosoko'
+representation = 'turtle'
+
+model_path = 'runs/{}_{}_1_log/best_model.pkl'.format(game, representation)
 kwargs = {
-    'change_percentage': 0.4,
-    'trials': 1,
-    'verbose': True
+    'change_percentage': 0.8,
+    'trials': 3,
+    'verbose': True,
+    'num_executions': 2
 }
 
 if __name__ == '__main__':
     infer(game, representation, model_path, **kwargs)
+
+    input("Press enter to exit!")
