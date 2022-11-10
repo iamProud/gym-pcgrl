@@ -1,6 +1,6 @@
 from gym_pcgrl.envs.probs import PROBLEMS
 from gym_pcgrl.envs.reps import REPRESENTATIONS
-from gym_pcgrl.envs.helper import get_int_prob, get_string_map
+from gym_pcgrl.envs.helper import get_int_prob, get_string_map, get_int_map
 import numpy as np
 import gym
 from gym import spaces
@@ -9,6 +9,9 @@ import PIL
 """
 The PCGRL GYM Environment
 """
+SAFE_FILE = 'demo.txt'
+SAFE_DIR = '/home/basti/Dokumente/Bachelorarbeit/Observations/{}'.format(SAFE_FILE)
+
 class PcgrlEnv(gym.Env):
     """
     The type of supported rendering
@@ -38,8 +41,10 @@ class PcgrlEnv(gym.Env):
         self.viewer = None
 
         self.action_space = self._rep.get_action_space(self._prob._width, self._prob._height, self.get_num_tiles())
-        self.observation_space = self._rep.get_observation_space(self._prob._width, self._prob._height, self.get_num_tiles())
-        self.observation_space.spaces['heatmap'] = spaces.Box(low=0, high=self._max_changes, dtype=np.uint8, shape=(self._prob._height, self._prob._width))
+        self.observation_space = self._rep.get_observation_space(self._prob._width, self._prob._height,
+                                                                 self.get_num_tiles())
+        self.observation_space.spaces['heatmap'] = spaces.Box(low=0, high=self._max_changes, dtype=np.uint8,
+                                                              shape=(self._prob._height, self._prob._width))
 
     """
     Seeding the used random variable to get the same result. If the seed is None,
@@ -66,7 +71,8 @@ class PcgrlEnv(gym.Env):
     def reset(self):
         self._changes = 0
         self._iteration = 0
-        self._rep.reset(self._prob._width, self._prob._height, get_int_prob(self._prob._prob, self._prob.get_tile_types()))
+        self._rep.reset(self._prob._width, self._prob._height,
+                        get_int_prob(self._prob._prob, self._prob.get_tile_types()))
         self._rep_stats = self._prob.get_stats(get_string_map(self._rep._map, self._prob.get_tile_types()))
         self._prob.reset(self._rep_stats)
         self._heatmap = np.zeros((self._prob._height, self._prob._width))
@@ -111,8 +117,10 @@ class PcgrlEnv(gym.Env):
         self._prob.adjust_param(**kwargs)
         self._rep.adjust_param(**kwargs)
         self.action_space = self._rep.get_action_space(self._prob._width, self._prob._height, self.get_num_tiles())
-        self.observation_space = self._rep.get_observation_space(self._prob._width, self._prob._height, self.get_num_tiles())
-        self.observation_space.spaces['heatmap'] = spaces.Box(low=0, high=self._max_changes, dtype=np.uint8, shape=(self._prob._height, self._prob._width))
+        self.observation_space = self._rep.get_observation_space(self._prob._width, self._prob._height,
+                                                                 self.get_num_tiles())
+        self.observation_space.spaces['heatmap'] = spaces.Box(low=0, high=self._max_changes, dtype=np.uint8,
+                                                              shape=(self._prob._height, self._prob._width))
 
     """
     Advance the environment using a specific action
@@ -128,7 +136,7 @@ class PcgrlEnv(gym.Env):
     """
     def step(self, action):
         self._iteration += 1
-        #save copy of the old stats to calculate the reward
+        # save copy of the old stats to calculate the reward
         old_stats = self._rep_stats
         # update the current state to the new state based on the taken action
         change, x, y = self._rep.update(action)
@@ -140,13 +148,21 @@ class PcgrlEnv(gym.Env):
         observation = self._rep.get_observation()
         observation["heatmap"] = self._heatmap.copy()
         reward = self._prob.get_reward(self._rep_stats, old_stats)
-        done = self._prob.get_episode_over(self._rep_stats,old_stats) or self._changes >= self._max_changes or self._iteration >= self._max_iterations
-        info = self._prob.get_debug_info(self._rep_stats,old_stats)
+        done = self._prob.get_episode_over(self._rep_stats,
+                                           old_stats) or self._changes >= self._max_changes or self._iteration >= self._max_iterations
+        info = self._prob.get_debug_info(self._rep_stats, old_stats)
         info["iterations"] = self._iteration
         info["changes"] = self._changes
         info["max_iterations"] = self._max_iterations
         info["max_changes"] = self._max_changes
-        #return the values
+        # return the values
+
+        if done:
+            border_tile_int = self._prob.get_tile_types().index(self._prob._border_tile)
+            int_map = get_int_map(self._rep._map, border_tile_int)
+            print(int_map)
+            self.safe(int_map)
+
         return observation, reward, done, info
 
     """
@@ -158,8 +174,9 @@ class PcgrlEnv(gym.Env):
     Returns:
         img or boolean: img for rgb_array rendering and boolean for human rendering
     """
+
     def render(self, mode='human'):
-        tile_size=16
+        tile_size = 16
         img = self._prob.render(get_string_map(self._rep._map, self._prob.get_tile_types()))
         img = self._rep.render(img, self._prob._tile_size, self._prob._border_size).convert("RGB")
         if mode == 'rgb_array':
@@ -180,3 +197,19 @@ class PcgrlEnv(gym.Env):
         if self.viewer:
             self.viewer.close()
             self.viewer = None
+
+    """
+    Safe the current Map to a file
+    """
+    def safe(self, int_map):
+        f = open(SAFE_DIR, 'w')
+
+        for row in range(int_map.shape[0]):
+            s = ''
+            for col in range(int_map.shape[1]):
+                idx = int_map[row][col]
+                s += str(idx)
+
+            f.write(s + '\n')
+
+        f.close()
