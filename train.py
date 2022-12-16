@@ -1,15 +1,14 @@
-#pip install tensorflow==1.15
 #Install stable-baselines as described in the documentation
 
-import model
-from model import FullyConvPolicyBigMap, FullyConvPolicySmallMap, CustomPolicyBigMap, CustomPolicySmallMap
-from utils import get_exp_name, max_exp_idx, load_model, make_vec_envs
-from stable_baselines import PPO2
-from stable_baselines.results_plotter import load_results, ts2xy
-
-import tensorflow as tf
-import numpy as np
 import os
+
+# import tensorflow as tf
+import numpy as np
+from stable_baselines3 import PPO
+from stable_baselines3.common.results_plotter import load_results, ts2xy
+
+# from model import FullyConvPolicyBigMap, FullyConvPolicySmallMap, CustomPolicyBigMap, CustomPolicySmallMap
+from utils import get_exp_name, max_exp_idx, load_model, make_vec_envs
 
 n_steps = 0
 log_dir = './'
@@ -17,7 +16,7 @@ best_mean_reward, n_steps = -np.inf, 0
 
 def callback(_locals, _globals):
     """
-    Callback called at each step (for DQN an others) or after n steps (see ACER or PPO2)
+    Callback called at each step (for DQN an others) or after n steps (see ACER or PPO)
     :param _locals: (dict)
     :param _globals: (dict)
     """
@@ -52,14 +51,14 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
     env_name = '{}-{}-v0'.format(game, representation)
     exp_name = get_exp_name(game, representation, experiment, **kwargs)
     resume = kwargs.get('resume', False)
-    if representation == 'wide':
-        policy = FullyConvPolicyBigMap
-        if game == "sokoban":
-            policy = FullyConvPolicySmallMap
-    else:
-        policy = CustomPolicyBigMap
-        if game == "sokoban":
-            policy = CustomPolicySmallMap
+    # if representation == 'wide':
+    #     policy = FullyConvPolicyBigMap
+    #     if game == "sokoban":
+    #         policy = FullyConvPolicySmallMap
+    # else:
+    #     policy = CustomPolicyBigMap
+    #     if game == "sokoban":
+    #         policy = CustomPolicySmallMap
     if game == "binary":
         kwargs['cropped_size'] = 28
     elif game == "zelda":
@@ -85,7 +84,8 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
         used_dir = None
     env = make_vec_envs(env_name, representation, log_dir, n_cpu, **kwargs)
     if not resume or model is None:
-        model = PPO2(policy, env, verbose=1, tensorboard_log="./runs")
+        policy = "MlpPolicy"
+        model = PPO(policy, env, verbose=1, tensorboard_log="./runs")
     else:
         model.set_env(env)
     if not logging:

@@ -6,9 +6,9 @@ import re
 import glob
 import numpy as np
 from gym_pcgrl import wrappers
-from stable_baselines import PPO2
-from stable_baselines.bench import Monitor
-from stable_baselines.common.vec_env import SubprocVecEnv, DummyVecEnv
+from stable_baselines3 import PPO
+from stable_baselines3.common.monitor import Monitor
+from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 
 class RenderMonitor(Monitor):
     """
@@ -101,5 +101,5 @@ def load_model(log_dir):
             model_path = os.path.join(log_dir, np.random.choice(files))
         else:
             raise Exception('No models are saved')
-    model = PPO2.load(model_path)
+    model = PPO.load(model_path)
     return model

@@ -1,8 +1,8 @@
 """
 Run a trained agent and get generated maps
 """
-import model
-from stable_baselines import PPO2
+# import model
+from stable_baselines3 import PPO
 
 import time
 from utils import make_vec_envs
@@ -13,18 +13,18 @@ def infer(game, representation, model_path, **kwargs):
      - infer_kwargs: Args to pass to the environment.
     """
     env_name = '{}-{}-v0'.format(game, representation)
-    if game == "binary":
-        model.FullyConvPolicy = model.FullyConvPolicyBigMap
-        kwargs['cropped_size'] = 28
-    elif game == "zelda":
-        model.FullyConvPolicy = model.FullyConvPolicyBigMap
-        kwargs['cropped_size'] = 22
-    elif game == "sokoban" or game == "robosoko":
-        model.FullyConvPolicy = model.FullyConvPolicySmallMap
-        kwargs['cropped_size'] = 10
+    # if game == "binary":
+    #     model.FullyConvPolicy = model.FullyConvPolicyBigMap
+    #     kwargs['cropped_size'] = 28
+    # elif game == "zelda":
+    #     model.FullyConvPolicy = model.FullyConvPolicyBigMap
+    #     kwargs['cropped_size'] = 22
+    # elif game == "sokoban" or game == "robosoko":
+    #     model.FullyConvPolicy = model.FullyConvPolicySmallMap
+    #     kwargs['cropped_size'] = 10
     kwargs['render'] = True
 
-    agent = PPO2.load(model_path)
+    agent = PPO.load(model_path)
     env = make_vec_envs(env_name, representation, None, 1, **kwargs)
 
     for j in range(kwargs.get('num_executions', 1)):
@@ -42,15 +42,15 @@ def infer(game, representation, model_path, **kwargs):
             time.sleep(0.2)
 
 ################################## MAIN ########################################
-game = 'robosoko'
-representation = 'turtle'
+game = 'binary'
+representation = 'narrow'
 
-model_path = 'runs/{}_{}_1_log/best_model.pkl'.format(game, representation)
+model_path = 'runs/{}_{}_3_log/best_model.pkl'.format(game, representation)
 kwargs = {
     'change_percentage': 0.8,
-    'trials': 3,
+    'trials': 1,
     'verbose': True,
-    'num_executions': 2
+    'num_executions': 1
 }
 
 if __name__ == '__main__':
