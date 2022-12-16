@@ -392,3 +392,23 @@ def get_int_map(map, border_tile):
     map = np.append(map, [border_horizontal], 0)
 
     return map
+
+"""
+Safe the current Map to a file
+"""
+SAFE_FILE = 'demo.txt'
+SAFE_DIR = '/home/basti/Dokumente/Bachelorarbeit/Observations/{}'.format(SAFE_FILE)
+
+def safe(int_map):
+    f = open(SAFE_DIR, 'w')
+
+    for row in range(int_map.shape[0]):
+        s = ''
+        for col in range(int_map.shape[1]):
+            idx = int_map[row][col]
+            s += str(idx)
+
+        f.write(s + '\n')
+
+    f.close()
+
