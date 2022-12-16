@@ -34,6 +34,9 @@ MANIFEST
 # Saved models
 *.zip
 
+# runs
+runs/
+
 # editors
 .idea
 .vscode
