@@ -31,5 +31,9 @@ MANIFEST
 # Jupyter logs
 .ipynb_checkpoints/
 
+# ide
+.idea
+.vscode
+
 # Saved models
 *.zip
