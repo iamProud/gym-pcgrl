@@ -33,3 +33,7 @@ MANIFEST
 
 # Saved models
 *.zip
+.python-version
+pcgenenv/
+pcgenenv3_8/
+runs
