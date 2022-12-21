@@ -13,15 +13,15 @@ def infer(game, representation, model_path, **kwargs):
      - infer_kwargs: Args to pass to the environment.
     """
     env_name = '{}-{}-v0'.format(game, representation)
-    # if game == "binary":
-    #     model.FullyConvPolicy = model.FullyConvPolicyBigMap
-    #     kwargs['cropped_size'] = 28
-    # elif game == "zelda":
-    #     model.FullyConvPolicy = model.FullyConvPolicyBigMap
-    #     kwargs['cropped_size'] = 22
-    # elif game == "sokoban" or game == "robosoko":
-    #     model.FullyConvPolicy = model.FullyConvPolicySmallMap
-    #     kwargs['cropped_size'] = 10
+    if game == "binary":
+        # model.FullyConvPolicy = model.FullyConvPolicyBigMap
+        kwargs['cropped_size'] = 28
+    elif game == "zelda":
+        # model.FullyConvPolicy = model.FullyConvPolicyBigMap
+        kwargs['cropped_size'] = 22
+    elif game == "sokoban" or game == "robosoko":
+        # model.FullyConvPolicy = model.FullyConvPolicySmallMap
+        kwargs['cropped_size'] = 10
     kwargs['render'] = True
 
     agent = PPO.load(model_path)
@@ -42,12 +42,12 @@ def infer(game, representation, model_path, **kwargs):
             time.sleep(0.2)
 
 ################################## MAIN ########################################
-game = 'binary'
-representation = 'narrow'
+game = 'sokoban'
+representation = 'turtle'
 
 model_path = 'runs/{}_{}_3_log/best_model.pkl'.format(game, representation)
 kwargs = {
-    'change_percentage': 0.8,
+    'change_percentage': 1,
     'trials': 1,
     'verbose': True,
     'num_executions': 1

@@ -1,6 +1,6 @@
 from gym_pcgrl.envs.probs import PROBLEMS
 from gym_pcgrl.envs.reps import REPRESENTATIONS
-from gym_pcgrl.envs.helper import get_int_prob, get_string_map, get_int_map
+from gym_pcgrl.envs.helper import get_int_prob, get_string_map
 import numpy as np
 import gym
 from gym import spaces
@@ -9,8 +9,7 @@ import PIL
 """
 The PCGRL GYM Environment
 """
-SAFE_FILE = 'demo.txt'
-SAFE_DIR = '/home/basti/Dokumente/Bachelorarbeit/Observations/{}'.format(SAFE_FILE)
+RENDER = False
 
 class PcgrlEnv(gym.Env):
     """
@@ -157,11 +156,8 @@ class PcgrlEnv(gym.Env):
         info["max_changes"] = self._max_changes
         # return the values
 
-        # if done:
-        #     border_tile_int = self._prob.get_tile_types().index(self._prob._border_tile)
-        #     int_map = get_int_map(self._rep._map, border_tile_int)
-        #     print(int_map)
-        #     self.safe(int_map)
+        if done and RENDER:
+            self.render()
 
         return observation, reward, done, info
 
@@ -197,19 +193,3 @@ class PcgrlEnv(gym.Env):
         if self.viewer:
             self.viewer.close()
             self.viewer = None
-
-    """
-    Safe the current Map to a file
-    """
-    def safe(self, int_map):
-        f = open(SAFE_DIR, 'w')
-
-        for row in range(int_map.shape[0]):
-            s = ''
-            for col in range(int_map.shape[1]):
-                idx = int_map[row][col]
-                s += str(idx)
-
-            f.write(s + '\n')
-
-        f.close()

@@ -4,6 +4,7 @@ import gym_pcgrl
 import numpy as np
 import math
 import os
+from gym_pcgrl.envs.helper import safe
 
 # clean the input action
 get_action = lambda a: a.item() if hasattr(a, "item") else a
@@ -151,6 +152,13 @@ class ActionMap(gym.Wrapper):
         else:
             obs, reward, done, info = self.env.step([x, y, v])
         self.old_obs = obs
+
+        if False and done:
+            map = obs['map']
+            final_map = np.pad(map, 1, constant_values=1)
+            print(final_map)
+            safe(final_map)
+
         return obs, reward, done, info
 
 """
@@ -187,6 +195,13 @@ class Cropped(gym.Wrapper):
         action = get_action(action)
         obs, reward, done, info = self.env.step(action)
         obs = self.transform(obs)
+
+        if False and done:
+            map = obs[self.name]
+            final_map = np.pad(map, 1, constant_values=self.pad_value)
+            print(final_map)
+            safe(final_map)
+
         return obs, reward, done, info
 
     def reset(self):
