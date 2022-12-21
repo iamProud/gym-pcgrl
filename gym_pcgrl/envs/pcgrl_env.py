@@ -9,6 +9,7 @@ import PIL
 """
 The PCGRL GYM Environment
 """
+SAFE = True
 SAFE_FILE = 'demo.txt'
 SAFE_DIR = '/home/basti/Dokumente/Bachelorarbeit/Observations/{}'.format(SAFE_FILE)
 
@@ -157,11 +158,11 @@ class PcgrlEnv(gym.Env):
         info["max_changes"] = self._max_changes
         # return the values
 
-        # if done:
-        #     border_tile_int = self._prob.get_tile_types().index(self._prob._border_tile)
-        #     int_map = get_int_map(self._rep._map, border_tile_int)
-        #     print(int_map)
-        #     self.safe(int_map)
+        if done and SAFE:
+            border_tile_int = self._prob.get_tile_types().index(self._prob._border_tile)
+            int_map = get_int_map(self._rep._map, border_tile_int)
+            print(int_map)
+            self.safe(int_map)
 
         return observation, reward, done, info
 
