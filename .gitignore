@@ -40,3 +40,8 @@ runs/
 # editors
 .idea
 .vscode
+.python-version
+
+# envs
+pcgenenv/
+pcgenenv3_8/
