@@ -3,9 +3,20 @@ Run a trained agent and get generated maps
 """
 # import model
 from stable_baselines3 import PPO
+from stable_baselines3.common.policies import obs_as_tensor
 
 import time
 from utils import make_vec_envs
+
+def predict_probability(model, state):
+    action_keys = ['left', 'right', 'up', 'down', 'empty', 'wall', 'player', 'crate', 'goal']
+    obs = obs_as_tensor(state, model.policy.device)
+    dis = model.policy.get_distribution(obs)
+    probs = dis.distribution.probs
+    probs_np = probs.detach().numpy()[0]
+    probs_dict = dict(zip(action_keys, probs_np))
+
+    return probs_dict, max(probs_dict, key=probs_dict.get)
 
 def infer(game, representation, model_path, **kwargs):
     """
@@ -34,7 +45,10 @@ def infer(game, representation, model_path, **kwargs):
         for i in range(kwargs.get('trials', 1)):
             while not dones:
                 action, _ = agent.predict(obs)
-                obs, _, dones, info = env.step(action)
+                probs, best = predict_probability(agent, obs)
+                print('Probabilities:', probs, 'Best:', best)
+                obs, rewards, dones, info = env.step(action)
+                print("Action: " + str(action) + ", reward: " + str(rewards))
                 if kwargs.get('verbose', False):
                     print(info[0])
                 if dones:
@@ -45,7 +59,8 @@ def infer(game, representation, model_path, **kwargs):
 game = 'sokoban'
 representation = 'turtle'
 
-model_path = 'runs/{}_{}_3_log/best_model.pkl'.format(game, representation)
+# model_path = 'runs/{}_{}_1_log/best_model.pkl'.format(game, representation)
+model_path = 'shared_runs/{}_{}_1_log/best_model.pkl'.format(game, representation)
 kwargs = {
     'change_percentage': 1,
     'trials': 1,
