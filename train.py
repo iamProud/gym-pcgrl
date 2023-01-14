@@ -6,59 +6,93 @@ import os
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.results_plotter import load_results, ts2xy
+from stable_baselines3.common.callbacks import BaseCallback, EvalCallback, EventCallback
 
 # from model import FullyConvPolicyBigMap, FullyConvPolicySmallMap, CustomPolicyBigMap, CustomPolicySmallMap
 from utils import get_exp_name, max_exp_idx, load_model, make_vec_envs
 
-n_steps = 0
-log_dir = './'
-best_mean_reward, n_steps = -np.inf, 0
-
-def callback(_locals, _globals):
+def eval_feasibility(model, kwargs):
     """
-    Callback called at each step (for DQN an others) or after n steps (see ACER or PPO)
-    :param _locals: (dict)
-    :param _globals: (dict)
-    """
-    global n_steps, best_mean_reward
-    # Print stats every 1000 calls
-    if (n_steps + 1) % 10 == 0:
-        x, y = ts2xy(load_results(log_dir), 'timesteps')
-        if len(x) > 100:
-           #pdb.set_trace()
-            mean_reward = np.mean(y[-100:])
-            print(x[-1], 'timesteps')
-            print("Best mean reward: {:.2f} - Last mean reward per episode: {:.2f}".format(best_mean_reward, mean_reward))
+    Evaluate the feasibility of the model. This is done by running the current best model.
 
-            # New best model, we save the agent here
-            if mean_reward > best_mean_reward:
-                best_mean_reward = mean_reward
-                # Example for saving best model
-                print("Saving new best model")
-                _locals['self'].save(os.path.join(log_dir, 'best_model.pkl'))
-            else:
-                print("Saving latest model")
-                _locals['self'].save(os.path.join(log_dir, 'latest_model.pkl'))
-        else:
-            print('{} monitor entries'.format(len(x)))
-            pass
-    n_steps += 1
-    # Returning False will stop training early
-    return True
+    :param model: (PPO) The current best model to evaluate.
+    :param kwargs: (dict) The kwargs to pass to the environment.
+    """
+    env = make_vec_envs(f'{game}-{representation}-v0', representation, None, 1, **kwargs)
+
+    total_runs = 100
+    feasible_runs = 0
+
+    for i in range(total_runs):
+        obs = env.reset()
+        done = False
+
+        while not done:
+            action, _ = model.predict(obs)
+            obs, rewards, done, info = env.step(action)
+
+            if done:
+                if info[0]['sol-length'] > 0:
+                    feasible_runs += 1
+                break
+
+    env.close()
+    return feasible_runs / total_runs
+
+class SaveOnBestTrainingRewardCallback(BaseCallback):
+    """
+    Callback for saving a model (the check is done every ``check_freq`` steps)
+    based on the training reward.
+
+    :param check_freq:
+    :param log_dir: Path to the folder where the model will be saved.
+      It must contains the file created by the ``Monitor`` wrapper.
+    :param verbose: Verbosity level: 0 for no output, 1 for info messages, 2 for debug messages
+    """
+    def __init__(self, check_freq: int, log_dir: str, verbose: int = 1, kwargs: dict = {}):
+        super(SaveOnBestTrainingRewardCallback, self).__init__(verbose)
+        self.check_freq = check_freq
+        self.log_dir = log_dir
+        self.save_path = os.path.join(log_dir, "best_model")
+        self.best_mean_reward = -np.inf
+        self.kwargs = kwargs
+
+    def _init_callback(self) -> None:
+        # Create folder if needed
+        if self.save_path is not None:
+            os.makedirs(self.save_path, exist_ok=True)
+
+    def _on_step(self) -> bool:
+        if self.n_calls % self.check_freq == 0:
+
+            # Retrieve training reward
+            x, y = ts2xy(load_results(self.log_dir), "timesteps")
+            if len(x) > 0:
+                # Mean training reward over the last 100 episodes
+                mean_reward = np.mean(y[-100:])
+                if self.verbose >= 1:
+                    print(f"Num timesteps: {self.num_timesteps}")
+                    print(f"Best mean reward: {self.best_mean_reward:.2f} - Last mean reward per episode: {mean_reward:.2f}")
+
+                # New best model, you could save the agent here
+                if mean_reward > self.best_mean_reward:
+                    self.best_mean_reward = mean_reward
+                    # Example for saving best model
+                    if self.verbose >= 1:
+                      print(f"Saving new best model to {self.save_path}")
+                    self.model.save(self.save_path)
+                    feasibility = eval_feasibility(self.model, self.kwargs)
+                    print("Feasibility: {:.2f}".format(feasibility))
+                    self.logger.record('feasibility', feasibility)
+
+        return True
 
 
 def main(game, representation, experiment, steps, n_cpu, render, logging, **kwargs):
     env_name = '{}-{}-v0'.format(game, representation)
     exp_name = get_exp_name(game, representation, experiment, **kwargs)
     resume = kwargs.get('resume', False)
-    # if representation == 'wide':
-    #     policy = FullyConvPolicyBigMap
-    #     if game == "sokoban":
-    #         policy = FullyConvPolicySmallMap
-    # else:
-    #     policy = CustomPolicyBigMap
-    #     if game == "sokoban":
-    #         policy = CustomPolicySmallMap
+
     if game == "binary":
         kwargs['cropped_size'] = 28
     elif game == "zelda":
@@ -66,7 +100,7 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
     elif game == "sokoban":
         kwargs['cropped_size'] = 10
     n = max_exp_idx(exp_name)
-    global log_dir
+
     if not resume:
         n = n + 1
     log_dir = 'runs/{}_{}_{}'.format(exp_name, n, 'log')
@@ -79,9 +113,7 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
         'render_rank': 0,
         'render': render,
     }
-    used_dir = log_dir
-    if not logging:
-        used_dir = None
+
     env = make_vec_envs(env_name, representation, log_dir, n_cpu, **kwargs)
     if not resume or model is None:
         policy = "MlpPolicy"
@@ -91,13 +123,13 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
     if not logging:
         model.learn(total_timesteps=int(steps), tb_log_name=exp_name)
     else:
-        model.learn(total_timesteps=int(steps), tb_log_name=exp_name, callback=callback)
+        model.learn(total_timesteps=int(steps), tb_log_name=exp_name, callback=SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir, verbose=2, kwargs=kwargs))
 
 ################################## MAIN ########################################
-game = 'binary'
-representation = 'narrow'
+game = 'sokoban'
+representation = 'turtle'
 experiment = None
-steps = 1e8
+steps = 1e6
 render = False
 logging = True
 n_cpu = 50
