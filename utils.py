@@ -83,6 +83,7 @@ def max_exp_idx(exp_name):
         n = 0
     else:
         log_ns = [re.search('_(\d+)', f).group(1) for f in log_files]
+        log_ns = [int(n) for n in log_ns]
         n = max(log_ns)
     return int(n)
 
