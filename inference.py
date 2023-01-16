@@ -7,6 +7,7 @@ from stable_baselines3.common.policies import obs_as_tensor
 
 import time
 from utils import make_vec_envs
+from globals import *
 
 def predict_probability(model, state):
     action_keys = ['left', 'right', 'up', 'down', 'empty', 'wall', 'player', 'crate', 'goal']
@@ -23,14 +24,14 @@ def infer(game, representation, model_path, **kwargs):
      - max_trials: The number of trials per evaluation.
      - infer_kwargs: Args to pass to the environment.
     """
-    env_name = '{}-{}-v0'.format(game, representation)
+    env_name = f'{game}-{representation}-v0'
     if game == "binary":
         # model.FullyConvPolicy = model.FullyConvPolicyBigMap
         kwargs['cropped_size'] = 28
     elif game == "zelda":
         # model.FullyConvPolicy = model.FullyConvPolicyBigMap
         kwargs['cropped_size'] = 22
-    elif game == "sokoban" or game == "robosoko":
+    elif game == "sokoban":
         # model.FullyConvPolicy = model.FullyConvPolicySmallMap
         kwargs['cropped_size'] = 10
     kwargs['render'] = True
@@ -45,30 +46,28 @@ def infer(game, representation, model_path, **kwargs):
         for i in range(kwargs.get('trials', 1)):
             while not dones:
                 action, _ = agent.predict(obs)
-                probs, best = predict_probability(agent, obs)
-                print('Probabilities:', probs, 'Best:', best)
+                # probs, best = predict_probability(agent, obs)
+                # print('Probabilities:', probs, 'Best:', best)
                 obs, rewards, dones, info = env.step(action)
-                print("Action: " + str(action) + ", reward: " + str(rewards))
+                # print("Action: " + str(action) + ", reward: " + str(rewards))
                 if kwargs.get('verbose', False):
                     print(info[0])
                 if dones:
+                    print(j)
                     break
             time.sleep(0.2)
 
 ################################## MAIN ########################################
-game = 'sokoban'
-representation = 'turtle'
-
 # model_path = 'runs/{}_{}_1_log/best_model.pkl'.format(game, representation)
-model_path = 'shared_runs/{}_{}_1_log/best_model.pkl'.format(game, representation)
+model_path = f'shared_runs/{game}_{representation}_{run_idx}_log/best_model.zip'
 kwargs = {
-    'change_percentage': 1,
+    'change_percentage': 0.5,
     'trials': 1,
-    'verbose': True,
-    'num_executions': 1
+    # 'verbose': True,
+    'num_executions': 100,
 }
 
 if __name__ == '__main__':
     infer(game, representation, model_path, **kwargs)
 
-    input("Press enter to exit!")
+    # input("Press enter to exit!")

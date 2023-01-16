@@ -10,6 +10,7 @@ from stable_baselines3.common.callbacks import BaseCallback, EvalCallback, Event
 
 # from model import FullyConvPolicyBigMap, FullyConvPolicySmallMap, CustomPolicyBigMap, CustomPolicySmallMap
 from utils import get_exp_name, max_exp_idx, load_model, make_vec_envs
+from globals import *
 
 def eval_feasibility(model, kwargs):
     """
@@ -126,11 +127,8 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
         model.learn(total_timesteps=int(steps), tb_log_name=exp_name, callback=SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir, verbose=2, kwargs=kwargs))
 
 ################################## MAIN ########################################
-game = 'sokoban'
-representation = 'turtle'
 experiment = None
 steps = 1e6
-render = False
 logging = True
 n_cpu = 50
 kwargs = {
