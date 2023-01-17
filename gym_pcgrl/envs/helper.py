@@ -381,8 +381,8 @@ Safe the current Map to a file
 SAFE_FILE = 'demo.txt'
 SAFE_DIR = '/home/basti/Dokumente/Bachelorarbeit/Observations/{}'.format(SAFE_FILE)
 
-def safe(int_map):
-    f = open(SAFE_DIR, 'w')
+def safe_map(int_map, path, file):
+    f = open(f'{path}{file}.txt', 'w')
 
     for row in range(int_map.shape[0]):
         s = ''

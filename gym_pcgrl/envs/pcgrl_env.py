@@ -5,12 +5,14 @@ import numpy as np
 import gym
 from gym import spaces
 import PIL
+from PIL import Image
+import os
+from gym_pcgrl.envs.helper import safe_map
+from globals import *
 
 """
 The PCGRL GYM Environment
 """
-RENDER = False
-
 class PcgrlEnv(gym.Env):
     """
     The type of supported rendering
@@ -38,6 +40,11 @@ class PcgrlEnv(gym.Env):
 
         self.seed()
         self.viewer = None
+
+        # generated images/environments
+        self.path_generated = f'shared_runs/{prob}_{rep}_{run_idx}_log/generated/'
+        if not os.path.exists(self.path_generated):
+            os.makedirs(self.path_generated)
 
         self.action_space = self._rep.get_action_space(self._prob._width, self._prob._height, self.get_num_tiles())
         self.observation_space = self._rep.get_observation_space(self._prob._width, self._prob._height,
@@ -156,8 +163,25 @@ class PcgrlEnv(gym.Env):
         info["max_changes"] = self._max_changes
         # return the values
 
-        if done and RENDER:
-            self.render()
+        if done and render:
+            if info["sol-length"] > 0:
+                # get file number
+                listdir = os.listdir(self.path_generated)
+                listdir.remove('info.txt')
+                if len(listdir) == 0:
+                    file_count = 0
+                else:
+                    file_count = max([int(f.split('.')[0]) for f in listdir]) + 1
+
+                # save map as image
+                img = self.render(mode='rgb_array')
+                img.save(f'{self.path_generated}/{file_count}.jpeg')
+
+                # save map as .txt
+                final_map = np.pad(self._rep._map, 1, constant_values=1)
+                safe_map(final_map, self.path_generated, file_count)
+            else:
+                self.render(mode='human')
 
         return observation, reward, done, info
 
