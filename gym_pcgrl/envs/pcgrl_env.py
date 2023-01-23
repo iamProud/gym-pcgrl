@@ -7,8 +7,9 @@ from gym import spaces
 import PIL
 from PIL import Image
 import os
-from gym_pcgrl.envs.helper import safe_map
+from gym_pcgrl.envs.helper import safe_map, safe_map_as_g
 from globals import *
+import json
 
 """
 The PCGRL GYM Environment
@@ -45,6 +46,9 @@ class PcgrlEnv(gym.Env):
         self.path_generated = f'shared_runs/{prob}_{rep}_{run_idx}_log/generated/'
         if not os.path.exists(self.path_generated):
             os.makedirs(self.path_generated)
+
+            with open(self.path_generated + 'info.json', 'w') as f:
+                json.dump({'trials': 0, 'success-rate': 0, 'avg-sol-length': 0, 'avg-crates': 0, 'avg-free-percent': 0}, f)
 
         self.action_space = self._rep.get_action_space(self._prob._width, self._prob._height, self.get_num_tiles())
         self.observation_space = self._rep.get_observation_space(self._prob._width, self._prob._height,
@@ -164,10 +168,35 @@ class PcgrlEnv(gym.Env):
         # return the values
 
         if done and render:
+            with open(self.path_generated + "info.json", "r") as f:
+                data = json.load(f)
+                data["trials"] += 1
+
+            with open(self.path_generated + "info.json", "w") as f:
+                json.dump(data, f)
+
             if info["sol-length"] > 0:
+                # update info.json
+                with open(self.path_generated + "info.json", "r") as f:
+                    data = json.load(f)
+                    successful = data['success-rate'] * (data['trials'] - 1)
+
+                    data['success-rate'] = (successful + 1) / (data['trials'])
+                    data['avg-sol-length'] = (data['avg-sol-length'] * successful + info["sol-length"]) / (successful + 1)
+                    data['avg-crates'] = (data['avg-crates'] * successful + info["crate"]) / (successful + 1)
+                    free_ratio = np.count_nonzero(self._rep._map == 0) / (self._prob._width * self._prob._height)
+                    data['avg-free-percent'] = (data['avg-free-percent'] * successful + free_ratio) / (successful + 1)
+
+                with open(self.path_generated + "info.json", "w") as f:
+                    json.dump(data, f)
+
                 # get file number
                 listdir = os.listdir(self.path_generated)
-                listdir.remove('info.txt')
+                if "info.txt" in listdir:
+                    listdir.remove("info.txt")
+                if "info.json" in listdir:
+                    listdir.remove("info.json")
+
                 if len(listdir) == 0:
                     file_count = 0
                 else:
@@ -180,6 +209,9 @@ class PcgrlEnv(gym.Env):
                 # save map as .txt
                 final_map = np.pad(self._rep._map, 1, constant_values=1)
                 safe_map(final_map, self.path_generated, file_count)
+
+                # save map as .g
+                # safe_map_as_g(final_map, self.path_generated, file_count)
             else:
                 self.render(mode='human')
 
