@@ -2,6 +2,10 @@
 A helper module that can be used by all problems
 """
 import numpy as np
+import sys
+sys.path += ['./build', '../../build', '../../lib']
+# sys.path += ['~/Bachelorarbeit/rai-python/rai/build', '~/Bachelorarbeit/rai-python/rai/lib']
+from robotic import ry
 
 """
 Public function to get a dictionary of all location of all tiles
@@ -376,11 +380,8 @@ def get_range_reward(new_value, old_value, low, high):
         return high - old_value + new_value - low
 
 """
-Safe the current Map to a file
+Safe the current Map to a .txt file
 """
-SAFE_FILE = 'demo.txt'
-SAFE_DIR = '/home/basti/Dokumente/Bachelorarbeit/Observations/{}'.format(SAFE_FILE)
-
 def safe_map(int_map, path, file):
     f = open(f'{path}{file}.txt', 'w')
 
@@ -393,3 +394,41 @@ def safe_map(int_map, path, file):
         f.write(s + '\n')
 
     f.close()
+
+"""
+Save the current Map to a .g file
+"""
+def safe_map_as_g(int_map, path, file):
+    C = ry.Config()
+    C.clear()
+    C.addFile('../rai-python/my-robotModels/simpleRobo/world.g')
+
+    roboFrame = 'robo'
+    colors = [[.8, .1, .1], [1., .3, .2]]
+    off = -(np.floor(int_map.shape[0] / 2))
+
+    for x in range(int_map.shape[0]):
+        for y in range(int_map.shape[1]):
+            if (int_map[x][y] == 1):
+                c = colors[(x + y) % 2]
+                block = C.addObject(name=f'block{x}-{y}', parent='world', shape=ry.ST.ssBox, pos=[x + off, y + off, .5],
+                                    size=[1, 1, 1, .02], color=c)
+                #             block = C.addFrame(name=f'block{x}-{y}', parent='world', args='type:ssBox size:[1, 1, 1, .02] color=[1, 0, 0]')
+                block.setPosition([x + off, y + off, 0.5])
+                block.setMass(100.0)
+                block.setContact(1)
+
+            if (int_map[x][y] == 2):
+                pass
+                # C.getFrame(roboFrame).setPosition([x + off, y + off, 0])
+
+            if (int_map[x][y] == 3):
+                box = C.addObject(name=f'box{x}-{y}', parent='world', shape=ry.ST.ssBox, pos=[x + off, y + off, .5],
+                                  size=[.5, .5, 1, .02], color=[.6, .3, 0.])
+
+            if (int_map[x][y] == 4):
+                C.addObject(name=f'goal{x}-{y}', parent='world', shape=ry.ST.ssBox, pos=[x + off, y + off, .001],
+                            size=[.95, .95, .002, .002], color=[0., 1., 0.])
+
+    C.view()
+    C.save(f'{path}{file}.g')
