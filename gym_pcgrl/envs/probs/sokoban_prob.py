@@ -4,6 +4,7 @@ import numpy as np
 from gym_pcgrl.envs.probs.problem import Problem
 from gym_pcgrl.envs.helper import get_range_reward, get_tile_locations, calc_certain_tile, calc_num_regions
 from gym_pcgrl.envs.probs.sokoban.engine import State,BFSAgent,AStarAgent
+from globals import *
 
 """
 Generate a fully connected Sokoban(https://en.wikipedia.org/wiki/Sokoban) level that can be solved
@@ -14,19 +15,19 @@ class SokobanProblem(Problem):
     """
     def __init__(self):
         super().__init__()
-        self._width = 5
-        self._height = 5
-        self._prob = {"empty":0.45, "solid":0.4, "player": 0.05, "crate": 0.05, "target": 0.05}
+        self._width = 10
+        self._height = 10
+        self._prob = global_probabilities if global_probabilities else {"empty":0.30, "solid":0.55, "player": 0.01, "crate": 0.07, "target": 0.07}
         self._border_tile = "solid"
 
-        self._solver_power = 5000
+        self._solver_power = 50000
 
-        self._max_crates = 3
+        self._max_crates = global_max_crates if global_max_crates else 5
 
-        self._target_solution = 18
+        self._target_solution = global_target_solution if global_target_solution else 30
 
         self._rewards = {
-            "player": 3,
+            "player": 6,
             "crate": 2,
             "target": 2,
             "regions": 5,
