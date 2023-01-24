@@ -171,6 +171,8 @@ class PcgrlEnv(gym.Env):
             with open(self.path_generated + "info.json", "r") as f:
                 data = json.load(f)
                 data["trials"] += 1
+                successful = data['success-rate'] * (data['trials'] - 1)
+                data['success-rate'] = (successful + 1) / (data['trials']) if (info["sol-length"] > 0) else successful / (data['trials'])
 
             with open(self.path_generated + "info.json", "w") as f:
                 json.dump(data, f)
@@ -179,9 +181,7 @@ class PcgrlEnv(gym.Env):
                 # update info.json
                 with open(self.path_generated + "info.json", "r") as f:
                     data = json.load(f)
-                    successful = data['success-rate'] * (data['trials'] - 1)
 
-                    data['success-rate'] = (successful + 1) / (data['trials'])
                     data['avg-sol-length'] = (data['avg-sol-length'] * successful + info["sol-length"]) / (successful + 1)
                     data['avg-crates'] = (data['avg-crates'] * successful + info["crate"]) / (successful + 1)
                     free_ratio = np.count_nonzero(self._rep._map == 0) / (self._prob._width * self._prob._height)
