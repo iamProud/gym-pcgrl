@@ -15,28 +15,24 @@ block1-0 (world) 	{  Q:[-5, -6, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, siz
 block1-10 (world) 	{  Q:[-5, 4, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block1-11 (world) 	{  Q:[-5, 5, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block2-0 (world) 	{  Q:[-4, -6, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
-block2-2 (world) 	{  Q:[-4, -4, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
-block2-9 (world) 	{  Q:[-4, 3, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
+goal2-10 (world) 	{  Q:[-4, 4, 0.001, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[0.95, 0.95, 0.004, 0.002], contact:-1 }
 block2-11 (world) 	{  Q:[-4, 5, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block3-0 (world) 	{  Q:[-3, -6, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
-goal3-5 (world) 	{  Q:[-3, -1, 0.001, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[0.95, 0.95, 0.004, 0.002], contact:-1 }
 block3-11 (world) 	{  Q:[-3, 5, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block4-0 (world) 	{  Q:[-2, -6, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
-block4-8 (world) 	{  Q:[-2, 2, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
+box4-4 (world) 	{  Q:[-2, -2, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[0.5, 0.5, 1, 0.02], contact:-1 }
 block4-11 (world) 	{  Q:[-2, 5, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block5-0 (world) 	{  Q:[-1, -6, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block5-5 (world) 	{  Q:[-1, -1, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block5-11 (world) 	{  Q:[-1, 5, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block6-0 (world) 	{  Q:[0, -6, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
-box6-3 (world) 	{  Q:[0, -3, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[0.5, 0.5, 1, 0.02], contact:-1 }
-block6-8 (world) 	{  Q:[0, 2, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
+block6-5 (world) 	{  Q:[0, -1, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block6-11 (world) 	{  Q:[0, 5, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block7-0 (world) 	{  Q:[1, -6, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
-block7-6 (world) 	{  Q:[1, 0, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
+block7-7 (world) 	{  Q:[1, 1, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block7-11 (world) 	{  Q:[1, 5, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block8-0 (world) 	{  Q:[2, -6, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
-block8-6 (world) 	{  Q:[2, 0, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
-block8-9 (world) 	{  Q:[2, 3, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
+block8-7 (world) 	{  Q:[2, 1, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block8-11 (world) 	{  Q:[2, 5, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block9-0 (world) 	{  Q:[3, -6, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
 block9-11 (world) 	{  Q:[3, 5, 0.5, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[1, 1, 1, 0.02], contact:1, mass:100 }
