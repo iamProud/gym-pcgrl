@@ -43,12 +43,13 @@ class PcgrlEnv(gym.Env):
         self.viewer = None
 
         # generated images/environments
-        self.path_generated = f'shared_runs/{prob}_{rep}_{run_idx}_log/generated/'
-        if not os.path.exists(self.path_generated):
-            os.makedirs(self.path_generated)
+        if is_inference:
+            self.path_generated = f'shared_runs/{prob}_{rep}_{run_idx}_log/generated/'
+            if not os.path.exists(self.path_generated):
+                os.makedirs(self.path_generated)
 
-            with open(self.path_generated + 'info.json', 'w') as f:
-                json.dump({'trials': 0, 'success-rate': 0, 'avg-sol-length': 0, 'avg-crates': 0, 'avg-free-percent': 0}, f)
+                with open(self.path_generated + 'info.json', 'w') as f:
+                    json.dump({'trials': 0, 'success-rate': 0, 'avg-sol-length': 0, 'avg-crates': 0, 'avg-free-percent': 0}, f)
 
         self.action_space = self._rep.get_action_space(self._prob._width, self._prob._height, self.get_num_tiles())
         self.observation_space = self._rep.get_observation_space(self._prob._width, self._prob._height,
@@ -167,7 +168,7 @@ class PcgrlEnv(gym.Env):
         info["max_changes"] = self._max_changes
         # return the values
 
-        if done and render:
+        if done and is_inference:
             with open(self.path_generated + "info.json", "r") as f:
                 data = json.load(f)
                 data["trials"] += 1

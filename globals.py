@@ -1,9 +1,10 @@
 import json
 
-game = 'sokoban'
+game = 'pushing'
 representation = 'turtle'
-run_idx = 14
+run_idx = 1
 render = True
+is_inference = True
 
 with open("shared_runs/config.json", "r") as f:
     config = json.load(f)
