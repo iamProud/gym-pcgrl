@@ -14,16 +14,18 @@ class PushingProblem(Problem):
         super().__init__()
         self._width = 10
         self._height = 10
-        self._prob = {"empty": 0.30, "solid": 0.63, "player": 0.01, "crate": 0.02, "target": 0.02, "trap": 0.02}
+        self._prob = {"empty": 0.30, "solid": 0.64, "player": 0.01, "crate": 0.02, "target": 0.01, "trap": 0.02}
         self._border_tile = "solid"
 
         self._solver_power = 5000
 
         self._max_crates = 5
+        self._max_traps = 5
 
         self._target_solution = 10
 
         self._rewards = {
+            "empty": -0.2,
             "player": 3,
             "crate": 2,
             "target": 3,
@@ -54,6 +56,7 @@ class PushingProblem(Problem):
     def get_stats(self, map):
         map_locations = get_tile_locations(map, self.get_tile_types())
         map_stats = {
+            "empty": calc_certain_tile(map_locations, ["empty"]),
             "player": calc_certain_tile(map_locations, ["player"]),
             "target": calc_certain_tile(map_locations, ["target"]),
             "crate": calc_certain_tile(map_locations, ["crate"]),
@@ -80,10 +83,11 @@ class PushingProblem(Problem):
     """
     def get_reward(self, new_stats, old_stats):
         rewards = {
+            "empty": get_range_reward(new_stats["empty"], old_stats["empty"], 0, np.inf),
             "player": get_range_reward(new_stats["player"], old_stats["player"], 1, 1),
             "target": get_range_reward(new_stats["target"], old_stats["target"], 1, 1),
             "crate": get_range_reward(new_stats["crate"], old_stats["crate"], 1, self._max_crates),
-            "trap": get_range_reward(new_stats["trap"], old_stats["trap"], 0, np.inf),
+            "trap": get_range_reward(new_stats["trap"], old_stats["trap"], 0, self._max_traps),
             "regions": get_range_reward(new_stats["regions"], old_stats["regions"], 1, 1),
             "dist-win": get_range_reward(new_stats["dist-win"], old_stats["dist-win"], -np.inf, -np.inf),
             "sol-length": get_range_reward(len(new_stats["solution"]), len(old_stats["solution"]), np.inf, np.inf)
@@ -95,7 +99,8 @@ class PushingProblem(Problem):
             rewards["target"] * self._rewards["target"] +\
             rewards["regions"] * self._rewards["regions"] +\
             rewards["dist-win"] * self._rewards["dist-win"] +\
-            rewards["sol-length"] * self._rewards["sol-length"]
+            rewards["sol-length"] * self._rewards["sol-length"] +\
+            rewards["empty"] * self._rewards["empty"]
 
 
     """
