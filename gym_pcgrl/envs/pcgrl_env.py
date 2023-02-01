@@ -193,15 +193,19 @@ class PcgrlEnv(gym.Env):
 
                 # get file number
                 listdir = os.listdir(self.path_generated)
-                if "info.txt" in listdir:
-                    listdir.remove("info.txt")
-                if "info.json" in listdir:
-                    listdir.remove("info.json")
 
                 if len(listdir) == 0:
                     file_count = 0
                 else:
-                    file_count = max([int(f.split('.')[0]) for f in listdir]) + 1
+                    file_count = -1
+                    for generated_file in listdir:
+                        try:
+                            val = int(generated_file.split('.')[0])
+                            file_count = max(file_count, val)
+                        except ValueError:
+                            continue
+
+                    file_count += 1
 
                 # save map as image
                 img = self.render(mode='rgb_array')
