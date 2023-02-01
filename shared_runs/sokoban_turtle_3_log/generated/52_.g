@@ -31,7 +31,6 @@ block5-11 (floor) 	{  Q:[-0.5, 5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1,
 block6-0 (floor) 	{  Q:[0.5, -5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 block6-8 (floor) 	{  Q:[0.5, 2.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 block6-9 (floor) 	{  Q:[0.5, 3.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[1, 0.3, 0.2], contact:1, mass:100 }
-goal6-10 (floor) 	{  Q:[0, 4, 0.001, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[0.95, 0.95, 0.004, 0.002], contact:-1 }
 goal6-10 (floor) 	{  Q:[0.5, 4.5, 0.051, -1, 0, 0, 0], shape:ssBox, size:[0.95, 0.95, 0.004, 0.002], color:[0, 1, 0] }
 block6-11 (floor) 	{  Q:[0.5, 5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[1, 0.3, 0.2], contact:1, mass:100 }
 block7-0 (floor) 	{  Q:[1.5, -5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[1, 0.3, 0.2], contact:1, mass:100 }
@@ -41,7 +40,6 @@ block8-0 (floor) 	{  Q:[2.5, -5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 
 block8-7 (floor) 	{  Q:[2.5, 1.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[1, 0.3, 0.2], contact:1, mass:100 }
 block8-11 (floor) 	{  Q:[2.5, 5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[1, 0.3, 0.2], contact:1, mass:100 }
 block9-0 (floor) 	{  Q:[3.5, -5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[1, 0.3, 0.2], contact:1, mass:100 }
-goal9-10 (floor) 	{  Q:[3, 4, 0.001, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[0.95, 0.95, 0.004, 0.002], contact:-1 }
 goal9-10 (floor) 	{  Q:[3.5, 4.5, 0.051, -1, 0, 0, 0], shape:ssBox, size:[0.95, 0.95, 0.004, 0.002], color:[0, 1, 0] }
 block9-11 (floor) 	{  Q:[3.5, 5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 block10-0 (floor) 	{  Q:[4.5, -5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[0.8, 0.1, 0.1], contact:1, mass:100 }

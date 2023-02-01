@@ -34,7 +34,6 @@ block3-6 (floor) 	{  Q:[-2.5, 0.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 
 block3-7 (floor) 	{  Q:[-2.5, 1.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 block3-11 (floor) 	{  Q:[-2.5, 5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 block4-0 (floor) 	{  Q:[-1.5, -5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
-goal4-3 (floor) 	{  Q:[-2, -3, 0.001, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[0.95, 0.95, 0.004, 0.002], contact:-1 }
 goal4-3 (floor) 	{  Q:[-1.5, -2.5, 0.051, -1, 0, 0, 0], shape:ssBox, size:[0.95, 0.95, 0.004, 0.002], color:[0, 1, 0] }
 block4-6 (floor) 	{  Q:[-1.5, 0.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 block4-7 (floor) 	{  Q:[-1.5, 1.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[1, 0.3, 0.2], contact:1, mass:100 }
@@ -43,11 +42,9 @@ block5-0 (floor) 	{  Q:[-0.5, -5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1,
 block5-8 (floor) 	{  Q:[-0.5, 2.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[1, 0.3, 0.2], contact:1, mass:100 }
 block5-11 (floor) 	{  Q:[-0.5, 5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 block6-0 (floor) 	{  Q:[0.5, -5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
-goal6-5 (floor) 	{  Q:[0, -1, 0.001, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[0.95, 0.95, 0.004, 0.002], contact:-1 }
 goal6-5 (floor) 	{  Q:[0.5, -0.5, 0.051, -1, 0, 0, 0], shape:ssBox, size:[0.95, 0.95, 0.004, 0.002], color:[0, 1, 0] }
 block6-11 (floor) 	{  Q:[0.5, 5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[1, 0.3, 0.2], contact:1, mass:100 }
 block7-0 (floor) 	{  Q:[1.5, -5.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[1, 1, 1, 0.02], color:[1, 0.3, 0.2], contact:1, mass:100 }
-goal7-1 (floor) 	{  Q:[1, -5, 0.001, -1, 0, 0, 0], joint:rigid, shape:ssBox, size:[0.95, 0.95, 0.004, 0.002], contact:-1 }
 goal7-1 (floor) 	{  Q:[1.5, -4.5, 0.051, -1, 0, 0, 0], shape:ssBox, size:[0.95, 0.95, 0.004, 0.002], color:[0, 1, 0] }
 box7-4 (floor) 	{  Q:[1.5, -1.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[0.5, 0.5, 1, 0.02], color:[0.6, 0.3, 0] }
 box7-7 (floor) 	{  Q:[1.5, 1.5, 0.55, -1, 0, 0, 0], shape:ssBox, size:[0.5, 0.5, 1, 0.02], color:[0.6, 0.3, 0] }
