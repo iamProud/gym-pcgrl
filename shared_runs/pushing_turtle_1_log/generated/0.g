@@ -1,45 +1,54 @@
 empty0-0 	{  X:[-0.45, -0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 block0-0 	{  X:[-0.45, -0.45, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
+empty0-1 	{  X:[-0.45, -0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty0-2 	{  X:[-0.45, -0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-block0-2 	{  X:[-0.45, -0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty0-3 	{  X:[-0.45, -0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 block0-3 	{  X:[-0.45, -0.15, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty0-4 	{  X:[-0.45, -0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block0-4 	{  X:[-0.45, -0.05, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty0-5 	{  X:[-0.45, 0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block0-5 	{  X:[-0.45, 0.05, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty0-6 	{  X:[-0.45, 0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block0-6 	{  X:[-0.45, 0.15, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty0-7 	{  X:[-0.45, 0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 block0-7 	{  X:[-0.45, 0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty0-8 	{  X:[-0.45, 0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-block0-8 	{  X:[-0.45, 0.35, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty0-9 	{  X:[-0.45, 0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block0-9 	{  X:[-0.45, 0.45, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty1-0 	{  X:[-0.35, -0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block1-0 	{  X:[-0.35, -0.45, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty1-1 	{  X:[-0.35, -0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-box1-1 	{  X:[-0.35, -0.35, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.09, 0.09, 0.1, 0.002], color:[0.6, 0.3, 0] }
+block1-1 	{  X:[-0.35, -0.35, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty1-2 	{  X:[-0.35, -0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty1-3 	{  X:[-0.35, -0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 block1-3 	{  X:[-0.35, -0.15, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty1-4 	{  X:[-0.35, -0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block1-4 	{  X:[-0.35, -0.05, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty1-5 	{  X:[-0.35, 0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block1-5 	{  X:[-0.35, 0.05, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty1-6 	{  X:[-0.35, 0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 block1-6 	{  X:[-0.35, 0.15, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty1-7 	{  X:[-0.35, 0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-box1-7 	{  X:[-0.35, 0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.09, 0.09, 0.1, 0.002], color:[0.6, 0.3, 0] }
+block1-7 	{  X:[-0.35, 0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty1-8 	{  X:[-0.35, 0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty1-9 	{  X:[-0.35, 0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-empty2-0 	{  X:[-0.25, -0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty2-1 	{  X:[-0.25, -0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 block2-1 	{  X:[-0.25, -0.35, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty2-2 	{  X:[-0.25, -0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+box2-2 	{  X:[-0.25, -0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.09, 0.09, 0.1, 0.002], color:[0.6, 0.3, 0] }
 empty2-3 	{  X:[-0.25, -0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 block2-3 	{  X:[-0.25, -0.15, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty2-4 	{  X:[-0.25, -0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block2-4 	{  X:[-0.25, -0.05, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty2-5 	{  X:[-0.25, 0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-pushingItem 	{  X:[-0.25, 0.05, 0.11, 1, 0, 0, 0], shape:cylinder, size:[0.02, 0.03], color:[0.6, 1, 0.5] }
+block2-5 	{  X:[-0.25, 0.05, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty2-6 	{  X:[-0.25, 0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block2-6 	{  X:[-0.25, 0.15, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty2-7 	{  X:[-0.25, 0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block2-7 	{  X:[-0.25, 0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty2-8 	{  X:[-0.25, 0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-block2-8 	{  X:[-0.25, 0.35, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty2-9 	{  X:[-0.25, 0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+pushingItem 	{  X:[-0.25, 0.45, 0.11, 1, 0, 0, 0], shape:cylinder, size:[0.02, 0.03], color:[0.6, 1, 0.5] }
 empty3-0 	{  X:[-0.15, -0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty3-1 	{  X:[-0.15, -0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 block3-1 	{  X:[-0.15, -0.35, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
@@ -47,23 +56,23 @@ empty3-2 	{  X:[-0.15, -0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.
 empty3-3 	{  X:[-0.15, -0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty3-4 	{  X:[-0.15, -0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty3-5 	{  X:[-0.15, 0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-box3-5 	{  X:[-0.15, 0.05, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.09, 0.09, 0.1, 0.002], color:[0.6, 0.3, 0] }
 empty3-6 	{  X:[-0.15, 0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty3-7 	{  X:[-0.15, 0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty3-8 	{  X:[-0.15, 0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty3-9 	{  X:[-0.15, 0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block3-9 	{  X:[-0.15, 0.45, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty4-0 	{  X:[-0.05, -0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty4-1 	{  X:[-0.05, -0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-empty4-2 	{  X:[-0.05, -0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty4-3 	{  X:[-0.05, -0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block4-3 	{  X:[-0.05, -0.15, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty4-4 	{  X:[-0.05, -0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty4-5 	{  X:[-0.05, 0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty4-6 	{  X:[-0.05, 0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block4-6 	{  X:[-0.05, 0.15, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty4-7 	{  X:[-0.05, 0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block4-7 	{  X:[-0.05, 0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty4-8 	{  X:[-0.05, 0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-block4-8 	{  X:[-0.05, 0.35, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty4-9 	{  X:[-0.05, 0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-block4-9 	{  X:[-0.05, 0.45, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty5-0 	{  X:[0.05, -0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty5-1 	{  X:[0.05, -0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty5-2 	{  X:[0.05, -0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
@@ -71,45 +80,58 @@ block5-2 	{  X:[0.05, -0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1
 empty5-3 	{  X:[0.05, -0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty5-4 	{  X:[0.05, -0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty5-5 	{  X:[0.05, 0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-block5-5 	{  X:[0.05, 0.05, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty5-6 	{  X:[0.05, 0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 block5-6 	{  X:[0.05, 0.15, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty5-7 	{  X:[0.05, 0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block5-7 	{  X:[0.05, 0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty5-8 	{  X:[0.05, 0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty5-9 	{  X:[0.05, 0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty6-0 	{  X:[0.15, -0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block6-0 	{  X:[0.15, -0.45, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty6-1 	{  X:[0.15, -0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty6-2 	{  X:[0.15, -0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty6-3 	{  X:[0.15, -0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty6-4 	{  X:[0.15, -0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block6-4 	{  X:[0.15, -0.05, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty6-5 	{  X:[0.15, 0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty6-6 	{  X:[0.15, 0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block6-6 	{  X:[0.15, 0.15, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty6-7 	{  X:[0.15, 0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block6-7 	{  X:[0.15, 0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty6-8 	{  X:[0.15, 0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty6-9 	{  X:[0.15, 0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty7-0 	{  X:[0.25, -0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block7-0 	{  X:[0.25, -0.45, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty7-1 	{  X:[0.25, -0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty7-2 	{  X:[0.25, -0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty7-3 	{  X:[0.25, -0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty7-4 	{  X:[0.25, -0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty7-5 	{  X:[0.25, 0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty7-6 	{  X:[0.25, 0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+goal7-6 	{  X:[0.25, 0.15, 0.1001, 1, 0, 0, 0], shape:ssBox, size:[0.095, 0.095, 0.0004, 0.0002], color:[0, 1, 0] }
 empty7-7 	{  X:[0.25, 0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block7-7 	{  X:[0.25, 0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty7-8 	{  X:[0.25, 0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty7-9 	{  X:[0.25, 0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block7-9 	{  X:[0.25, 0.45, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty8-0 	{  X:[0.35, -0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty8-1 	{  X:[0.35, -0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty8-2 	{  X:[0.35, -0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-block8-2 	{  X:[0.35, -0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty8-3 	{  X:[0.35, -0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block8-3 	{  X:[0.35, -0.15, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty8-4 	{  X:[0.35, -0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block8-4 	{  X:[0.35, -0.05, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty8-5 	{  X:[0.35, 0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 block8-5 	{  X:[0.35, 0.05, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty8-6 	{  X:[0.35, 0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block8-6 	{  X:[0.35, 0.15, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[0.8, 0.1, 0.1], contact:1, mass:100 }
 empty8-7 	{  X:[0.35, 0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block8-7 	{  X:[0.35, 0.25, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty8-8 	{  X:[0.35, 0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty8-9 	{  X:[0.35, 0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block8-9 	{  X:[0.35, 0.45, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty9-0 	{  X:[0.45, -0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
+block9-0 	{  X:[0.45, -0.45, 0.15, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0.002], color:[1, 0.3, 0.2], contact:1, mass:100 }
 empty9-1 	{  X:[0.45, -0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty9-2 	{  X:[0.45, -0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty9-3 	{  X:[0.45, -0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
@@ -118,7 +140,6 @@ empty9-5 	{  X:[0.45, 0.05, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1,
 empty9-6 	{  X:[0.45, 0.15, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty9-7 	{  X:[0.45, 0.25, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 empty9-8 	{  X:[0.45, 0.35, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
-goal9-8 	{  X:[0.45, 0.35, 0.1001, 1, 0, 0, 0], shape:ssBox, size:[0.095, 0.095, 0.0004, 0.0002], color:[0, 1, 0] }
 empty9-9 	{  X:[0.45, 0.45, 0.05, 1, 0, 0, 0], shape:ssBox, size:[0.1, 0.1, 0.1, 0], contact:1, mass:100 }
 panda_link0 	{  X:[-0.65, 0, 0.1, 1, 0, 0, 0] }
 panda_link0_1 (panda_link0) 	{ , shape:mesh, color:[0.9, 0.9, 0.9], mesh:'/home/basti/Dokumente/Bachelorarbeit/rai-python/rai-robotModels/panda/meshes/visual/link0.ply', visual }
