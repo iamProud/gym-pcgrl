@@ -34,7 +34,7 @@ def infer(game, representation, model_path, **kwargs):
     elif game == "sokoban":
         # model.FullyConvPolicy = model.FullyConvPolicySmallMap
         kwargs['cropped_size'] = 10
-    kwargs['render'] = True
+    kwargs['render'] = kwargs.get('render', True)
 
     agent = PPO.load(model_path)
     env = make_vec_envs(env_name, representation, None, 1, **kwargs)
@@ -65,6 +65,7 @@ kwargs = {
     'trials': 1,
     # 'verbose': True,
     'num_executions': 100,
+    'render': render,
 }
 
 if __name__ == '__main__':
