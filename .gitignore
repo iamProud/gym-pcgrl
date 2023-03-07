@@ -45,3 +45,6 @@ pcgenenv3_8/
 
 # logs
 z.log.global
+
+# wandb
+wandb/
