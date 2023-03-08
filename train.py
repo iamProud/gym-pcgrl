@@ -103,7 +103,7 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
             features_extractor_class=CustomCNNPolicy,
             features_extractor_kwargs=dict(features_dim=512),
         )
-        model = PPO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log="./runs")
+        model = PPO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log="./runs", device=device)
     else:
         model.set_env(env)
     if not logging:
@@ -124,7 +124,8 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
 experiment = None
 steps = 1e8
 logging = True
-n_cpu = 1
+n_cpu = 50
+device='cuda:1'
 
 # wandb hyperparameters
 wandb_hyperparameter = dict(
