@@ -1,0 +1,238 @@
+{
+  "run": {
+    "1": {
+      "max_crates": "C1",
+      "target_solution": "T1",
+      "probabilities": "P1"
+    },
+    "2": {
+      "max_crates": "C1",
+      "target_solution": "T1",
+      "probabilities": "P2"
+    },
+    "3": {
+      "max_crates": "C1",
+      "target_solution": "T1",
+      "probabilities": "P3"
+    },
+    "4": {
+      "max_crates": "C1",
+      "target_solution": "T1",
+      "probabilities": "P4"
+    },
+    "5": {
+      "max_crates": "C1",
+      "target_solution": "T2",
+      "probabilities": "P1"
+    },
+    "6": {
+      "max_crates": "C1",
+      "target_solution": "T2",
+      "probabilities": "P2"
+    },
+    "7": {
+      "max_crates": "C1",
+      "target_solution": "T2",
+      "probabilities": "P3"
+    },
+    "8": {
+      "max_crates": "C1",
+      "target_solution": "T2",
+      "probabilities": "P4"
+    },
+    "9": {
+      "max_crates": "C1",
+      "target_solution": "T3",
+      "probabilities": "P1"
+    },
+    "10": {
+      "max_crates": "C1",
+      "target_solution": "T3",
+      "probabilities": "P2"
+    },
+    "11": {
+      "max_crates": "C1",
+      "target_solution": "T3",
+      "probabilities": "P3"
+    },
+    "12": {
+      "max_crates": "C1",
+      "target_solution": "T3",
+      "probabilities": "P4"
+    },
+    "13": {
+      "max_crates": "C2",
+      "target_solution": "T1",
+      "probabilities": "P1"
+    },
+    "14": {
+      "max_crates": "C2",
+      "target_solution": "T1",
+      "probabilities": "P2"
+    },
+    "15": {
+      "max_crates": "C2",
+      "target_solution": "T1",
+      "probabilities": "P3"
+    },
+    "16": {
+      "max_crates": "C2",
+      "target_solution": "T1",
+      "probabilities": "P4"
+    },
+    "17": {
+      "max_crates": "C2",
+      "target_solution": "T2",
+      "probabilities": "P1"
+    },
+    "18": {
+      "max_crates": "C2",
+      "target_solution": "T2",
+      "probabilities": "P2"
+    },
+    "19": {
+      "max_crates": "C2",
+      "target_solution": "T2",
+      "probabilities": "P3"
+    },
+    "20": {
+      "max_crates": "C2",
+      "target_solution": "T2",
+      "probabilities": "P4"
+    },
+    "21": {
+      "max_crates": "C2",
+      "target_solution": "T3",
+      "probabilities": "P1"
+    },
+    "22": {
+      "max_crates": "C2",
+      "target_solution": "T3",
+      "probabilities": "P2"
+    },
+    "23": {
+      "max_crates": "C2",
+      "target_solution": "T3",
+      "probabilities": "P3"
+    },
+    "24": {
+      "max_crates": "C2",
+      "target_solution": "T3",
+      "probabilities": "P4"
+    },
+    "25": {
+      "max_crates": "C3",
+      "target_solution": "T1",
+      "probabilities": "P1*"
+    },
+    "26": {
+      "max_crates": "C3",
+      "target_solution": "T1",
+      "probabilities": "P2"
+    },
+    "27": {
+      "max_crates": "C3",
+      "target_solution": "T1",
+      "probabilities": "P3*"
+    },
+    "28": {
+      "max_crates": "C3",
+      "target_solution": "T1",
+      "probabilities": "P4"
+    },
+    "29": {
+      "max_crates": "C3",
+      "target_solution": "T2",
+      "probabilities": "P1*"
+    },
+    "30": {
+      "max_crates": "C3",
+      "target_solution": "T2",
+      "probabilities": "P2"
+    },
+    "31": {
+      "max_crates": "C3",
+      "target_solution": "T2",
+      "probabilities": "P3*"
+    },
+    "32": {
+      "max_crates": "C3",
+      "target_solution": "T2",
+      "probabilities": "P4"
+    },
+    "33": {
+      "max_crates": "C3",
+      "target_solution": "T3",
+      "probabilities": "P1*"
+    },
+    "34": {
+      "max_crates": "C3",
+      "target_solution": "T3",
+      "probabilities": "P2"
+    },
+    "35": {
+      "max_crates": "C3",
+      "target_solution": "T3",
+      "probabilities": "P3*"
+    },
+    "36": {
+      "max_crates": "C3",
+      "target_solution": "T3",
+      "probabilities": "P4"
+    }
+  },
+  "max_crates": {
+    "C1": 2,
+    "C2": 4,
+    "C3": 8
+  },
+  "target_solution": {
+    "T1": 10,
+    "T2": 20,
+    "T3": 30
+  },
+  "probabilities": {
+    "P1": {
+      "empty": 0.80,
+      "solid": 0.05,
+      "player": 0.01,
+      "crate": 0.07,
+      "target": 0.07
+    },
+    "P1*": {
+      "empty": 0.60,
+      "solid": 0.25,
+      "player": 0.01,
+      "crate": 0.07,
+      "target": 0.07
+    },
+    "P2": {
+      "empty": 0.30,
+      "solid": 0.55,
+      "player": 0.01,
+      "crate": 0.07,
+      "target": 0.07
+    },
+    "P3": {
+      "empty": 0.80,
+      "solid": 0.13,
+      "player": 0.01,
+      "crate": 0.03,
+      "target": 0.03
+    },
+    "P3*": {
+      "empty": 0.60,
+      "solid": 0.33,
+      "player": 0.01,
+      "crate": 0.03,
+      "target": 0.03
+    },
+    "P4": {
+      "empty": 0.30,
+      "solid": 0.55,
+      "player": 0.01,
+      "crate": 0.03,
+      "target": 0.03
+    }
+  }
+}
