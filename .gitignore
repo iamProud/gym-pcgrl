@@ -31,9 +31,6 @@ MANIFEST
 # Jupyter logs
 .ipynb_checkpoints/
 
-# runs
-runs/*
-
 # editors
 .idea
 .vscode
