@@ -32,7 +32,7 @@ MANIFEST
 .ipynb_checkpoints/
 
 # runs
-runs/
+runs/*
 
 # editors
 .idea
