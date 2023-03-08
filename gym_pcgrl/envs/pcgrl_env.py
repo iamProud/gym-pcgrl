@@ -7,7 +7,7 @@ from gym import spaces
 import PIL
 from PIL import Image
 import os
-from gym_pcgrl.envs.helper import safe_map, safe_map_as_g
+from gym_pcgrl.envs.helper import safe_map
 from globals import *
 import json
 

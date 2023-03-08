@@ -15,16 +15,16 @@ class SokobanProblem(Problem):
     """
     def __init__(self):
         super().__init__()
-        self._width = 10
-        self._height = 10
-        self._prob = global_probabilities if global_probabilities else {"empty":0.30, "solid":0.55, "player": 0.01, "crate": 0.07, "target": 0.07}
+        self._width = config['width'] if config['width'] else 5
+        self._height = config['height'] if config['height'] else 5
+        self._prob = config['probabilities'] if config['probabilities'] else {"empty":0.30, "solid":0.55, "player": 0.01, "crate": 0.07, "target": 0.07}
         self._border_tile = "solid"
 
-        self._solver_power = 50000
+        self._solver_power = config['solver_power'] if config['solver_power'] else 20000
 
-        self._max_crates = global_max_crates if global_max_crates else 5
+        self._max_crates = config['max_crates'] if config['max_crates'] else 5
 
-        self._target_solution = global_target_solution if global_target_solution else 30
+        self._target_solution = config['target_solution'] if config['target_solution'] else 30
 
         self._rewards = {
             "player": 6,

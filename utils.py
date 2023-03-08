@@ -104,3 +104,28 @@ def load_model(log_dir):
             raise Exception('No models are saved')
     model = PPO.load(model_path)
     return model
+
+def eval_feasibility(env, model, total_runs=100):
+    """
+    Evaluate the feasibility of the model. This is done by running the current best model.
+
+    :param model: (PPO) The current best model to evaluate.
+    :param kwargs: (dict) The kwargs to pass to the environment.
+    """
+    feasible_runs = 0
+
+    for i in range(total_runs):
+        obs = env.reset()
+        done = False
+
+        while not done:
+            action, _ = model.predict(obs)
+            obs, rewards, done, info = env.step(action)
+
+            if done:
+                if info[0]['sol-length'] > 0:
+                    feasible_runs += 1
+                break
+
+    env.close()
+    return feasible_runs / total_runs

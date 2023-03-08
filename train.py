@@ -1,44 +1,20 @@
 #Install stable-baselines as described in the documentation
 
 import os
+from torch import nn
 
-# import tensorflow as tf
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.results_plotter import load_results, ts2xy
-from stable_baselines3.common.callbacks import BaseCallback, EvalCallback, EventCallback
+from stable_baselines3.common.callbacks import BaseCallback, CallbackList
 
 # from model import FullyConvPolicyBigMap, FullyConvPolicySmallMap, CustomPolicyBigMap, CustomPolicySmallMap
-from utils import get_exp_name, max_exp_idx, load_model, make_vec_envs
+from model import CustomCNNPolicy
+from utils import get_exp_name, max_exp_idx, load_model, make_vec_envs, eval_feasibility
 from globals import *
 
-def eval_feasibility(model, kwargs):
-    """
-    Evaluate the feasibility of the model. This is done by running the current best model.
-
-    :param model: (PPO) The current best model to evaluate.
-    :param kwargs: (dict) The kwargs to pass to the environment.
-    """
-    env = make_vec_envs(f'{game}-{representation}-v0', representation, None, 1, **kwargs)
-
-    total_runs = 100
-    feasible_runs = 0
-
-    for i in range(total_runs):
-        obs = env.reset()
-        done = False
-
-        while not done:
-            action, _ = model.predict(obs)
-            obs, rewards, done, info = env.step(action)
-
-            if done:
-                if info[0]['sol-length'] > 0:
-                    feasible_runs += 1
-                break
-
-    env.close()
-    return feasible_runs / total_runs
+import wandb
+from wandb.integration.sb3 import WandbCallback
 
 class SaveOnBestTrainingRewardCallback(BaseCallback):
     """
@@ -82,9 +58,12 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                     if self.verbose >= 1:
                       print(f"Saving new best model to {self.save_path}")
                     self.model.save(self.save_path)
-                    feasibility = eval_feasibility(self.model, self.kwargs)
-                    print("Feasibility: {:.2f}".format(feasibility))
-                    self.logger.record('feasibility', feasibility)
+
+                # Evaluate the feasibility of the current model
+                env = make_vec_envs(f'{game}-{representation}-v0', representation, None, 1, **self.kwargs)
+                feasibility = eval_feasibility(env, self.model, 100)
+                print("Feasibility: {:.2f}".format(feasibility))
+                self.kwargs['wandb_session'].log({'feasibility': feasibility})
 
         return True
 
@@ -99,7 +78,7 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
     elif game == "zelda":
         kwargs['cropped_size'] = 22
     elif game == "sokoban":
-        kwargs['cropped_size'] = 10
+        kwargs['cropped_size'] = config['cropped_size']
     n = max_exp_idx(exp_name)
 
     if not resume:
@@ -116,24 +95,67 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
     }
 
     env = make_vec_envs(env_name, representation, log_dir, n_cpu, **kwargs)
+
     if not resume or model is None:
-        policy = "MlpPolicy"
-        model = PPO(policy, env, verbose=1, tensorboard_log="./runs")
+        policy_kwargs = dict(
+            activation_fn=nn.ReLU,
+            net_arch=[512],
+            features_extractor_class=CustomCNNPolicy,
+            features_extractor_kwargs=dict(features_dim=512),
+        )
+        model = PPO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log="./runs")
     else:
         model.set_env(env)
     if not logging:
         model.learn(total_timesteps=int(steps), tb_log_name=exp_name)
     else:
-        model.learn(total_timesteps=int(steps), tb_log_name=exp_name, callback=SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir, verbose=2, kwargs=kwargs))
+        callback = CallbackList([
+            SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir, verbose=2, kwargs=kwargs),
+            WandbCallback(verbose=2, log='gradients', gradient_save_freq=1000)
+        ])
+
+        model.learn(
+            total_timesteps=int(steps),
+            tb_log_name=exp_name,
+            callback=callback
+        )
 
 ################################## MAIN ########################################
 experiment = None
-steps = 1e6
+steps = 1e8
 logging = True
-n_cpu = 50
+n_cpu = 1
+
+# wandb hyperparameters
+wandb_hyperparameter = dict(
+    game=game,
+    representation=representation,
+    size=f'{config["width"]}x{config["height"]}',
+    change_percentage=config['change_percentage'],
+    prob_empty=config['probabilities']['empty'],
+    prob_solid=config['probabilities']['solid'],
+    prob_player=config['probabilities']['player'],
+    prob_crate=config['probabilities']['crate'],
+    prob_target=config['probabilities']['target'],
+    target_solution=config['target_solution'],
+    max_crates=config['max_crates'],
+)
+
 kwargs = {
-    'resume': False
+    'resume': False,
+    'cropped_size': config['cropped_size'],
+    'change_percentage': config['change_percentage'],
 }
 
+exp_name = get_exp_name(game, representation, experiment, **kwargs)
+n = max_exp_idx(exp_name) + 1
+
+
+
 if __name__ == '__main__':
+    wandb_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter, name=f'{game}_{representation}_{n}', mode='disabled')
+    kwargs['wandb_session'] = wandb_session
+
     main(game, representation, experiment, steps, n_cpu, render, logging, **kwargs)
+
+    wandb_session.finish()
