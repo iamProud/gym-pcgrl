@@ -120,7 +120,7 @@ experiment = None
 steps = 1e8
 logging = True
 n_cpu = 50
-device='cuda:1'
+device='auto'
 
 # wandb hyperparameters
 wandb_hyperparameter = dict(
