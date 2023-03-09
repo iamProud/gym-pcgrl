@@ -73,12 +73,7 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
     exp_name = get_exp_name(game, representation, experiment, **kwargs)
     resume = kwargs.get('resume', False)
 
-    if game == "binary":
-        kwargs['cropped_size'] = 28
-    elif game == "zelda":
-        kwargs['cropped_size'] = 22
-    elif game == "sokoban":
-        kwargs['cropped_size'] = config['cropped_size']
+    kwargs['cropped_size'] = config['cropped_size']
     n = max_exp_idx(exp_name)
 
     if not resume:
@@ -111,7 +106,7 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
     else:
         callback = CallbackList([
             SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir, verbose=2, kwargs=kwargs),
-            WandbCallback(verbose=2, log='gradients', gradient_save_freq=1000)
+            WandbCallback(verbose=2, gradient_save_freq=1000)
         ])
 
         model.learn(
