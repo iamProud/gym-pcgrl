@@ -376,9 +376,9 @@ def get_range_reward(new_value, old_value, low, high):
         return high - old_value + new_value - low
 
 """
-Safe the current Map to a .txt file
+Safe the current Map and the solution to a .txt file
 """
-def safe_map(int_map, path, file):
+def safe_map(int_map, solution, path, file):
     f = open(f'{path}{file}.txt', 'w')
 
     for row in range(int_map.shape[0]):
@@ -388,6 +388,20 @@ def safe_map(int_map, path, file):
             s += str(idx)
 
         f.write(s + '\n')
+
+    f.write('\n')
+    for action in solution:
+        if action['x'] == -1:
+            f.write('l')
+
+        if action['x'] == 1:
+            f.write('r')
+
+        if action['y'] == -1:
+            f.write('u')
+
+        if action['y'] == 1:
+            f.write('d')
 
     f.close()
 

@@ -1,7 +1,6 @@
 """
 Run a trained agent and get generated maps
 """
-# import model
 from stable_baselines3 import PPO
 from stable_baselines3.common.policies import obs_as_tensor
 
@@ -25,15 +24,7 @@ def infer(game, representation, model_path, **kwargs):
      - infer_kwargs: Args to pass to the environment.
     """
     env_name = f'{game}-{representation}-v0'
-    if game == "binary":
-        # model.FullyConvPolicy = model.FullyConvPolicyBigMap
-        kwargs['cropped_size'] = 28
-    elif game == "zelda":
-        # model.FullyConvPolicy = model.FullyConvPolicyBigMap
-        kwargs['cropped_size'] = 22
-    elif game == "sokoban":
-        # model.FullyConvPolicy = model.FullyConvPolicySmallMap
-        kwargs['cropped_size'] = 10
+    kwargs['cropped_size'] = config['cropped_size']
     kwargs['render'] = kwargs.get('render', True)
 
     agent = PPO.load(model_path)
@@ -53,13 +44,12 @@ def infer(game, representation, model_path, **kwargs):
                 if kwargs.get('verbose', False):
                     print(info[0])
                 if dones:
-                    print(j)
                     break
             time.sleep(0.2)
 
 ################################## MAIN ########################################
-# model_path = 'runs/{}_{}_1_log/best_model.pkl'.format(game, representation)
-model_path = f'shared_runs/{game}_{representation}_{run_idx}_log/best_model.zip'
+# model_path = 'runs/{}_{}_1_log/best_model.zip'.format(game, representation)
+model_path = run_path + '/best_model.zip'
 kwargs = {
     'change_percentage': 0.5,
     'trials': 1,

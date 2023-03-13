@@ -44,7 +44,7 @@ class PcgrlEnv(gym.Env):
 
         # generated images/environments
         if is_inference:
-            self.path_generated = f'shared_runs/{prob}_{rep}_{run_idx}_log/generated/'
+            self.path_generated = run_path + '/generated/'
             if not os.path.exists(self.path_generated):
                 os.makedirs(self.path_generated)
 
@@ -174,7 +174,6 @@ class PcgrlEnv(gym.Env):
                 data["trials"] += 1
                 successful = data['success-rate'] * (data['trials'] - 1)
                 data['success-rate'] = (successful + 1) / (data['trials']) if (info["sol-length"] > 0) else successful / (data['trials'])
-
             with open(self.path_generated + "info.json", "w") as f:
                 json.dump(data, f)
 
@@ -187,7 +186,6 @@ class PcgrlEnv(gym.Env):
                     data['avg-crates'] = (data['avg-crates'] * successful + info["crate"]) / (successful + 1)
                     free_ratio = np.count_nonzero(self._rep._map == 0) / (self._prob._width * self._prob._height)
                     data['avg-free-percent'] = (data['avg-free-percent'] * successful + free_ratio) / (successful + 1)
-
                 with open(self.path_generated + "info.json", "w") as f:
                     json.dump(data, f)
 
@@ -213,7 +211,7 @@ class PcgrlEnv(gym.Env):
 
                 # save map as .txt
                 final_map = np.pad(self._rep._map, 1, constant_values=1)
-                safe_map(final_map, self.path_generated, file_count)
+                safe_map(final_map, self._rep_stats['solution'], self.path_generated, file_count)
 
                 # save map as .g
                 # safe_map_as_g(final_map, self.path_generated, file_count)

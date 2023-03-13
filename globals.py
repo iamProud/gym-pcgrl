@@ -13,9 +13,11 @@ config = dict(
     solver_power = 20000
 )
 
+run_path = f'shared_runs/{config["width"]}x{config["height"]}/{game}/{game}_{representation}_{run_idx}_log/'
+
 config['cropped_size'] = 2 * max(config['width'], config['height'])
 
-with open("shared_runs/10x10/config.json", "r") as f:
+with open(run_path+"../config.json", "r") as f:
     config_file = json.load(f)
     run_config = config_file['run'][str(run_idx)]
 
