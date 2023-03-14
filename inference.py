@@ -27,8 +27,8 @@ def infer(game, representation, model_path, **kwargs):
     kwargs['cropped_size'] = config['cropped_size']
     kwargs['render'] = kwargs.get('render', True)
 
-    agent = PPO.load(model_path)
     env = make_vec_envs(env_name, representation, None, 1, **kwargs)
+    agent = PPO.load(model_path, custom_objects={'observation_space': env.observation_space})
 
     for j in range(kwargs.get('num_executions', 1)):
         obs = env.reset()
