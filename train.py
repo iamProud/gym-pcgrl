@@ -121,6 +121,8 @@ steps = 1e8
 logging = True
 n_cpu = 50
 device='auto'
+experiment = run_idx
+exp_name = get_exp_name(game, representation, experiment)
 
 # wandb hyperparameters
 wandb_hyperparameter = dict(
@@ -143,13 +145,8 @@ kwargs = {
     'change_percentage': config['change_percentage'],
 }
 
-exp_name = get_exp_name(game, representation, experiment, **kwargs)
-n = max_exp_idx(exp_name) + 1
-
-
-
 if __name__ == '__main__':
-    wandb_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter, name=f'{game}_{representation}_{n}', mode='disabled')
+    wandb_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter, name=exp_name, mode='disabled')
     kwargs['wandb_session'] = wandb_session
 
     main(game, representation, experiment, steps, n_cpu, render, logging, **kwargs)
