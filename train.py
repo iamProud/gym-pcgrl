@@ -119,7 +119,6 @@ experiment = None
 steps = 1e8
 logging = True
 n_cpu = 5
-device='auto'
 experiment = run_idx
 exp_name = get_exp_name(game, representation, experiment)
 

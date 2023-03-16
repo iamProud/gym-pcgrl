@@ -5,6 +5,7 @@ representation = 'turtle'
 run_idx = 1
 render = False
 is_inference = False
+device='auto'
 
 config = dict(
     width = 8,
