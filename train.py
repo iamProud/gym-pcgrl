@@ -65,6 +65,10 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                 print("Feasibility: {:.2f}".format(feasibility))
                 self.kwargs['wandb_session'].log({'feasibility': feasibility})
 
+                # save episode reward mean
+                self.kwargs['wandb_session'].log({'ep_rew_mean': mean_reward})
+                print("Episode reward: {:.2f}".format(mean_reward))
+
         return True
 
 
@@ -104,22 +108,17 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
     if not logging:
         model.learn(total_timesteps=int(steps), tb_log_name=exp_name)
     else:
-        callback = CallbackList([
-            SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir, verbose=2, kwargs=kwargs),
-            WandbCallback(verbose=2, gradient_save_freq=1000)
-        ])
-
         model.learn(
             total_timesteps=int(steps),
             tb_log_name=exp_name,
-            callback=callback
+            callback=SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir, verbose=2, kwargs=kwargs)
         )
 
 ################################## MAIN ########################################
 experiment = None
 steps = 1e8
 logging = True
-n_cpu = 50
+n_cpu = 5
 device='auto'
 experiment = run_idx
 exp_name = get_exp_name(game, representation, experiment)
@@ -141,12 +140,19 @@ wandb_hyperparameter = dict(
 
 kwargs = {
     'resume': False,
-    'cropped_size': config['cropped_size'],
     'change_percentage': config['change_percentage'],
+    'width': config['width'],
+    'height': config['height'],
+    'cropped_size': config['cropped_size'],
+    'probs': config['probabilities'],
+    'min_solution': config['target_solution'],
+    'max_crates': config['max_crates'],
+    'max_targets': config['max_crates'],
+    'solver_power': config['solver_power'],
 }
 
 if __name__ == '__main__':
-    wandb_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter, name=exp_name, mode='disabled')
+    wandb_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter, name=exp_name, mode='online')
     kwargs['wandb_session'] = wandb_session
 
     main(game, representation, experiment, steps, n_cpu, render, logging, **kwargs)

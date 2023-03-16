@@ -56,6 +56,14 @@ kwargs = {
     # 'verbose': True,
     'num_executions': 100,
     'render': render,
+    'width': config['width'],
+    'height': config['height'],
+    'cropped_size': config['cropped_size'],
+    'probs': config['probabilities'],
+    'min_solution': config['target_solution'],
+    'max_crates': config['max_crates'],
+    'max_targets': config['max_crates'],
+    'solver_power': config['solver_power'],
 }
 
 if __name__ == '__main__':
