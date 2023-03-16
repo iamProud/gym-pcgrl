@@ -14,15 +14,16 @@ config = dict(
 )
 
 game_path = f'shared_runs/{config["width"]}x{config["height"]}/{game}'
-run_path = f'{game_path}/{game}_{representation}_{run_idx}_log/'
+run_path = f'{game_path}/{game}_{representation}_{run_idx}_1_log/'
 
 config['cropped_size'] = 2 * max(config['width'], config['height'])
+
+print(f'Running {game} with {representation} representation - run {run_idx}')
 
 with open(game_path+"/config.json", "r") as f:
     config_file = json.load(f)
     run_config = config_file['run'][str(run_idx)]
 
     for key, value in run_config.items():
-         config[key] = config_file[key][value]
-
-print(f'Running {game} with {representation} representation - run {run_idx}')
+        config[key] = config_file[key][value]
+        print(f'### {key} = {config[key]}')
