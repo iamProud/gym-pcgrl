@@ -2,7 +2,7 @@ import json
 
 game = 'sokoban'
 representation = 'turtle'
-run_idx = 1
+run_idx = 26
 render = False
 is_inference = False
 device='auto'
@@ -17,7 +17,7 @@ config = dict(
 game_path = f'shared_runs/{config["width"]}x{config["height"]}/{game}'
 run_path = f'{game_path}/{game}_{representation}_{run_idx}_1_log/'
 
-config['cropped_size'] = 2 * max(config['width'], config['height'])
+config['cropped_size'] = 2 * 5 #max(config['width'], config['height'])
 
 print(f'Running {game} with {representation} representation - run {run_idx}')
 

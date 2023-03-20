@@ -12,8 +12,8 @@ class PushingProblem(Problem):
     """
     def __init__(self):
         super().__init__()
-        self._width = 10
-        self._height = 10
+        self._width = 5
+        self._height = 5
         self._prob = {"empty": 0.30, "solid": 0.64, "player": 0.01, "crate": 0.02, "target": 0.01, "trap": 0.02}
         self._border_tile = "solid"
 

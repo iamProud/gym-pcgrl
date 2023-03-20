@@ -96,13 +96,16 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
     env = make_vec_envs(env_name, representation, log_dir, n_cpu, **kwargs)
 
     if not resume or model is None:
-        policy_kwargs = dict(
-            activation_fn=nn.ReLU,
-            net_arch=[512],
-            features_extractor_class=CustomCNNPolicy,
-            features_extractor_kwargs=dict(features_dim=512),
-        )
-        model = PPO("CnnPolicy", env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log="./runs", device=device)
+        policy_kwargs = None
+
+        if policy == 'CnnPolicy':
+            policy_kwargs = dict(
+                activation_fn=nn.ReLU,
+                net_arch=[512],
+                features_extractor_class=CustomCNNPolicy,
+                features_extractor_kwargs=dict(features_dim=512),
+            )
+        model = PPO(policy, env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log="./runs", device=device)
     else:
         model.set_env(env)
     if not logging:
@@ -115,15 +118,17 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
         )
 
 ################################## MAIN ########################################
+policy = 'CnnPolicy'
 experiment = None
 steps = 1e8
 logging = True
-n_cpu = 5
+n_cpu = 1
 experiment = run_idx
 exp_name = get_exp_name(game, representation, experiment)
 
 # wandb hyperparameters
 wandb_hyperparameter = dict(
+    policy=policy,
     game=game,
     representation=representation,
     size=f'{config["width"]}x{config["height"]}',
@@ -140,18 +145,18 @@ wandb_hyperparameter = dict(
 kwargs = {
     'resume': False,
     'change_percentage': config['change_percentage'],
-    'width': config['width'],
-    'height': config['height'],
+    'width': 5, # config['width'],
+    'height': 5, # config['height'],
     'cropped_size': config['cropped_size'],
     'probs': config['probabilities'],
     'min_solution': config['target_solution'],
     'max_crates': config['max_crates'],
     'max_targets': config['max_crates'],
-    'solver_power': config['solver_power'],
+    'solver_power': config['solver_power']
 }
 
 if __name__ == '__main__':
-    wandb_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter, name=exp_name, mode='online')
+    wandb_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter, name=exp_name, mode='disabled')
     kwargs['wandb_session'] = wandb_session
 
     main(game, representation, experiment, steps, n_cpu, render, logging, **kwargs)
