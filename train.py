@@ -60,14 +60,14 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                     self.model.save(self.save_path)
 
                 # Evaluate the feasibility of the current model
-                env = make_vec_envs(f'{game}-{representation}-v0', representation, None, 1, **self.kwargs)
-                feasibility = eval_feasibility(env, self.model, 100)
-                print("Feasibility: {:.2f}".format(feasibility))
-                self.kwargs['wandb_session'].log({'feasibility': feasibility})
-
-                # save episode reward mean
-                self.kwargs['wandb_session'].log({'ep_rew_mean': mean_reward})
-                print("Episode reward: {:.2f}".format(mean_reward))
+                # env = make_vec_envs(f'{game}-{representation}-v0', representation, None, 1, **self.kwargs)
+                # feasibility = eval_feasibility(env, self.model, 100)
+                # print("Feasibility: {:.2f}".format(feasibility))
+                # self.kwargs['wandb_session'].log({'feasibility': feasibility})
+                #
+                # # save episode reward mean
+                # self.kwargs['wandb_session'].log({'ep_rew_mean': mean_reward})
+                # # print("Episode reward: {:.2f}".format(mean_reward))
 
         return True
 
@@ -105,7 +105,12 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
                 features_extractor_class=CustomCNNPolicy,
                 features_extractor_kwargs=dict(features_dim=512),
             )
-        model = PPO(policy, env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log="./runs", device=device)
+        model = PPO(policy, env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log="./runs", device=device,
+                        n_steps=128,
+                        clip_range=0.2,
+                        ent_coef=0.01,
+                        learning_rate=2.5e-4
+                    )
     else:
         model.set_env(env)
     if not logging:
@@ -120,7 +125,7 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
 ################################## MAIN ########################################
 policy = 'CnnPolicy'
 experiment = None
-steps = 1e7
+steps = 2e6
 logging = True
 n_cpu = 1
 experiment = run_idx

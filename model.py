@@ -18,14 +18,25 @@ class CustomCNNPolicy(BaseFeaturesExtractor):
 
         n_input_channels = observation_space.shape[0]
         self.cnn = nn.Sequential(
-            nn.Conv2d(n_input_channels, 32, kernel_size=4, stride=1),
+            nn.Conv2d(n_input_channels, 32, kernel_size=4, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(32, 64, kernel_size=2, stride=1),
+            nn.Conv2d(32, 64, kernel_size=2, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(64, 64, kernel_size=1, stride=1),
+            nn.Conv2d(64, 64, kernel_size=1, stride=1, padding=1),
             nn.ReLU(),
             nn.Flatten(),
         )
+        # self.cnn = nn.Sequential(
+        #     nn.Conv2d(n_input_channels, 32, kernel_size=3, stride=1, padding=1),
+        #     nn.ReLU(),
+        #     nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),
+        #     nn.ReLU(),
+        #     nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+        #     nn.ReLU(),
+        #     nn.Flatten(),
+        #     nn.Linear(64 * 7 * 7, 512),  # Add fully connected layer with 512 units
+        #     nn.ReLU(),
+        # )
 
         # Compute shape by doing one forward pass
         with th.no_grad():
@@ -35,3 +46,6 @@ class CustomCNNPolicy(BaseFeaturesExtractor):
 
     def forward(self, observations: th.Tensor) -> th.Tensor:
         return self.linear(self.cnn(observations))
+
+    # def forward(self, observations: th.Tensor) -> th.Tensor:
+    #     return self.cnn(observations)

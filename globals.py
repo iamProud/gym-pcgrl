@@ -2,10 +2,10 @@ import json
 
 game = 'sokoban'
 representation = 'turtle'
-run_idx = 36
+run_idx = 4
 render = False
 is_inference = False
-device='cuda:4'
+device='cuda:6'
 
 config = dict(
     width = 8,
