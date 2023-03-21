@@ -116,7 +116,7 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
 
 ################################## MAIN ########################################
 experiment = None
-steps = 1e8
+steps = 1e7
 logging = True
 n_cpu = 5
 experiment = run_idx
