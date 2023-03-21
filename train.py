@@ -65,7 +65,7 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
     elif game == "zelda":
         kwargs['cropped_size'] = 22
     elif game == "sokoban":
-        kwargs['cropped_size'] = 10
+        kwargs['cropped_size'] = 16
     n = max_exp_idx(exp_name)
     global log_dir
     if not resume:
@@ -85,7 +85,7 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
         used_dir = None
     env = make_vec_envs(env_name, representation, log_dir, n_cpu, **kwargs)
     if not resume or model is None:
-        model = PPO2(policy, env, verbose=1, tensorboard_log="./runs")
+        model = PPO2(policy, env, verbose=1, tensorboard_log="./runs", device='cuda:6')
     else:
         model.set_env(env)
     if not logging:
@@ -94,15 +94,23 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
         model.learn(total_timesteps=int(steps), tb_log_name=exp_name, callback=callback)
 
 ################################## MAIN ########################################
-game = 'binary'
-representation = 'narrow'
+game = 'sokoban'
+representation = 'turtle'
 experiment = None
-steps = 1e8
+steps = 1e7
 render = False
 logging = True
-n_cpu = 50
+n_cpu = 5
 kwargs = {
-    'resume': False
+    'resume': False,
+    'solver_power': 20000,
+    'width': 8,
+    'height': 8,
+    'rewards': {'player': 6},
+    'probs': {'empty': 0.4, 'solid': 0.56, 'player': 0, 'crate': 0.04, 'target': 0.04},
+    'max_crates': 1,
+    'max_targets': 1,
+    'min_solution': 20
 }
 
 if __name__ == '__main__':
