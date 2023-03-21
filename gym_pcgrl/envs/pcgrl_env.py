@@ -154,8 +154,11 @@ class PcgrlEnv(gym.Env):
         info["max_changes"] = self._max_changes
 
         # render if executed by inference
-        # if done:
-        #     self.render()
+        if done:
+            self.render()
+
+            if info["sol-length"] > 0:
+                print("--- Solution found with length: " + str(info["sol-length"]))
 
         # return the values
         return observation, reward, done, info

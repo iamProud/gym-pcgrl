@@ -21,7 +21,7 @@ def infer(game, representation, model_path, **kwargs):
         kwargs['cropped_size'] = 22
     elif game == "sokoban" or game == "robosoko":
         model.FullyConvPolicy = model.FullyConvPolicySmallMap
-        kwargs['cropped_size'] = 10
+        kwargs['cropped_size'] = 16
     kwargs['render'] = True
 
     agent = PPO2.load(model_path)
@@ -42,15 +42,23 @@ def infer(game, representation, model_path, **kwargs):
             time.sleep(0.2)
 
 ################################## MAIN ########################################
-game = 'robosoko'
+game = 'sokoban'
 representation = 'turtle'
 
-model_path = 'runs/{}_{}_1_log/best_model.pkl'.format(game, representation)
+model_path = 'runs/{}_{}_5_log/best_model.pkl'.format(game, representation)
 kwargs = {
-    'change_percentage': 0.8,
-    'trials': 3,
+    'change_percentage': 0.5,
+    'trials': 1,
     'verbose': True,
-    'num_executions': 2
+    'num_executions': 100,
+    'solver_power': 20000,
+    'width': 8,
+    'height': 8,
+    'rewards': {'player': 6},
+    'probs': {'empty': 0.4, 'solid': 0.56, 'player': 0, 'crate': 0.04, 'target': 0.04},
+    'max_crates': 1,
+    'max_targets': 1,
+    'min_solution': 20
 }
 
 if __name__ == '__main__':

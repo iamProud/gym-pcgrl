@@ -85,7 +85,7 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
         used_dir = None
     env = make_vec_envs(env_name, representation, log_dir, n_cpu, **kwargs)
     if not resume or model is None:
-        model = PPO2(policy, env, verbose=1, tensorboard_log="./runs", device='cuda:6')
+        model = PPO2(policy, env, verbose=1, tensorboard_log="./runs")
     else:
         model.set_env(env)
     if not logging:
@@ -100,7 +100,7 @@ experiment = None
 steps = 1e7
 render = False
 logging = True
-n_cpu = 5
+n_cpu = 1
 kwargs = {
     'resume': False,
     'solver_power': 20000,

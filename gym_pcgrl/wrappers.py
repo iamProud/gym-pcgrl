@@ -195,11 +195,11 @@ class Cropped(gym.Wrapper):
         action = get_action(action)
         obs, reward, done, info = self.env.step(action)
 
-        if done:
-            map = obs[self.name]
-            final_map = np.pad(map, 1, constant_values=self.pad_value)
-            print(final_map)
-            safe(final_map)
+        # if done:
+        #     map = obs[self.name]
+        #     final_map = np.pad(map, 1, constant_values=self.pad_value)
+        #     print(final_map)
+        #     safe(final_map)
 
         obs = self.transform(obs)
         return obs, reward, done, info
