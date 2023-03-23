@@ -105,12 +105,7 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
                 features_extractor_class=CustomCNNPolicy,
                 features_extractor_kwargs=dict(features_dim=512),
             )
-        model = PPO(policy, env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log="./runs", device=device,
-                        n_steps=128,
-                        clip_range=0.2,
-                        ent_coef=0.01,
-                        learning_rate=2.5e-4
-                    )
+        model = PPO(policy, env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log="./runs", device=device)
     else:
         model.set_env(env)
     if not logging:
