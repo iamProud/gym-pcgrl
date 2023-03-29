@@ -49,7 +49,10 @@ class PcgrlEnv(gym.Env):
                 os.makedirs(self.path_generated)
 
                 with open(self.path_generated + 'info.json', 'w') as f:
-                    json.dump({'trials': 0, 'success-rate': 0, 'avg-sol-length': 0, 'avg-crates': 0, 'avg-free-percent': 0}, f)
+                    json.dump({'trials': 0, 'success-rate': 0, 'avg-sol-length': 0, 'avg-crates': 0, 'avg-free-percent': 0,
+                               'failed': {
+                                   'total': 0, '0-player': 0, '2+players': 0, 'region': 0, 'crate-target': 0
+                               }}, f)
 
         self.action_space = self._rep.get_action_space(self._prob._width, self._prob._height, self.get_num_tiles())
         self.observation_space = self._rep.get_observation_space(self._prob._width, self._prob._height,
@@ -169,56 +172,82 @@ class PcgrlEnv(gym.Env):
         # return the values
 
         if done and is_inference:
-            with open(self.path_generated + "info.json", "r") as f:
-                data = json.load(f)
-                data["trials"] += 1
-                successful = data['success-rate'] * (data['trials'] - 1)
-                data['success-rate'] = (successful + 1) / (data['trials']) if (info["sol-length"] > 0) else successful / (data['trials'])
-            with open(self.path_generated + "info.json", "w") as f:
-                json.dump(data, f)
-
-            if info["sol-length"] > 0:
-                # update info.json
-                with open(self.path_generated + "info.json", "r") as f:
-                    data = json.load(f)
-
-                    data['avg-sol-length'] = (data['avg-sol-length'] * successful + info["sol-length"]) / (successful + 1)
-                    data['avg-crates'] = (data['avg-crates'] * successful + info["crate"]) / (successful + 1)
-                    free_ratio = np.count_nonzero(self._rep._map == 0) / (self._prob._width * self._prob._height)
-                    data['avg-free-percent'] = (data['avg-free-percent'] * successful + free_ratio) / (successful + 1)
-                with open(self.path_generated + "info.json", "w") as f:
-                    json.dump(data, f)
-
-                # get file number
-                listdir = os.listdir(self.path_generated)
-
-                if len(listdir) == 0:
-                    file_count = 0
-                else:
-                    file_count = -1
-                    for generated_file in listdir:
-                        try:
-                            val = int(generated_file.split('.')[0])
-                            file_count = max(file_count, val)
-                        except ValueError:
-                            continue
-
-                    file_count += 1
-
-                # save map as image
-                img = self.render(mode='rgb_array')
-                img.save(f'{self.path_generated}/{file_count}.jpeg')
-
-                # save map as .txt
-                final_map = np.pad(self._rep._map, 1, constant_values=1)
-                safe_map(final_map, self._rep_stats['solution'], self.path_generated, file_count)
-
-                # save map as .g
-                # safe_map_as_g(final_map, self.path_generated, file_count)
-            else:
-                self.render(mode='human')
+            self.log_inference(info)
 
         return observation, reward, done, info
+
+    """
+    Logs the results of the inference to a file
+    """
+    def log_inference(self, info):
+        with open(self.path_generated + "info.json", "r") as f:
+            data = json.load(f)
+            data["trials"] += 1
+            successful = data['success-rate'] * (data['trials'] - 1)
+            data['success-rate'] = (successful + 1) / (data['trials']) if (info["sol-length"] > 0) else successful / (
+            data['trials'])
+        with open(self.path_generated + "info.json", "w") as f:
+            json.dump(data, f)
+
+        if info["sol-length"] > 0:
+            self.log_successful(info, successful)
+        else:
+            self.log_failed(info)
+            self.render(mode='human')
+
+    """
+    Logs the results of the successful inference to a file
+    """
+    def log_successful(self, info, successful):
+        with open(self.path_generated + "info.json", "r") as f:
+            data = json.load(f)
+
+            data['avg-sol-length'] = (data['avg-sol-length'] * successful + info["sol-length"]) / (successful + 1)
+            data['avg-crates'] = (data['avg-crates'] * successful + info["crate"]) / (successful + 1)
+            free_ratio = np.count_nonzero(self._rep._map == 0) / (self._prob._width * self._prob._height)
+            data['avg-free-percent'] = (data['avg-free-percent'] * successful + free_ratio) / (successful + 1)
+        with open(self.path_generated + "info.json", "w") as f:
+            json.dump(data, f)
+
+        # get file number
+        listdir = os.listdir(self.path_generated)
+
+        if len(listdir) == 0:
+            file_count = 0
+        else:
+            file_count = -1
+            for generated_file in listdir:
+                try:
+                    val = int(generated_file.split('.')[0])
+                    file_count = max(file_count, val)
+                except ValueError:
+                    continue
+
+            file_count += 1
+
+        # save map as image
+        img = self.render(mode='rgb_array')
+        img.save(f'{self.path_generated}/{file_count}.jpeg')
+
+        # save map as .txt
+        final_map = np.pad(self._rep._map, 1, constant_values=1)
+        safe_map(final_map, self._rep_stats['solution'], self.path_generated, file_count)
+
+    """
+    Logs the results of the failed inference to a file
+    failed obj: 'total', '0-player', '2+players', 'region', 'crate-target'
+    """
+    def log_failed(self, info):
+        with open(self.path_generated + "info.json", "r") as f:
+            data = json.load(f)
+            data['failed']['total'] += 1
+            data['failed']['0-player'] += 1 if info['player'] == 0 else 0
+            data['failed']['2+players'] += 1 if info['player'] >= 2 else 0
+            data['failed']['region'] += 1 if info['regions'] > 1 else 0
+            data['failed']['crate-target'] += 1 if info['crate'] != info['target'] else 0
+        with open(self.path_generated + "info.json", "w") as f:
+            json.dump(data, f)
+
 
     """
     Render the current state of the environment
