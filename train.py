@@ -60,14 +60,14 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                     self.model.save(self.save_path)
 
                 # Evaluate the feasibility of the current model
-                # env = make_vec_envs(f'{game}-{representation}-v0', representation, None, 1, **self.kwargs)
-                # feasibility = eval_feasibility(env, self.model, 100)
+                env = make_vec_envs(f'{game}-{representation}-v0', representation, None, 1, **self.kwargs)
+                feasibility = eval_feasibility(env, self.model, 100)
                 # print("Feasibility: {:.2f}".format(feasibility))
-                # self.kwargs['wandb_session'].log({'feasibility': feasibility})
-                #
-                # # save episode reward mean
-                # self.kwargs['wandb_session'].log({'ep_rew_mean': mean_reward})
-                # # print("Episode reward: {:.2f}".format(mean_reward))
+                self.kwargs['wandb_session'].log(data={'feasibility': feasibility}, step=self.num_timesteps)
+
+                # save episode reward mean
+                self.kwargs['wandb_session'].log(data={'ep_rew_mean': mean_reward}, step=self.num_timesteps)
+                # print("Episode reward: {:.2f}".format(mean_reward))
 
         return True
 
@@ -118,9 +118,9 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
         )
 
 ################################## MAIN ########################################
-policy = 'CnnPolicy'
+policy = 'MlpPolicy'
 experiment = None
-steps = 2e6
+steps = 1e7
 logging = True
 n_cpu = 1
 experiment = run_idx
@@ -145,8 +145,8 @@ wandb_hyperparameter = dict(
 kwargs = {
     'resume': False,
     'change_percentage': config['change_percentage'],
-    'width': 5, # config['width'],
-    'height': 5, # config['height'],
+    'width': config['width'],
+    'height': config['height'],
     'cropped_size': config['cropped_size'],
     'probs': config['probabilities'],
     'min_solution': config['target_solution'],
@@ -156,7 +156,7 @@ kwargs = {
 }
 
 if __name__ == '__main__':
-    wandb_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter, name=exp_name, mode='disabled')
+    wandb_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter, name=exp_name, mode='online')
     kwargs['wandb_session'] = wandb_session
 
     main(game, representation, experiment, steps, n_cpu, render, logging, **kwargs)
