@@ -120,9 +120,9 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
 ################################## MAIN ########################################
 policy = 'MlpPolicy'
 experiment = None
-steps = 1e7
+steps = 1e8
 logging = True
-n_cpu = 1
+n_cpu = 10
 experiment = run_idx
 exp_name = get_exp_name(game, representation, experiment)
 
