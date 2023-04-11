@@ -33,6 +33,7 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
         self.save_path = os.path.join(log_dir, "best_model")
         self.best_mean_reward = -np.inf
         self.kwargs = kwargs
+        self.kwargs['change_percentage'] = 1
 
     def _init_callback(self) -> None:
         # Create folder if needed
