@@ -60,11 +60,18 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                       print(f"Saving new best model to {self.save_path}")
                     self.model.save(self.save_path)
 
-                # Evaluate the feasibility of the current model
-                env = make_vec_envs(f'{game}-{representation}-v0', representation, None, 1, **self.kwargs)
-                feasibility = eval_feasibility(env, self.model, 100)
-                # print("Feasibility: {:.2f}".format(feasibility))
-                self.kwargs['wandb_session'].log(data={'feasibility': feasibility}, step=self.num_timesteps)
+                # Save current model
+                if self.num_timesteps % 100000 == 0:
+                    curr_model_path = os.path.join(self.log_dir, str(self.num_timesteps))
+                    print(f"Saving latest model to {curr_model_path}")
+                    self.model.save(curr_model_path)
+
+                    # Evaluate the feasibility of the current model
+                    env = make_vec_envs(f'{game}-{representation}-v0', representation, None, 1, **self.kwargs)
+                    feasibility = eval_feasibility(env, self.model, 100)
+                    # print("Feasibility: {:.2f}".format(feasibility))
+                    self.kwargs['wandb_session'].log(data={'feasibility': feasibility}, step=self.num_timesteps)
+                    env.close
 
                 # save episode reward mean
                 self.kwargs['wandb_session'].log(data={'ep_rew_mean': mean_reward}, step=self.num_timesteps)
@@ -112,10 +119,11 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
     if not logging:
         model.learn(total_timesteps=int(steps), tb_log_name=exp_name)
     else:
+        check_freq = 10000 / n_cpu
         model.learn(
             total_timesteps=int(steps),
             tb_log_name=exp_name,
-            callback=SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir, verbose=2, kwargs=kwargs)
+            callback=SaveOnBestTrainingRewardCallback(check_freq=check_freq, log_dir=log_dir, verbose=2, kwargs=kwargs)
         )
 
 ################################## MAIN ########################################
@@ -123,7 +131,7 @@ policy = 'MlpPolicy'
 experiment = None
 steps = 1e8
 logging = True
-n_cpu = 10
+n_cpu = 50
 experiment = run_idx
 exp_name = get_exp_name(game, representation, experiment)
 

@@ -2,16 +2,16 @@ import json
 
 game = 'sokoban'
 representation = 'turtle'
-run_idx = 1
+run_idx = 2
 render = False
 is_inference = False
-device='auto'
+device='cuda:5'
 
 config = dict(
     width = 8,
     height = 8,
     change_percentage = 0.2,
-    solver_power = 50000
+    solver_power = 20000
 )
 
 game_path = f'shared_runs/{config["width"]}x{config["height"]}/{game}'

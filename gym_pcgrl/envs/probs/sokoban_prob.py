@@ -27,7 +27,7 @@ class SokobanProblem(Problem):
         self._target_solution = 30
 
         self._rewards = {
-            "player": 6,
+            "player": 5,
             "crate": 2,
             "target": 2,
             "regions": 5,
