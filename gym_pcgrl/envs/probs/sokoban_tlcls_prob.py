@@ -152,7 +152,7 @@ class SokobanTlclsProblem(Problem):
         if map_stats["player"] == 1 and map_stats["crate"] == map_stats["target"] and map_stats["crate"] > 0 and map_stats["regions"] == 1:
                 map_stats["dist-win"], map_stats["solution"] = self._run_game(map)
 
-                if True: # len(map_stats["solution"]) >= 0:
+                if len(map_stats["solution"]) >= 0:
                     solver_agent = get_solver_agent('TLCLS/wandb/model.pkl')
                     avg_solved, reward_mean = test_the_agent(agent=solver_agent, env_name='Curriculum-Sokoban-v2',
                                                              data_path="TLCLS/maps/8x8/tmp/level.txt", USE_CUDA=False,
