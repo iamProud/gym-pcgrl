@@ -1,6 +1,6 @@
 import json
 
-game = 'sokoban'
+game = 'sokoban_tlcls'
 representation = 'turtle'
 run_idx = 2
 render = False
