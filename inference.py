@@ -6,7 +6,6 @@ from stable_baselines3.common.policies import obs_as_tensor
 
 import time
 from utils import make_vec_envs
-from globals import *
 
 def predict_probability(model, state):
     action_keys = ['left', 'right', 'up', 'down', 'empty', 'wall', 'player', 'crate', 'goal']

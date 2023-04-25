@@ -8,7 +8,6 @@ import PIL
 from PIL import Image
 import os
 from gym_pcgrl.envs.helper import safe_map
-from globals import *
 import json
 import traceback
 import glob

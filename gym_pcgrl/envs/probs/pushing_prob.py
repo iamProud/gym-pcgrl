@@ -4,7 +4,6 @@ import numpy as np
 from gym_pcgrl.envs.probs.problem import Problem
 from gym_pcgrl.envs.helper import get_range_reward, get_tile_locations, calc_certain_tile, calc_num_regions
 from gym_pcgrl.envs.probs.pushing.engine import State, BFSAgent #, AStarAgent
-from globals import *
 
 class PushingProblem(Problem):
     """
