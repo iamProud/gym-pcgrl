@@ -8,8 +8,8 @@ import torch.nn.functional as F
 import numpy as np
 import pickle
 
-from common.utils import hwc2chw
-from common.test_the_agent import test_the_agent
+from TLCLS.common.utils import hwc2chw
+from TLCLS.common.test_the_agent import test_the_agent
 
 def train_the_agent(envs, num_envs, env_name, Variable, state_shape, actor_critic, optimizer, rollout, data_path, args, wandb_session):
 

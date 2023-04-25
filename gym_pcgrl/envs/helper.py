@@ -379,7 +379,7 @@ def get_range_reward(new_value, old_value, low, high):
 Safe the current Map and the solution to a .txt file
 """
 def safe_map(int_map, solution, path, file):
-    f = open(f'{path}{file}.txt', 'w')
+    f = open(f'{path}/{file}.txt', 'w')
 
     for row in range(int_map.shape[0]):
         s = ''

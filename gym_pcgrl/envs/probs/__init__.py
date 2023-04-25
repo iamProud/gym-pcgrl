@@ -7,6 +7,7 @@ from gym_pcgrl.envs.probs.zelda_prob import ZeldaProblem
 from gym_pcgrl.envs.probs.smb_prob import SMBProblem
 from gym_pcgrl.envs.probs.pushing_prob import PushingProblem
 from gym_pcgrl.envs.probs.sokoban_tlcls_prob import SokobanTlclsProblem
+from gym_pcgrl.envs.probs.sokoban_solver_prob import SokobanSolverProblem
 
 # all the problems should be defined here with its corresponding class
 PROBLEMS = {
@@ -17,5 +18,6 @@ PROBLEMS = {
     "zelda": ZeldaProblem,
     "smb": SMBProblem,
     "pushing": PushingProblem,
-    "sokoban_tlcls": SokobanTlclsProblem
+    "sokoban_tlcls": SokobanTlclsProblem,
+    "sokoban_solver": SokobanSolverProblem
 }

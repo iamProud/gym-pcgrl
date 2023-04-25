@@ -24,13 +24,22 @@ def infer(game, representation, model_path, **kwargs):
      - infer_kwargs: Args to pass to the environment.
     """
     env_name = f'{game}-{representation}-v0'
-    kwargs['cropped_size'] = config['cropped_size']
     kwargs['render'] = kwargs.get('render', True)
 
     env = make_vec_envs(env_name, representation, None, 1, **kwargs)
-    agent = PPO.load(model_path, custom_objects={'observation_space': env.observation_space})
+    agent = PPO.load(model_path) #, custom_objects={'observation_space': env.observation_space})
 
-    for j in range(kwargs.get('num_executions', 1)):
+    i = 0
+    generated = 0
+    while True:
+        if kwargs.get('num_level_generation', None) is not None:
+            if generated >= kwargs.get('num_level_generation'):
+                break
+        else:
+            if i >= kwargs.get('num_executions', 1):
+                break
+
+        i += 1
         obs = env.reset()
         dones = False
 
@@ -44,27 +53,39 @@ def infer(game, representation, model_path, **kwargs):
                 if kwargs.get('verbose', False):
                     print(info[0])
                 if dones:
+                    if info[0]['sol-length'] > 0:
+                        generated += 1
                     break
-            time.sleep(0.2)
+            # time.sleep(0.2)
+
+    env.close()
 
 ################################## MAIN ########################################
-# model_path = 'runs/{}_{}_1_log/best_model.zip'.format(game, representation)
-model_path = run_path + '/best_model.zip'
+game = 'sokoban_tlcls'
+representation = 'turtle'
+run_idx = 1
+
 kwargs = {
     'change_percentage': 0.5,
     'trials': 1,
     # 'verbose': True,
-    'num_executions': 100,
-    'render': render,
-    'width': config['width'],
-    'height': config['height'],
-    'cropped_size': config['cropped_size'],
-    'probs': config['probabilities'],
-    'min_solution': config['target_solution'],
-    'max_crates': config['max_crates'],
-    'max_targets': config['max_crates'],
-    'solver_power': config['solver_power'],
+    'num_executions': 1,
+    'render': True,
+    'width': 5,
+    'height': 5,
+    'cropped_size': 10,
+    'probs': {"empty": 0.6, "solid": 0.34, "player": 0.02, "crate": 0.02, "target": 0.02},
+    'min_solution': 15,
+    'max_crates': 2,
+    'max_targets': 2,
+    'solver_power': 10000
 }
+
+game_path = f'shared_runs/{kwargs["width"]}x{kwargs["height"]}/sokoban'
+run_path = f'{game_path}/sokoban_{representation}_{run_idx}_log/'
+# model_path = 'runs/{}_{}_1_log/best_model.zip'.format(game, representation)
+# model_path = run_path + '/best_model.zip'
+model_path = run_path + '/57000000.zip'
 
 if __name__ == '__main__':
     infer(game, representation, model_path, **kwargs)

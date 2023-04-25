@@ -10,6 +10,26 @@ import os
 from gym_pcgrl.envs.helper import safe_map
 from globals import *
 import json
+import traceback
+import glob
+import re
+
+def get_exp_name(game, representation, experiment, **kwargs):
+    exp_name = '{}_{}'.format(game, representation)
+    if experiment is not None:
+        exp_name = '{}_{}'.format(exp_name, experiment)
+    return exp_name
+
+def max_exp_idx(exp_name):
+    log_dir = os.path.join("./runs", exp_name)
+    log_files = glob.glob('{}*'.format(log_dir))
+    if len(log_files) == 0:
+        n = 0
+    else:
+        log_ns = [re.search(r'{}_(\d+)'.format(exp_name), f).group(1) for f in log_files]
+        log_ns = [int(n) for n in log_ns]
+        n = max(log_ns)
+    return int(n)
 
 """
 The PCGRL GYM Environment
@@ -43,12 +63,17 @@ class PcgrlEnv(gym.Env):
         self.viewer = None
 
         # generated images/environments
-        if is_inference:
-            self.path_generated = run_path + '/generated/'
+        stack = traceback.extract_stack()
+        self.is_inference = any('infer' in s for s in stack)
+
+        if self.is_inference:
+            experiment_name = get_exp_name(prob, rep, 3)
+            experiment_idx = max_exp_idx(experiment_name)
+            self.path_generated = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'generated')
             if not os.path.exists(self.path_generated):
                 os.makedirs(self.path_generated)
 
-                with open(self.path_generated + 'info.json', 'w') as f:
+                with open(self.path_generated + '/info.json', 'w') as f:
                     json.dump({'trials': 0, 'success-rate': 0, 'avg-sol-length': 0, 'avg-crates': 0, 'avg-free-percent': 0,
                                'failed': {
                                    'total': 0, '0-player': 0, '2+players': 0, 'region': 0, 'crate-target': 0
@@ -171,7 +196,7 @@ class PcgrlEnv(gym.Env):
         info["max_changes"] = self._max_changes
         # return the values
 
-        if done and is_inference:
+        if done and self.is_inference:
             self.log_inference(info)
 
         return observation, reward, done, info
@@ -180,13 +205,13 @@ class PcgrlEnv(gym.Env):
     Logs the results of the inference to a file
     """
     def log_inference(self, info):
-        with open(self.path_generated + "info.json", "r") as f:
+        with open(self.path_generated + "/info.json", "r") as f:
             data = json.load(f)
             data["trials"] += 1
             successful = data['success-rate'] * (data['trials'] - 1)
             data['success-rate'] = (successful + 1) / (data['trials']) if (info["sol-length"] > 0) else successful / (
             data['trials'])
-        with open(self.path_generated + "info.json", "w") as f:
+        with open(self.path_generated + "/info.json", "w") as f:
             json.dump(data, f)
 
         if info["sol-length"] > 0:
@@ -199,14 +224,14 @@ class PcgrlEnv(gym.Env):
     Logs the results of the successful inference to a file
     """
     def log_successful(self, info, successful):
-        with open(self.path_generated + "info.json", "r") as f:
+        with open(self.path_generated + "/info.json", "r") as f:
             data = json.load(f)
 
             data['avg-sol-length'] = (data['avg-sol-length'] * successful + info["sol-length"]) / (successful + 1)
             data['avg-crates'] = (data['avg-crates'] * successful + info["crate"]) / (successful + 1)
             free_ratio = np.count_nonzero(self._rep._map == 0) / (self._prob._width * self._prob._height)
             data['avg-free-percent'] = (data['avg-free-percent'] * successful + free_ratio) / (successful + 1)
-        with open(self.path_generated + "info.json", "w") as f:
+        with open(self.path_generated + "/info.json", "w") as f:
             json.dump(data, f)
 
         # get file number
@@ -238,14 +263,14 @@ class PcgrlEnv(gym.Env):
     failed obj: 'total', '0-player', '2+players', 'region', 'crate-target'
     """
     def log_failed(self, info):
-        with open(self.path_generated + "info.json", "r") as f:
+        with open(self.path_generated + "/info.json", "r") as f:
             data = json.load(f)
             data['failed']['total'] += 1
             data['failed']['0-player'] += 1 if info['player'] == 0 else 0
             data['failed']['2+players'] += 1 if info['player'] >= 2 else 0
             data['failed']['region'] += 1 if info['regions'] > 1 else 0
             data['failed']['crate-target'] += 1 if info['crate'] != info['target'] else 0
-        with open(self.path_generated + "info.json", "w") as f:
+        with open(self.path_generated + "/info.json", "w") as f:
             json.dump(data, f)
 
 
