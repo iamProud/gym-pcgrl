@@ -36,7 +36,7 @@ class SokobanTlclsProblem(Problem):
             "ratio": 2,
             "dist-win": 0.0,
             "sol-length": 1,
-            "tlcls": 10
+            "tlcls": 0.10
         }
 
     """
@@ -106,7 +106,7 @@ class SokobanTlclsProblem(Problem):
         lvlString += "\n"
 
         # save the level to a file
-        with open("TLCLS/maps/8x8/tmp/level.txt", "w") as text_file:
+        with open("TLCLS/maps/8x8/tmp/level2.txt", "w") as text_file:
             text_file.write(lvlString)
 
         state = State()
@@ -147,7 +147,7 @@ class SokobanTlclsProblem(Problem):
             "regions": calc_num_regions(map, map_locations, ["empty","player","crate","target"]),
             "dist-win": self._width * self._height * (self._width + self._height),
             "solution": [],
-            "tlcls": 0
+            "tlcls": -20
         }
         if map_stats["player"] == 1 and map_stats["crate"] == map_stats["target"] and map_stats["crate"] > 0 and map_stats["regions"] == 1:
                 map_stats["dist-win"], map_stats["solution"] = self._run_game(map)
@@ -155,9 +155,10 @@ class SokobanTlclsProblem(Problem):
                 if len(map_stats["solution"]) >= 0:
                     solver_agent = get_solver_agent('TLCLS/model.pkl')
                     avg_solved, reward_mean = test_the_agent(agent=solver_agent, env_name='Curriculum-Sokoban-v2',
-                                                             data_path="TLCLS/maps/8x8/tmp/level.txt", USE_CUDA=False,
-                                                             eval_num=10, display=False)
-                    map_stats["tlcls"] = avg_solved
+                                                             data_path="TLCLS/maps/8x8/tmp/level2.txt", USE_CUDA=False,
+                                                             eval_num=5, display=False)
+                    print("avg_solved:", avg_solved, "reward_mean", reward_mean)
+                    map_stats["tlcls"] = np.round(reward_mean, 2)
         return map_stats
 
     """
@@ -180,7 +181,7 @@ class SokobanTlclsProblem(Problem):
             "ratio": get_range_reward(abs(new_stats["crate"]-new_stats["target"]), abs(old_stats["crate"]-old_stats["target"]), -np.inf, -np.inf),
             "dist-win": get_range_reward(new_stats["dist-win"], old_stats["dist-win"], -np.inf, -np.inf),
             "sol-length": get_range_reward(len(new_stats["solution"]), len(old_stats["solution"]), np.inf, np.inf),
-            "tlcls": get_range_reward(new_stats["tlcls"], old_stats["tlcls"], 0.5, 0.5)
+            "tlcls": get_range_reward(new_stats["tlcls"], old_stats["tlcls"], -np.inf, -np.inf)
         }
         #calculate the total reward
         return rewards["player"] * self._rewards["player"] +\
