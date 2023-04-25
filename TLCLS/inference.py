@@ -3,11 +3,11 @@ import torch
 from TLCLS.common.ActorCritic import ActorCritic
 from TLCLS.common.test_the_agent import test_the_agent
 
-def get_solver_agent(model_path):
+def get_solver_agent(model_path, device='cpu'):
     state_shape = (3, 80, 80)
     num_actions = 5
     model = ActorCritic(state_shape, num_actions=num_actions)
-    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     model.eval()
     return model
 

@@ -1,7 +1,7 @@
 import os
 
-def transform_map(src_folder, file_name):
-    file = open(os.path.join(src_folder, file_name), 'r')
+def transform_map(dir_name, file_name):
+    file = open(os.path.join(dir_name, 'generated', file_name), 'r')
     lines = file.readlines()
 
     res_map = []
@@ -38,7 +38,7 @@ def transform_map(src_folder, file_name):
     # write to file with name file_name and leading 0s
     new_file_name = file_name.split('.')[0].zfill(3) + '.txt'
 
-    with open(f'maps/8x8/pcgrl/{new_file_name}', 'w') as f:
+    with open(os.path.join(dir_name, 'transformed', new_file_name), 'w') as f:
         for line in res_map:
             f.write(''.join(line))
 

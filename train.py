@@ -11,10 +11,13 @@ from stable_baselines3.common.callbacks import BaseCallback, CallbackList
 # from model import FullyConvPolicyBigMap, FullyConvPolicySmallMap, CustomPolicyBigMap, CustomPolicySmallMap
 from model import CustomCNNPolicy
 from utils import get_exp_name, max_exp_idx, load_model, make_vec_envs, eval_feasibility
-from globals import *
 
 import wandb
 from wandb.integration.sb3 import WandbCallback
+from inference import infer
+import argparse
+from TLCLS.train_solver import train_solver
+from TLCLS.transform import transform_map
 
 class SaveOnBestTrainingRewardCallback(BaseCallback):
     """
@@ -30,7 +33,7 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
         super(SaveOnBestTrainingRewardCallback, self).__init__(verbose)
         self.check_freq = check_freq
         self.log_dir = log_dir
-        self.save_path = os.path.join(log_dir, "best_model")
+        self.save_path = os.path.join(log_dir, "pcg_model")
         self.best_mean_reward = -np.inf
         self.kwargs = kwargs
         self.kwargs['change_percentage'] = 1
@@ -58,11 +61,11 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                     # Example for saving best model
                     if self.verbose >= 1:
                       print(f"Saving new best model to {self.save_path}")
-                    self.model.save(self.save_path)
+                    self.model.save(self.save_path+'/best_model')
 
                 # Save current model
                 if self.num_timesteps % 100000 == 0:
-                    curr_model_path = os.path.join(self.log_dir, str(self.num_timesteps))
+                    curr_model_path = os.path.join(self.save_path, str(self.num_timesteps))
                     print(f"Saving latest model to {curr_model_path}")
                     self.model.save(curr_model_path)
 
@@ -80,12 +83,11 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
         return True
 
 
-def main(game, representation, experiment, steps, n_cpu, render, logging, **kwargs):
+def main(game, representation, experiment, steps, n_cpu, logging, **kwargs):
     env_name = '{}-{}-v0'.format(game, representation)
     exp_name = get_exp_name(game, representation, experiment, **kwargs)
     resume = kwargs.get('resume', False)
 
-    kwargs['cropped_size'] = config['cropped_size']
     n = max_exp_idx(exp_name)
 
     if not resume:
@@ -97,23 +99,13 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
         model = load_model(log_dir)
     kwargs = {
         **kwargs,
-        'render_rank': 0,
-        'render': render,
+        'render_rank': 0
     }
 
     env = make_vec_envs(env_name, representation, log_dir, n_cpu, **kwargs)
 
     if not resume or model is None:
-        policy_kwargs = None
-
-        if policy == 'CnnPolicy':
-            policy_kwargs = dict(
-                activation_fn=nn.ReLU,
-                net_arch=[512],
-                features_extractor_class=CustomCNNPolicy,
-                features_extractor_kwargs=dict(features_dim=512),
-            )
-        model = PPO(policy, env, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log="./runs", device=device)
+        model = PPO(policy, env, verbose=1, tensorboard_log="./runs", device=device)
     else:
         model.set_env(env)
     if not logging:
@@ -127,47 +119,117 @@ def main(game, representation, experiment, steps, n_cpu, render, logging, **kwar
         )
 
 ################################## MAIN ########################################
+game = 'sokoban_solver'
+representation = 'turtle'
 policy = 'MlpPolicy'
-experiment = None
-steps = 1e8
+device='auto'
+experiment = 3
+steps = 5e6
 logging = True
 n_cpu = 50
-experiment = run_idx
-exp_name = get_exp_name(game, representation, experiment)
+mode_GAN = {
+    'enabled': True,
+    'iterations': 20,
+    'generator_iterations': steps,
+    'generate_levels': 20,
+    'solver_iterations': 1e6,
+}
 
-# wandb hyperparameters
+
+kwargs = {
+    'resume': False,
+    'render': False,
+    'change_percentage': 0.2,
+    'width': 5,
+    'height': 5,
+    'cropped_size': 10,
+    'probs': {"empty": 0.6, "solid": 0.34, "player": 0.02, "crate": 0.02, "target": 0.02},
+    'min_solution': 15,
+    'max_crates': 2,
+    'max_targets': 2,
+    'solver_power': 10000,
+    'num_level_generation': mode_GAN['generate_levels'],
+    'solver_path': None
+}
+
+experiment_name = get_exp_name(game, representation, experiment, **kwargs)
+
+# wandb pcg hyperparameters
 wandb_hyperparameter = dict(
     policy=policy,
     game=game,
     representation=representation,
-    size=f'{config["width"]}x{config["height"]}',
-    change_percentage=config['change_percentage'],
-    prob_empty=config['probabilities']['empty'],
-    prob_solid=config['probabilities']['solid'],
-    prob_player=config['probabilities']['player'],
-    prob_crate=config['probabilities']['crate'],
-    prob_target=config['probabilities']['target'],
-    target_solution=config['target_solution'],
-    max_crates=config['max_crates'],
+    size=f'{kwargs["width"]}x{kwargs["height"]}',
+    change_percentage=kwargs['change_percentage'],
+    prob_empty=kwargs['probs']['empty'],
+    prob_solid=kwargs['probs']['solid'],
+    prob_player=kwargs['probs']['player'],
+    prob_crate=kwargs['probs']['crate'],
+    prob_target=kwargs['probs']['target'],
+    target_solution=kwargs['min_solution'],
+    max_crates=kwargs['max_crates'],
 )
 
-kwargs = {
-    'resume': False,
-    'change_percentage': config['change_percentage'],
-    'width': config['width'],
-    'height': config['height'],
-    'cropped_size': config['cropped_size'],
-    'probs': config['probabilities'],
-    'min_solution': config['target_solution'],
-    'max_crates': config['max_crates'],
-    'max_targets': config['max_crates'],
-    'solver_power': config['solver_power']
-}
+# solver hyperparameters
+description = 'TLCLS'
+parser = argparse.ArgumentParser(description=description)
+parser.add_argument('--exp_name', type=str, default=experiment_name)
+parser.add_argument('--num_steps', type=int, default=mode_GAN['solver_iterations'])
+parser.add_argument('--runs', type=int, default=1)
+parser.add_argument('--gamma', type=float, default=0.99)
+parser.add_argument('--entropy_coef', type=float, default=0.1)
+parser.add_argument('--value_loss_coef', type=float, default=0.5)
+parser.add_argument('--max_grad_norm', type=float, default=0.5)
+parser.add_argument('--rolloutStorage_size', type=int, default=5)
+parser.add_argument('--num_envs', type=int, default=30)
+parser.add_argument('--eval_freq', type=int, default=1000)
+parser.add_argument('--eval_num', type=int, default=20)
+parser.add_argument('--lr', type=float, default=7e-4)
+parser.add_argument('--eps', type=float, default=1e-5)
+parser.add_argument('--alpha', type=float, default=0.99)
+solver_args = parser.parse_args()
+solver_args.USE_CUDA = False
 
 if __name__ == '__main__':
-    wandb_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter, name=exp_name, mode='online')
-    kwargs['wandb_session'] = wandb_session
+    wandb_pcg_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter,
+                               name=experiment_name, mode='online')
+    kwargs['wandb_session'] = wandb_pcg_session
 
-    main(game, representation, experiment, steps, n_cpu, render, logging, **kwargs)
+    if mode_GAN['enabled']:
+        for i in range(1, mode_GAN['iterations']+1):
+            main(game, representation, experiment, steps, n_cpu, logging, **kwargs)
+            experiment_idx = max_exp_idx(experiment_name)
 
-    wandb_session.finish()
+            # generate new environments
+            log_dir = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log')
+            best_model = os.path.join(log_dir, 'pcg_model', 'best_model.zip')
+            infer_kwargs = kwargs.copy()
+            infer_kwargs['change_percentage'] = 0.5
+
+            print("Start inference")
+            infer(game, representation, best_model, **infer_kwargs)
+
+            maps_folder = os.path.join(log_dir, 'generated')
+            os.mkdir(log_dir+'/transformed')
+            for filename in os.listdir(maps_folder):
+                if filename.endswith(".txt"):
+                    transform_map(log_dir, filename)
+
+            wandb_solver_session = wandb.init(project=f'pcgrl-{game}-solver', config=vars(solver_args), name=experiment_name, reinit=True,
+                                       group=f'{experiment_name}_{experiment_idx}', mode='online')
+
+            config = wandb.config
+
+            last_solver = None
+            if experiment_idx > 1:
+                last_solver = os.path.join('runs', f'{experiment_name}_{experiment_idx-1}_log', 'model.pkl')
+            train_solver(solver_args, wandb_solver_session, log_dir, last_solver)
+
+            kwargs['solver_path'] = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'solver_model', 'model.pkl')
+
+            wandb_solver_session.finish()
+
+    else:
+        main(game, representation, experiment, steps, n_cpu, logging, **kwargs)
+
+    wandb_pcg_session.finish()
