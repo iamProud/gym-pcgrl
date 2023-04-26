@@ -139,6 +139,7 @@ mode_GAN = {
 kwargs = {
     'resume': False,
     'render': False,
+    'render_mode': 'rgb_array',
     'change_percentage': 0.2,
     'width': 5,
     'height': 5,

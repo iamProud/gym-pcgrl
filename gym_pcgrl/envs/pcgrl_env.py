@@ -60,6 +60,7 @@ class PcgrlEnv(gym.Env):
 
         self.seed()
         self.viewer = None
+        self.render_mode = 'rgb_array'
 
         # generated images/environments
         stack = traceback.extract_stack()
@@ -159,6 +160,7 @@ class PcgrlEnv(gym.Env):
                                                                  self.get_num_tiles())
         self.observation_space.spaces['heatmap'] = spaces.Box(low=0, high=self._max_changes, dtype=np.uint8,
                                                               shape=(self._prob._height, self._prob._width))
+        self.render_mode = kwargs.get('render_mode', 'rgb_array')
 
     """
     Advance the environment using a specific action
@@ -217,7 +219,7 @@ class PcgrlEnv(gym.Env):
             self.log_successful(info, successful)
         else:
             self.log_failed(info)
-            self.render(mode='human')
+            self.render(mode=self.render_mode)
 
     """
     Logs the results of the successful inference to a file
