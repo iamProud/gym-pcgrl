@@ -38,7 +38,7 @@ class SokobanSolverProblem(Problem):
             "ratio": 2,
             "dist-win": 0.0,
             "sol-length": 1,
-            "tlcls": 20
+            "solver": 20
         }
 
     """
@@ -148,7 +148,7 @@ class SokobanSolverProblem(Problem):
             "regions": calc_num_regions(map, map_locations, ["empty","player","crate","target"]),
             "dist-win": self._width * self._height * (self._width + self._height),
             "solution": [],
-            "tlcls": 0
+            "solver": 0
         }
         if map_stats["player"] == 1 and map_stats["crate"] == map_stats["target"] and map_stats["crate"] > 0 and map_stats["regions"] == 1:
                 map_stats["dist-win"], map_stats["solution"] = self._run_game(map)
@@ -161,7 +161,7 @@ class SokobanSolverProblem(Problem):
                                                              USE_CUDA=torch.cuda.is_available(),
                                                              eval_num=10, display=False, level=self.current_map)
                     print('avg_solved:', avg_solved, 'reward_mean:', reward_mean, 'solution length:', len(map_stats["solution"]), 'crates:', map_stats["crate"])
-                    map_stats["tlcls"] = avg_solved
+                    map_stats["solver"] = avg_solved
         return map_stats
 
     """
@@ -184,7 +184,7 @@ class SokobanSolverProblem(Problem):
             "ratio": get_range_reward(abs(new_stats["crate"]-new_stats["target"]), abs(old_stats["crate"]-old_stats["target"]), -np.inf, -np.inf),
             "dist-win": get_range_reward(new_stats["dist-win"], old_stats["dist-win"], -np.inf, -np.inf),
             "sol-length": get_range_reward(len(new_stats["solution"]), len(old_stats["solution"]), np.inf, np.inf),
-            "tlcls": get_range_reward(new_stats["tlcls"], old_stats["tlcls"], 0.5, 0.5)
+            "solver": get_range_reward(new_stats["solver"], old_stats["solver"], 0.5, 0.5)
         }
         #calculate the total reward
         return rewards["player"] * self._rewards["player"] +\
@@ -194,7 +194,7 @@ class SokobanSolverProblem(Problem):
             rewards["ratio"] * self._rewards["ratio"] +\
             rewards["dist-win"] * self._rewards["dist-win"] +\
             rewards["sol-length"] * self._rewards["sol-length"] +\
-            rewards["tlcls"] * self._rewards["tlcls"]
+            rewards["solver"] * self._rewards["solver"]
 
     """
     Uses the stats to check if the problem ended (episode_over) which means reached
@@ -208,7 +208,8 @@ class SokobanSolverProblem(Problem):
         boolean: True if the level reached satisfying quality based on the stats and False otherwise
     """
     def get_episode_over(self, new_stats, old_stats):
-        return len(new_stats["solution"]) >= self._target_solution
+        return len(new_stats["solution"]) >= self._target_solution and \
+            (self._solver_path is None or new_stats["solver"] > 0)
 
     """
     Get any debug information need to be printed
