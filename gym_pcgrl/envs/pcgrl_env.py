@@ -67,7 +67,7 @@ class PcgrlEnv(gym.Env):
         self.is_inference = any('infer' in s for s in stack)
 
         if self.is_inference:
-            experiment_name = get_exp_name(prob, rep, 3)
+            experiment_name = get_exp_name(prob, rep, 4)
             experiment_idx = max_exp_idx(experiment_name)
             self.path_generated = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'generated')
             if not os.path.exists(self.path_generated):

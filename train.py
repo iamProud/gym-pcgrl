@@ -90,13 +90,17 @@ def main(game, representation, experiment, steps, n_cpu, logging, **kwargs):
 
     n = max_exp_idx(exp_name)
 
+    # TODO: Fix this!
     if not resume:
         n = n + 1
-    log_dir = 'runs/{}_{}_{}'.format(exp_name, n, 'log')
-    if not resume:
-        os.mkdir(log_dir)
-    else:
-        model = load_model(log_dir)
+    log_dir = 'runs/{}_{}_{}/pcg_model'.format(exp_name, n, 'log')
+    #if not resume:
+    log_dir2 = f'runs/{exp_name}_{n+1}_log/pcg_model'
+    os.makedirs(log_dir2)
+    # else:
+    model = load_model(log_dir)
+    log_dir=log_dir2
+
     kwargs = {
         **kwargs,
         'render_rank': 0
@@ -123,7 +127,7 @@ game = 'sokoban_solver'
 representation = 'turtle'
 policy = 'MlpPolicy'
 device='auto'
-experiment = 3
+experiment = 4
 steps = 5e6
 logging = True
 n_cpu = 50
@@ -132,12 +136,12 @@ mode_GAN = {
     'iterations': 20,
     'generator_iterations': steps,
     'generate_levels': 20,
-    'solver_iterations': 1e6,
+    'solver_iterations': 5e5,
 }
 
 
 kwargs = {
-    'resume': False,
+    'resume': True,
     'render': False,
     'render_mode': 'rgb_array',
     'change_percentage': 0.2,
@@ -148,9 +152,9 @@ kwargs = {
     'min_solution': 15,
     'max_crates': 2,
     'max_targets': 2,
-    'solver_power': 10000,
+    'solver_power': 5000,
     'num_level_generation': mode_GAN['generate_levels'],
-    'solver_path': None
+    'solver_path': "runs/sokoban_solver_turtle_4_1_log/solver_model/model.pkl"
 }
 
 experiment_name = get_exp_name(game, representation, experiment, **kwargs)
@@ -182,22 +186,23 @@ parser.add_argument('--entropy_coef', type=float, default=0.1)
 parser.add_argument('--value_loss_coef', type=float, default=0.5)
 parser.add_argument('--max_grad_norm', type=float, default=0.5)
 parser.add_argument('--rolloutStorage_size', type=int, default=5)
-parser.add_argument('--num_envs', type=int, default=30)
-parser.add_argument('--eval_freq', type=int, default=1000)
+parser.add_argument('--num_envs', type=int, default=50)
+parser.add_argument('--eval_freq', type=int, default=10000)
 parser.add_argument('--eval_num', type=int, default=20)
 parser.add_argument('--lr', type=float, default=7e-4)
 parser.add_argument('--eps', type=float, default=1e-5)
 parser.add_argument('--alpha', type=float, default=0.99)
 solver_args = parser.parse_args()
-solver_args.USE_CUDA = False
+solver_args.USE_CUDA = True
+
 
 if __name__ == '__main__':
-    wandb_pcg_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter,
-                               name=experiment_name, mode='online')
-    kwargs['wandb_session'] = wandb_pcg_session
-
     if mode_GAN['enabled']:
-        for i in range(1, mode_GAN['iterations']+1):
+        for i in range(2, mode_GAN['iterations']+1):
+            wandb_pcg_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter,
+                               name=experiment_name, group='generator', mode='online')
+            kwargs['wandb_session'] = wandb_pcg_session
+
             main(game, representation, experiment, steps, n_cpu, logging, **kwargs)
             experiment_idx = max_exp_idx(experiment_name)
 
@@ -216,8 +221,8 @@ if __name__ == '__main__':
                 if filename.endswith(".txt"):
                     transform_map(log_dir, filename)
 
-            wandb_solver_session = wandb.init(project=f'pcgrl-{game}-solver', config=vars(solver_args), name=experiment_name, reinit=True,
-                                       group=f'{experiment_name}_{experiment_idx}', mode='online')
+            wandb_solver_session = wandb.init(project=f'pcgrl-{game}', config=vars(solver_args), name=f'{experiment_name}_{experiment_idx}', reinit=True,
+                                       group='solver', mode='online')
 
             config = wandb.config
 
@@ -228,7 +233,7 @@ if __name__ == '__main__':
 
             kwargs['solver_path'] = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'solver_model', 'model.pkl')
 
-            wandb_solver_session.finish()
+        wandb_solver_session.finish()
 
     else:
         main(game, representation, experiment, steps, n_cpu, logging, **kwargs)

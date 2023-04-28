@@ -154,11 +154,12 @@ class SokobanSolverProblem(Problem):
         if map_stats["player"] == 1 and map_stats["crate"] == map_stats["target"] and map_stats["crate"] > 0 and map_stats["regions"] == 1:
                 map_stats["dist-win"], map_stats["solution"] = self._run_game(map)
 
-                if len(map_stats["solution"]) >= 0 and self._solver_path is not None:
-                    solver_agent = get_solver_agent(self._solver_path)
+                if len(map_stats["solution"]) > 0 and self._solver_path is not None:
+                    device = "cuda" if torch.cuda.is_available() else "cpu"
+                    solver_agent = get_solver_agent(self._solver_path, device)
                     avg_solved, reward_mean = test_the_agent(agent=solver_agent, env_name='Curriculum-Sokoban-v2',
                                                              data_path="TLCLS/maps/5x5/tmp/level.txt",
-                                                             USE_CUDA=torch.cuda.is_available(),
+                                                             USE_CUDA=False, # torch.cuda.is_available(),
                                                              eval_num=10, display=False)
                     print('avg_solved:', avg_solved, 'reward_mean:', reward_mean, 'solution length:', len(map_stats["solution"]), 'crates:', map_stats["crate"])
                     map_stats["tlcls"] = avg_solved
