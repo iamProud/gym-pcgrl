@@ -64,7 +64,7 @@ def train_the_agent(envs, num_envs, env_name, Variable, state_shape, actor_criti
             if data_path != None:
                 solved_rate, eval_avg_reward = test_the_agent(actor_critic, env_name, data_path, args.USE_CUDA, args.eval_num)
 
-                wandb_session.log({'solved_ratio': solved_rate})
+                wandb_session.log({'solved_ratio': solved_rate}, step=i_step)
                 print('solved ratio: {}'.format(solved_rate))
 
     envs.close()
