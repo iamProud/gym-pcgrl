@@ -130,5 +130,9 @@
   {
     "id": "Curriculum-Sokoban-PushAndPull-v1",
     "entry_point": "gym_sokoban.envs:Curriculum_PushAndPull_Env1"
+  },
+  {
+    "id": "Single-Sokoban-v2",
+    "entry_point": "TLCLS.gym_sokoban.envs:Single_Env2"
   }
 ]

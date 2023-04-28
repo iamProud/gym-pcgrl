@@ -7,14 +7,17 @@ import time
 
 from TLCLS.common.utils import hwc2chw
 
-def test_the_agent(agent, env_name, data_path, USE_CUDA, eval_num, display=False):
+def test_the_agent(agent, env_name, data_path, USE_CUDA, eval_num, display=False, level=None):
     #every test will test all sub-cases that the agent was training on;
 
     solved = []
     rewards = []
     
     #specify the environment you wanna use; v0 means sample sub-cases randomly, and v1 only sample targeted sub-cases;
-    env = gym.make(env_name, data_path=data_path)
+    if level is None:
+        env = gym.make(env_name, data_path=data_path)
+    else:
+        env = gym.make(env_name, level=level)
 
     for i in range(eval_num):
 
@@ -65,5 +68,6 @@ def test_the_agent(agent, env_name, data_path, USE_CUDA, eval_num, display=False
                 time.sleep(1)
         
         rewards.append(episode_reward)
+    env.close()
 
     return np.sum(solved)/eval_num, np.sum(rewards)/eval_num

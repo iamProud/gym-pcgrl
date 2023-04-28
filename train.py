@@ -89,17 +89,14 @@ def main(game, representation, experiment, steps, n_cpu, logging, **kwargs):
     resume = kwargs.get('resume', False)
 
     n = max_exp_idx(exp_name)
+    model = None
 
-    # TODO: Fix this!
-    if not resume:
+    if not resume and n > 0:
+        model = load_model(f'runs/{exp_name}_{n}_log/pcg_model')
         n = n + 1
-    log_dir = 'runs/{}_{}_{}/pcg_model'.format(exp_name, n, 'log')
-    #if not resume:
-    log_dir2 = f'runs/{exp_name}_{n+1}_log/pcg_model'
-    os.makedirs(log_dir2)
-    # else:
-    model = load_model(log_dir)
-    log_dir=log_dir2
+
+    log_dir = f'runs/{exp_name}_{n}_log/pcg_model'
+    os.makedirs(log_dir)
 
     kwargs = {
         **kwargs,
@@ -127,16 +124,16 @@ game = 'sokoban_solver'
 representation = 'turtle'
 policy = 'MlpPolicy'
 device='auto'
-experiment = 4
-steps = 5e6
+experiment = 5
+steps = 1e6
 logging = True
 n_cpu = 50
 mode_GAN = {
     'enabled': True,
     'iterations': 20,
     'generator_iterations': steps,
-    'generate_levels': 20,
-    'solver_iterations': 5e5,
+    'generate_levels': 10,
+    'solver_iterations': 1e5,
 }
 
 
@@ -149,7 +146,7 @@ kwargs = {
     'height': 5,
     'cropped_size': 10,
     'probs': {"empty": 0.6, "solid": 0.34, "player": 0.02, "crate": 0.02, "target": 0.02},
-    'min_solution': 15,
+    'min_solution': 5,
     'max_crates': 2,
     'max_targets': 2,
     'solver_power': 5000,
@@ -185,7 +182,7 @@ parser.add_argument('--gamma', type=float, default=0.99)
 parser.add_argument('--entropy_coef', type=float, default=0.1)
 parser.add_argument('--value_loss_coef', type=float, default=0.5)
 parser.add_argument('--max_grad_norm', type=float, default=0.5)
-parser.add_argument('--rolloutStorage_size', type=int, default=5)
+parser.add_argument('--rolloutStorage_size', type=int, default=10)
 parser.add_argument('--num_envs', type=int, default=50)
 parser.add_argument('--eval_freq', type=int, default=10000)
 parser.add_argument('--eval_num', type=int, default=20)

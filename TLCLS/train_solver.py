@@ -35,7 +35,8 @@ def train_solver(args, wandb_session, log_dir, model_path=None):
     actor_critic = ActorCritic(state_shape, num_actions=num_actions)
 
     if model_path is not None:
-        actor_critic.load_state_dict(torch.load(model_path, map_location=torch.device('cuda')))
+        device = 'cuda' if args.USE_CUDA and torch.cuda.is_available() else 'cpu'
+        actor_critic.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
         actor_critic.eval()
 
     rollout = RolloutStorage(args.rolloutStorage_size, args.num_envs, state_shape)

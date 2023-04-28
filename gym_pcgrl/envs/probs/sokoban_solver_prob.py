@@ -18,6 +18,7 @@ class SokobanSolverProblem(Problem):
     def __init__(self):
         super().__init__()
         self._solver_path = None
+        self.current_map = None
         self._width = 5
         self._height = 5
         self._prob = {"empty":0.30, "solid":0.55, "player": 0.01, "crate": 0.07, "target": 0.07}
@@ -107,9 +108,7 @@ class SokobanSolverProblem(Problem):
             lvlString += "#"
         lvlString += "\n"
 
-        # save the level to a file
-        with open("TLCLS/maps/5x5/tmp/level.txt", "w") as text_file:
-            text_file.write(lvlString)
+        self.current_map = lvlString
 
         state = State()
         state.stringInitialize(lvlString.split("\n"))
@@ -157,10 +156,10 @@ class SokobanSolverProblem(Problem):
                 if len(map_stats["solution"]) > 0 and self._solver_path is not None:
                     device = "cuda" if torch.cuda.is_available() else "cpu"
                     solver_agent = get_solver_agent(self._solver_path, device)
-                    avg_solved, reward_mean = test_the_agent(agent=solver_agent, env_name='Curriculum-Sokoban-v2',
-                                                             data_path="TLCLS/maps/5x5/tmp/level.txt",
-                                                             USE_CUDA=False, # torch.cuda.is_available(),
-                                                             eval_num=10, display=False)
+                    avg_solved, reward_mean = test_the_agent(agent=solver_agent, env_name='Single-Sokoban-v2',
+                                                             data_path=None,
+                                                             USE_CUDA=torch.cuda.is_available(),
+                                                             eval_num=10, display=False, level=self.current_map)
                     print('avg_solved:', avg_solved, 'reward_mean:', reward_mean, 'solution length:', len(map_stats["solution"]), 'crates:', map_stats["crate"])
                     map_stats["tlcls"] = avg_solved
         return map_stats
