@@ -7,7 +7,7 @@ import time
 
 from TLCLS.common.utils import hwc2chw
 
-def test_the_agent(agent, env_name, data_path, USE_CUDA, eval_num, display=False, level=None):
+def test_the_agent(agent, env_name, data_path, USE_CUDA, eval_num, display=False, level=None, device='cuda'):
     #every test will test all sub-cases that the agent was training on;
 
     solved = []
@@ -29,7 +29,7 @@ def test_the_agent(agent, env_name, data_path, USE_CUDA, eval_num, display=False
             print(env.room_state)
         state = hwc2chw(state, test=True)
         if USE_CUDA:
-            state = state.cuda()
+            state = state.cuda(device=device)
         action = agent.select_action(state.unsqueeze(0), test=1)
         if display:
             print('action selected: {}'.format(action.item()))
@@ -43,7 +43,7 @@ def test_the_agent(agent, env_name, data_path, USE_CUDA, eval_num, display=False
         while not done:
             state = next_state
             if USE_CUDA:
-                state = state.cuda()
+                state = state.cuda(device=device)
             with torch.no_grad():
                 action = agent.select_action(state.unsqueeze(0), test=1)
             if display:

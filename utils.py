@@ -50,6 +50,7 @@ def make_env(env_name, representation, rank=0, log_dir=None, **kwargs):
             env = wrappers.ActionMapImagePCGRLWrapper(env_name, **kwargs)
         else:
             crop_size = kwargs.get('cropped_size', 28)
+            kwargs['env_id'] = rank
             env = wrappers.CroppedImagePCGRLWrapper(env_name, crop_size, **kwargs)
         # RenderMonitor must come last
         if render or log_dir is not None and len(log_dir) > 0:

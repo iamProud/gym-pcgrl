@@ -125,9 +125,9 @@ representation = 'turtle'
 policy = 'MlpPolicy'
 device='auto'
 experiment = 6
-steps = 5e5
+steps = 2e5
 logging = True
-n_cpu = 4
+n_cpu = 20
 mode_GAN = {
     'enabled': True,
     'iterations': 20,
@@ -159,6 +159,7 @@ experiment_name = get_exp_name(game, representation, experiment, **kwargs)
 # wandb pcg hyperparameters
 wandb_hyperparameter = dict(
     policy=policy,
+    n_cpu=n_cpu,
     game=game,
     representation=representation,
     size=f'{kwargs["width"]}x{kwargs["height"]}',
@@ -191,18 +192,18 @@ parser.add_argument('--eps', type=float, default=1e-5)
 parser.add_argument('--alpha', type=float, default=0.99)
 solver_args = parser.parse_args()
 solver_args.USE_CUDA = True
-#hotfix = True
+hotfix = True
 
 if __name__ == '__main__':
     if mode_GAN['enabled']:
         for i in range(1, mode_GAN['iterations']+1):
             wandb_pcg_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter,
-                               name=experiment_name, group='generator', mode='online')
+                               name=f'{experiment_name}-{experiment_idx}', group='generator', mode='online')
             kwargs['wandb_session'] = wandb_pcg_session
 
-            #if not hotfix:
-            main(game, representation, experiment, steps, n_cpu, logging, **kwargs)
-            #hotfix=False
+            if not hotfix:
+                main(game, representation, experiment, steps, n_cpu, logging, **kwargs)
+            hotfix=False
             experiment_idx = max_exp_idx(experiment_name)
 
             # generate new environments
@@ -220,7 +221,7 @@ if __name__ == '__main__':
                 if filename.endswith(".txt"):
                     transform_map(log_dir, filename)
 
-            wandb_solver_session = wandb.init(project=f'pcgrl-{game}', config=vars(solver_args), name=f'{experiment_name}_{experiment_idx}', reinit=True,
+            wandb_solver_session = wandb.init(project=f'pcgrl-{game}', config=vars(solver_args), name=f'{experiment_name}-{experiment_idx}', reinit=True,
                                        group='solver', mode='online')
 
             config = wandb.config

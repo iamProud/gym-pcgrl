@@ -6,6 +6,8 @@ from gym_pcgrl.envs.helper import get_range_reward, get_tile_locations, calc_cer
 from gym_pcgrl.envs.probs.sokoban.engine import State,BFSAgent,AStarAgent
 from TLCLS.inference import get_solver_agent
 from TLCLS.common.test_the_agent import test_the_agent
+from gym_pcgrl.envs.helper import ID_GEN
+import random
 import torch
 
 """
@@ -17,7 +19,9 @@ class SokobanSolverProblem(Problem):
     """
     def __init__(self):
         super().__init__()
+        self._ID = None
         self._solver_path = None
+        self.solver_agent = None
         self.current_map = None
         self._width = 5
         self._height = 5
@@ -67,9 +71,12 @@ class SokobanSolverProblem(Problem):
         super().adjust_param(**kwargs)
 
         self._solver_path = kwargs.get('solver_path', self._solver_path)
-        if self._solver_path is not None:
-            device = "cuda" if torch.cuda.is_available() else "cpu"
+        if self._solver_path is not None and self.solver_agent is None:
+            self._ID = (kwargs['env_id'] % (torch.cuda.device_count()-1)) + 1
+            device = f"cuda:{self._ID}" if torch.cuda.is_available() else "cpu"
+
             self.solver_agent = get_solver_agent(self._solver_path, device)
+            self.solver_agent.to(device=device)
 
         self._solver_power = kwargs.get('solver_power', self._solver_power)
         self._max_crates = kwargs.get('max_crates', self._max_crates)
@@ -161,8 +168,8 @@ class SokobanSolverProblem(Problem):
                     avg_solved, reward_mean = test_the_agent(agent=self.solver_agent, env_name='Single-Sokoban-v2',
                                                              data_path=None,
                                                              USE_CUDA= torch.cuda.is_available(),
-                                                             eval_num=10, display=False, level=self.current_map)
-                    print('avg_solved:', avg_solved, 'reward_mean:', reward_mean, 'solution length:', len(map_stats["solution"]), 'crates:', map_stats["crate"])
+                                                             eval_num=10, display=False, level=self.current_map, device=f'cuda:{self._ID}')
+                    print('avg_solved:', avg_solved, 'reward_mean:', round(reward_mean, 2), 'crates:', map_stats["crate"], 'solution length:', len(map_stats["solution"]))
                     map_stats["solver"] = avg_solved
         return map_stats
 

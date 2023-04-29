@@ -9,7 +9,7 @@ def get_solver_agent(model_path, device='cpu'):
     model = ActorCritic(state_shape, num_actions=num_actions)
     model.load_state_dict(torch.load(model_path, map_location=torch.device(device)))
     model.eval()
-    if device == 'cuda':
+    if 'cuda' in device:
         model.cuda()
     return model
 
