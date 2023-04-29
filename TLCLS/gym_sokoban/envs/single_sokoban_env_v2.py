@@ -17,7 +17,7 @@ class SingleSokobanEnv_v2(SokobanEnv):
         super(SingleSokobanEnv_v2, self).__init__(reset=False)
 
         self.max_steps = max_steps
-        self.level = level
+        self.level = level.split('\n')[:-1]
 
     def reset(self):
 

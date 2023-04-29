@@ -425,7 +425,7 @@ class Curriculum_PushAndPull_Env1(CurriculumSokobanEnv_PushAndPull_v1):
         kwargs['max_steps'] = kwargs.get('max_steps', 200)
         super(Curriculum_PushAndPull_Env1, self).__init__(**kwargs)
 
-class Single_Env0(SingleSokobanEnv_v2):
+class Single_Env2(SingleSokobanEnv_v2):
     metadata = {
         'render.modes': ['human', 'rgb_array', 'tiny_human', 'tiny_rgb_array'],
         'render_modes': ['rgb_array', 'tiny_rgb_array'],
@@ -433,4 +433,4 @@ class Single_Env0(SingleSokobanEnv_v2):
 
     def __init__(self, **kwargs):
         kwargs['max_steps'] = kwargs.get('max_steps', 200)
-        super(Single_Env0, self).__init__(**kwargs)
+        super(Single_Env2, self).__init__(**kwargs)

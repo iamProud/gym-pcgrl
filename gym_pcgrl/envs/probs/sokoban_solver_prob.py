@@ -67,6 +67,10 @@ class SokobanSolverProblem(Problem):
         super().adjust_param(**kwargs)
 
         self._solver_path = kwargs.get('solver_path', self._solver_path)
+        if self._solver_path is not None:
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            self.solver_agent = get_solver_agent(self._solver_path, device)
+
         self._solver_power = kwargs.get('solver_power', self._solver_power)
         self._max_crates = kwargs.get('max_crates', self._max_crates)
         self._max_crates = kwargs.get('max_targets', self._max_crates)
@@ -154,11 +158,9 @@ class SokobanSolverProblem(Problem):
                 map_stats["dist-win"], map_stats["solution"] = self._run_game(map)
 
                 if len(map_stats["solution"]) > 0 and self._solver_path is not None:
-                    device = "cuda" if torch.cuda.is_available() else "cpu"
-                    solver_agent = get_solver_agent(self._solver_path, device)
-                    avg_solved, reward_mean = test_the_agent(agent=solver_agent, env_name='Single-Sokoban-v2',
+                    avg_solved, reward_mean = test_the_agent(agent=self.solver_agent, env_name='Single-Sokoban-v2',
                                                              data_path=None,
-                                                             USE_CUDA=torch.cuda.is_available(),
+                                                             USE_CUDA= torch.cuda.is_available(),
                                                              eval_num=10, display=False, level=self.current_map)
                     print('avg_solved:', avg_solved, 'reward_mean:', reward_mean, 'solution length:', len(map_stats["solution"]), 'crates:', map_stats["crate"])
                     map_stats["solver"] = avg_solved

@@ -89,13 +89,13 @@ def main(game, representation, experiment, steps, n_cpu, logging, **kwargs):
     resume = kwargs.get('resume', False)
 
     n = max_exp_idx(exp_name)
+    n = n + 1
     model = None
 
-    if not resume and n > 0:
-        model = load_model(f'runs/{exp_name}_{n}_log/pcg_model')
-        n = n + 1
+    if resume and n > 1:
+        model = load_model(f'runs/{exp_name}_{n-1}_log/pcg_model')
 
-    log_dir = f'runs/{exp_name}_{n}_log/pcg_model'
+    log_dir = f'runs/{exp_name}_{n}_log'
     os.makedirs(log_dir)
 
     kwargs = {
@@ -124,16 +124,16 @@ game = 'sokoban_solver'
 representation = 'turtle'
 policy = 'MlpPolicy'
 device='auto'
-experiment = 5
-steps = 1e6
+experiment = 6
+steps = 5e5
 logging = True
-n_cpu = 50
+n_cpu = 4
 mode_GAN = {
     'enabled': True,
     'iterations': 20,
     'generator_iterations': steps,
-    'generate_levels': 10,
-    'solver_iterations': 1e5,
+    'generate_levels': 5,
+    'solver_iterations': 5e3,
 }
 
 
@@ -151,7 +151,7 @@ kwargs = {
     'max_targets': 2,
     'solver_power': 5000,
     'num_level_generation': mode_GAN['generate_levels'],
-    'solver_path': "runs/sokoban_solver_turtle_4_1_log/solver_model/model.pkl"
+    'solver_path': None # "runs/sokoban_solver_turtle_6_1_log/solver_model/model.pkl"
 }
 
 experiment_name = get_exp_name(game, representation, experiment, **kwargs)
@@ -182,25 +182,27 @@ parser.add_argument('--gamma', type=float, default=0.99)
 parser.add_argument('--entropy_coef', type=float, default=0.1)
 parser.add_argument('--value_loss_coef', type=float, default=0.5)
 parser.add_argument('--max_grad_norm', type=float, default=0.5)
-parser.add_argument('--rolloutStorage_size', type=int, default=10)
-parser.add_argument('--num_envs', type=int, default=50)
-parser.add_argument('--eval_freq', type=int, default=10000)
+parser.add_argument('--rolloutStorage_size', type=int, default=5)
+parser.add_argument('--num_envs', type=int, default=200)
+parser.add_argument('--eval_freq', type=int, default=500)
 parser.add_argument('--eval_num', type=int, default=20)
 parser.add_argument('--lr', type=float, default=7e-4)
 parser.add_argument('--eps', type=float, default=1e-5)
 parser.add_argument('--alpha', type=float, default=0.99)
 solver_args = parser.parse_args()
 solver_args.USE_CUDA = True
-
+#hotfix = True
 
 if __name__ == '__main__':
     if mode_GAN['enabled']:
-        for i in range(2, mode_GAN['iterations']+1):
+        for i in range(1, mode_GAN['iterations']+1):
             wandb_pcg_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter,
                                name=experiment_name, group='generator', mode='online')
             kwargs['wandb_session'] = wandb_pcg_session
 
+            #if not hotfix:
             main(game, representation, experiment, steps, n_cpu, logging, **kwargs)
+            #hotfix=False
             experiment_idx = max_exp_idx(experiment_name)
 
             # generate new environments
