@@ -1,0 +1,1 @@
+{"trials": 174, "success-rate": 0.06321839080459771, "avg-sol-length": 8.606060606060607, "avg-crates": 1.0909090909090908, "avg-free-percent": 0.6569696969696968, "failed": {"total": 164, "0-player": 19, "2+players": 80, "region": 78, "crate-target": 119}}
