@@ -27,6 +27,7 @@ def infer(game, representation, model_path, **kwargs):
     min_solution = kwargs.get('min_solution', 1)
     env = make_vec_envs(env_name, representation, None, 1, **kwargs)
     agent = PPO.load(model_path) #, custom_objects={'observation_space': env.observation_space})
+    kwargs['solver_max_solved'] = kwargs.get('solver_max_solved', 1)
 
     i = 0
     generated = 0
@@ -52,7 +53,8 @@ def infer(game, representation, model_path, **kwargs):
                 if kwargs.get('verbose', False):
                     print(info[0])
                 if dones:
-                    if info[0]['sol-length'] >= min_solution:
+                    if info[0]['sol-length'] >= min_solution and \
+                            (info[0]['solver'] is None or info[0]['solver'] < kwargs['solver_max_solved']):
                         generated += 1
                     break
             # time.sleep(0.2)
@@ -60,9 +62,9 @@ def infer(game, representation, model_path, **kwargs):
     env.close()
 
 ################################## MAIN ########################################
-game = 'sokoban_tlcls'
+game = 'sokoban_solver'
 representation = 'turtle'
-run_idx = 1
+run_idx = 8
 
 kwargs = {
     'change_percentage': 0.5,
@@ -77,15 +79,14 @@ kwargs = {
     'min_solution': 15,
     'max_crates': 2,
     'max_targets': 2,
-    'solver_power': 10000
+    'solver_power': 10000,
+    'solver_max_solved': None,
 }
 
 game_path = f'shared_runs/{kwargs["width"]}x{kwargs["height"]}/sokoban'
-run_path = f'{game_path}/sokoban_{representation}_{run_idx}_log/'
-# model_path = 'runs/{}_{}_1_log/best_model.zip'.format(game, representation)
-# model_path = run_path + '/best_model.zip'
-model_path = run_path + '/57000000.zip'
-
+run_path = f'{game_path}/sokoban_{representation}_{run_idx}_5_log/'
+# model_path = run_path + 'pcg_model/best_model.zip'
+model_path = 'shared_runs/5x5/sokoban/sokoban_solver_turtle_8_5_log/pcg_model/best_model.zip'
 if __name__ == '__main__':
     infer(game, representation, model_path, **kwargs)
 

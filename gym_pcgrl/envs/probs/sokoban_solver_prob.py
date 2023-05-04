@@ -238,7 +238,8 @@ class SokobanSolverProblem(Problem):
             "target": new_stats["target"],
             "regions": new_stats["regions"],
             "dist-win": new_stats["dist-win"],
-            "sol-length": len(new_stats["solution"])
+            "sol-length": len(new_stats["solution"]),
+            "solver": new_stats["solver"]
         }
 
     """
