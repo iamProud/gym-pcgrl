@@ -1,6 +1,7 @@
 #Install stable-baselines as described in the documentation
 
 import os
+import time
 from torch import nn
 
 import numpy as np
@@ -64,17 +65,21 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                     self.model.save(self.save_path+'/best_model')
 
                 # Save current model
-                if self.num_timesteps % 100000 == 0:
+                if self.num_timesteps % 20000 == 0:
                     curr_model_path = os.path.join(self.save_path, str(self.num_timesteps))
                     print(f"Saving latest model to {curr_model_path}")
                     self.model.save(curr_model_path)
 
                     # Evaluate the feasibility of the current model
+                    print('===== Starting feasibility Test =====')
+                    t0 = time.time()
                     env = make_vec_envs(f'{game}-{representation}-v0', representation, None, 1, **self.kwargs)
-                    feasibility = eval_feasibility(env, self.model, 100)
+                    feasibility = eval_feasibility(env, self.model, self.kwargs['min_solution'], 20)
                     # print("Feasibility: {:.2f}".format(feasibility))
                     self.kwargs['wandb_session'].log(data={'feasibility': feasibility}, step=self.num_timesteps)
                     env.close
+                    t1 = time.time()
+                    print('===== Finished feasibility Test ===== | duration:', t1-t0)
 
                 # save episode reward mean
                 self.kwargs['wandb_session'].log(data={'ep_rew_mean': mean_reward}, step=self.num_timesteps)
@@ -124,7 +129,7 @@ game = 'sokoban_solver'
 representation = 'turtle'
 policy = 'MlpPolicy'
 device='auto'
-experiment = 6
+experiment = 8
 steps = 2e5
 logging = True
 n_cpu = 20
@@ -132,8 +137,8 @@ mode_GAN = {
     'enabled': True,
     'iterations': 20,
     'generator_iterations': steps,
-    'generate_levels': 5,
-    'solver_iterations': 5e3,
+    'generate_levels': 10,
+    'solver_iterations': 2e4,
 }
 
 
@@ -145,13 +150,13 @@ kwargs = {
     'width': 5,
     'height': 5,
     'cropped_size': 10,
-    'probs': {"empty": 0.6, "solid": 0.34, "player": 0.02, "crate": 0.02, "target": 0.02},
+    'probs': {"empty": 0.45, "solid": 0.4, "player": 0.05, "crate": 0.05, "target": 0.05},
     'min_solution': 5,
     'max_crates': 2,
     'max_targets': 2,
     'solver_power': 5000,
     'num_level_generation': mode_GAN['generate_levels'],
-    'solver_path': None # "runs/sokoban_solver_turtle_6_1_log/solver_model/model.pkl"
+    'solver_path': "runs/sokoban_solver_turtle_8_2_log/solver_model/model.pkl"
 }
 
 experiment_name = get_exp_name(game, representation, experiment, **kwargs)
@@ -185,25 +190,25 @@ parser.add_argument('--value_loss_coef', type=float, default=0.5)
 parser.add_argument('--max_grad_norm', type=float, default=0.5)
 parser.add_argument('--rolloutStorage_size', type=int, default=5)
 parser.add_argument('--num_envs', type=int, default=200)
-parser.add_argument('--eval_freq', type=int, default=500)
+parser.add_argument('--eval_freq', type=int, default=1000)
 parser.add_argument('--eval_num', type=int, default=20)
 parser.add_argument('--lr', type=float, default=7e-4)
 parser.add_argument('--eps', type=float, default=1e-5)
 parser.add_argument('--alpha', type=float, default=0.99)
 solver_args = parser.parse_args()
 solver_args.USE_CUDA = True
-hotfix = True
+hotfix = False
 
 if __name__ == '__main__':
     if mode_GAN['enabled']:
-        for i in range(1, mode_GAN['iterations']+1):
-            wandb_pcg_session = wandb.init(project=f'pcgrl-{game}', config=wandb_hyperparameter,
-                               name=f'{experiment_name}-{experiment_idx}', group='generator', mode='online')
+        for i in range(3, mode_GAN['iterations']+1):
+            wandb_pcg_session = wandb.init(project=f'pcgarl-{game}', config=wandb_hyperparameter,
+                               name=f'{experiment_name}-{i}', group='generator', mode='online')
             kwargs['wandb_session'] = wandb_pcg_session
 
             if not hotfix:
                 main(game, representation, experiment, steps, n_cpu, logging, **kwargs)
-            hotfix=False
+
             experiment_idx = max_exp_idx(experiment_name)
 
             # generate new environments
@@ -211,31 +216,36 @@ if __name__ == '__main__':
             best_model = os.path.join(log_dir, 'pcg_model', 'best_model.zip')
             infer_kwargs = kwargs.copy()
             infer_kwargs['change_percentage'] = 0.5
+            if not hotfix:
+                print("Start inference")
+                infer(game, representation, best_model, **infer_kwargs)
 
-            print("Start inference")
-            infer(game, representation, best_model, **infer_kwargs)
+                maps_folder = os.path.join(log_dir, 'generated')
+                os.mkdir(log_dir+'/transformed')
+                for filename in os.listdir(maps_folder):
+                    if filename.endswith(".txt"):
+                        transform_map(log_dir, filename)
+            hotfix=False
+            wandb_pcg_session.finish()
 
-            maps_folder = os.path.join(log_dir, 'generated')
-            os.mkdir(log_dir+'/transformed')
-            for filename in os.listdir(maps_folder):
-                if filename.endswith(".txt"):
-                    transform_map(log_dir, filename)
-
-            wandb_solver_session = wandb.init(project=f'pcgrl-{game}', config=vars(solver_args), name=f'{experiment_name}-{experiment_idx}', reinit=True,
+            wandb_solver_session = wandb.init(project=f'pcgarl-{game}', config=vars(solver_args), name=f'{experiment_name}-{i}', reinit=True,
                                        group='solver', mode='online')
 
             config = wandb.config
 
             last_solver = None
             if experiment_idx > 1:
-                last_solver = os.path.join('runs', f'{experiment_name}_{experiment_idx-1}_log', 'model.pkl')
+                last_solver = os.path.join('runs', f'{experiment_name}_{experiment_idx-1}_log', 'solver_model', 'model.pkl')
             train_solver(solver_args, wandb_solver_session, log_dir, last_solver)
 
             kwargs['solver_path'] = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'solver_model', 'model.pkl')
 
-        wandb_solver_session.finish()
+            wandb_solver_session.finish()
 
     else:
+        wandb_pcg_session = wandb.init(project=f'pcgarl-{game}', config=wandb_hyperparameter,
+                                name=f'{experiment_name}-{i}', group='generator', mode='online')
+        kwargs['wandb_session'] = wandb_pcg_session
         main(game, representation, experiment, steps, n_cpu, logging, **kwargs)
 
-    wandb_pcg_session.finish()
+        wandb_pcg_session.finish()

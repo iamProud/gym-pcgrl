@@ -24,7 +24,7 @@ def infer(game, representation, model_path, **kwargs):
     """
     env_name = f'{game}-{representation}-v0'
     kwargs['render'] = kwargs.get('render', True)
-
+    min_solution = kwargs.get('min_solution', 1)
     env = make_vec_envs(env_name, representation, None, 1, **kwargs)
     agent = PPO.load(model_path) #, custom_objects={'observation_space': env.observation_space})
 
@@ -52,7 +52,7 @@ def infer(game, representation, model_path, **kwargs):
                 if kwargs.get('verbose', False):
                     print(info[0])
                 if dones:
-                    if info[0]['sol-length'] > 0:
+                    if info[0]['sol-length'] >= min_solution:
                         generated += 1
                     break
             # time.sleep(0.2)

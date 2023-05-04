@@ -6,7 +6,6 @@ from gym_pcgrl.envs.helper import get_range_reward, get_tile_locations, calc_cer
 from gym_pcgrl.envs.probs.sokoban.engine import State,BFSAgent,AStarAgent
 from TLCLS.inference import get_solver_agent
 from TLCLS.common.test_the_agent import test_the_agent
-from gym_pcgrl.envs.helper import ID_GEN
 import random
 import torch
 
@@ -168,8 +167,9 @@ class SokobanSolverProblem(Problem):
                     avg_solved, reward_mean = test_the_agent(agent=self.solver_agent, env_name='Single-Sokoban-v2',
                                                              data_path=None,
                                                              USE_CUDA= torch.cuda.is_available(),
-                                                             eval_num=10, display=False, level=self.current_map, device=f'cuda:{self._ID}')
-                    print('avg_solved:', avg_solved, 'reward_mean:', round(reward_mean, 2), 'crates:', map_stats["crate"], 'solution length:', len(map_stats["solution"]))
+                                                             eval_num=20, display=False, level=self.current_map, device=f'cuda:{self._ID}')
+                    print_args = (self._ID, avg_solved, round(reward_mean, 2), map_stats["crate"], len(map_stats["solution"]))
+                    print('AGENT ID: {0:<3}  avg_solved: {1:<4}  reward_mean: {2:=4}  crates: {3:<2}  sol-length: {4:<3}'.format(*print_args))
                     map_stats["solver"] = avg_solved
         return map_stats
 

@@ -13,6 +13,8 @@ import traceback
 import glob
 import re
 
+experiment = 9
+
 def get_exp_name(game, representation, experiment, **kwargs):
     exp_name = '{}_{}'.format(game, representation)
     if experiment is not None:
@@ -61,13 +63,13 @@ class PcgrlEnv(gym.Env):
         self.seed()
         self.viewer = None
         self.render_mode = 'rgb_array'
-
+        self.min_solution = 0
         # generated images/environments
         stack = traceback.extract_stack()
         self.is_inference = any('infer' in s for s in stack)
 
         if self.is_inference:
-            experiment_name = get_exp_name(prob, rep, 6)
+            experiment_name = get_exp_name(prob, rep, experiment)
             experiment_idx = max_exp_idx(experiment_name)
             self.path_generated = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'generated')
             if not os.path.exists(self.path_generated):
@@ -161,6 +163,7 @@ class PcgrlEnv(gym.Env):
         self.observation_space.spaces['heatmap'] = spaces.Box(low=0, high=self._max_changes, dtype=np.uint8,
                                                               shape=(self._prob._height, self._prob._width))
         self.render_mode = kwargs.get('render_mode', 'rgb_array')
+        self.min_solution = kwargs.get('min_solution', self.min_solution)
 
     """
     Advance the environment using a specific action
@@ -215,7 +218,7 @@ class PcgrlEnv(gym.Env):
         with open(self.path_generated + "/info.json", "w") as f:
             json.dump(data, f)
 
-        if info["sol-length"] > 0:
+        if info["sol-length"] >= self.min_solution:
             self.log_successful(info, successful)
         else:
             self.log_failed(info)

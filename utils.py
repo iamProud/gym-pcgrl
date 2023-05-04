@@ -106,7 +106,7 @@ def load_model(log_dir):
     model = PPO.load(model_path)
     return model
 
-def eval_feasibility(env, model, total_runs=100):
+def eval_feasibility(env, model, min_sol_length=1, total_runs=100):
     """
     Evaluate the feasibility of the model. This is done by running the current best model.
 
@@ -124,7 +124,7 @@ def eval_feasibility(env, model, total_runs=100):
             obs, rewards, done, info = env.step(action)
 
             if done:
-                if info[0]['sol-length'] > 0:
+                if info[0]['sol-length'] >= min_sol_length:
                     feasible_runs += 1
                 break
 
