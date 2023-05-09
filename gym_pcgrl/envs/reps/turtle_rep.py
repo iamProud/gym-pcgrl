@@ -140,6 +140,8 @@ class TurtleRepresentation(Representation):
         img: the modified level image
     """
     def render(self, lvl_image, tile_size, border_size):
+        return lvl_image    # don't render the red rectangle
+
         x_graphics = Image.new("RGBA", (tile_size,tile_size), (0,0,0,0))
         for x in range(tile_size):
             x_graphics.putpixel((0,x),(255,0,0,255))

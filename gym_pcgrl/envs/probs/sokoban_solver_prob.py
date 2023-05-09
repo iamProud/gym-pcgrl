@@ -79,7 +79,6 @@ class SokobanSolverProblem(Problem):
 
         self._solver_power = kwargs.get('solver_power', self._solver_power)
         self._max_crates = kwargs.get('max_crates', self._max_crates)
-        self._max_crates = kwargs.get('max_targets', self._max_crates)
 
         self._target_solution = kwargs.get('min_solution', self._target_solution)
 
