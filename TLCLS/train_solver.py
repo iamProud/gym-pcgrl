@@ -16,9 +16,9 @@ import torch.optim as optim
 import argparse
 import wandb
 
-def train_solver(args, wandb_session, log_dir, model_path=None):
+def train_solver(args, wandb_session, log_dir, training_levels, model_path=None):
     source_env_name = 'Curriculum-Sokoban-v2'
-    source_task_map = os.path.join(log_dir, 'transformed')
+    source_task_map = training_levels
 
     #source task training
     def make_env():

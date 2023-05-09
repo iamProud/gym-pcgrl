@@ -1,7 +1,7 @@
 import os
 
-def transform_map(dir_name, file_name):
-    file = open(os.path.join(dir_name, 'generated', file_name), 'r')
+def transform_map(file, target_dir, iteration=0):
+    file = open(file, 'r')
     lines = file.readlines()
 
     res_map = []
@@ -33,20 +33,18 @@ def transform_map(dir_name, file_name):
 
         res_map.append(res_line)
 
-    # print(res_map)
-
     # write to file with name file_name and leading 0s
-    new_file_name = file_name.split('.')[0].zfill(3) + '.txt'
+    new_file_name = str(iteration) + file.split('/')[-1].split('.')[0].zfill(3) + '.txt'
 
-    with open(os.path.join(dir_name, 'transformed', new_file_name), 'w') as f:
+    with open(os.path.join(target_dir, new_file_name), 'w') as f:
         for line in res_map:
             f.write(''.join(line))
 
 
-folder = '../gym-pcgrl/shared_runs/8x8/sokoban/sokoban_turtle_2_2_log/generated/'
+folder = '../runs/sokoban_solver_turtle_1_0_log/'
 
 if __name__ == '__main__':
-    for filename in os.listdir(folder):
+    for filename in os.listdir(folder+ 'generated'):
         print(filename)
         if filename.endswith(".txt"):
             transform_map(folder, filename)

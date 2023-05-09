@@ -13,7 +13,7 @@ import traceback
 import glob
 import re
 
-experiment = 9
+experiment = 11
 
 def get_exp_name(game, representation, experiment, **kwargs):
     exp_name = '{}_{}'.format(game, representation)

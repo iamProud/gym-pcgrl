@@ -129,7 +129,7 @@ game = 'sokoban_solver'
 representation = 'turtle'
 policy = 'MlpPolicy'
 device='auto'
-experiment = 8
+experiment = 11
 steps = 2e5
 logging = True
 n_cpu = 20
@@ -201,7 +201,7 @@ hotfix = False
 
 if __name__ == '__main__':
     if mode_GAN['enabled']:
-        for i in range(3, mode_GAN['iterations']+1):
+        for i in range(1, mode_GAN['iterations']+1):
             wandb_pcg_session = wandb.init(project=f'pcgarl-{game}', config=wandb_hyperparameter,
                                name=f'{experiment_name}-{i}', group='generator', mode='online')
             kwargs['wandb_session'] = wandb_pcg_session
@@ -216,15 +216,23 @@ if __name__ == '__main__':
             best_model = os.path.join(log_dir, 'pcg_model', 'best_model.zip')
             infer_kwargs = kwargs.copy()
             infer_kwargs['change_percentage'] = 0.5
+
+            if i == 1:
+                infer_kwargs['infer_max_solution'] = 1
+                infer_kwargs['infer_max_crates'] = 1
+
+            training_levels = os.path.join('runs', game + '_' + representation + '_' + experiment + '_training_levels')
+            if not os.path.exists(training_levels):
+                os.mkdir(training_levels)
+
             if not hotfix:
                 print("Start inference")
                 infer(game, representation, best_model, **infer_kwargs)
 
-                maps_folder = os.path.join(log_dir, 'generated')
-                os.mkdir(log_dir+'/transformed')
+                maps_folder = os.path.join(log_dir, 'generated/')
                 for filename in os.listdir(maps_folder):
                     if filename.endswith(".txt"):
-                        transform_map(log_dir, filename)
+                        transform_map(maps_folder + filename, target_dir=training_levels, iteration=i)
             hotfix=False
             wandb_pcg_session.finish()
 
@@ -236,7 +244,7 @@ if __name__ == '__main__':
             last_solver = None
             if experiment_idx > 1:
                 last_solver = os.path.join('runs', f'{experiment_name}_{experiment_idx-1}_log', 'solver_model', 'model.pkl')
-            train_solver(solver_args, wandb_solver_session, log_dir, last_solver)
+            train_solver(solver_args, wandb_solver_session, log_dir, training_levels, last_solver)
 
             kwargs['solver_path'] = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'solver_model', 'model.pkl')
 
