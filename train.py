@@ -225,7 +225,7 @@ if __name__ == '__main__':
                 infer_kwargs['infer_max_solution'] = 1
                 infer_kwargs['infer_max_crates'] = 1
 
-            training_levels = os.path.join('runs', game + '_' + representation + '_' + experiment + '_training_levels')
+            training_levels = os.path.join('runs', f'{game}_{representation}_{experiment}_training_levels')
             if not os.path.exists(training_levels):
                 os.mkdir(training_levels)
 
