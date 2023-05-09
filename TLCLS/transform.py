@@ -1,7 +1,7 @@
 import os
 
-def transform_map(file, target_dir, iteration=0):
-    file = open(file, 'r')
+def transform_map(file_path, target_dir, iteration=0):
+    file = open(file_path, 'r')
     lines = file.readlines()
 
     res_map = []
@@ -34,7 +34,7 @@ def transform_map(file, target_dir, iteration=0):
         res_map.append(res_line)
 
     # write to file with name file_name and leading 0s
-    new_file_name = str(iteration) + file.split('/')[-1].split('.')[0].zfill(3) + '.txt'
+    new_file_name = str(iteration) + file_path.split('/')[-1].split('.')[0].zfill(3) + '.txt'
 
     with open(os.path.join(target_dir, new_file_name), 'w') as f:
         for line in res_map:

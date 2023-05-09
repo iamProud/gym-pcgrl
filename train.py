@@ -153,11 +153,10 @@ kwargs = {
     'probs': {"empty": 0.45, "solid": 0.4, "player": 0.05, "crate": 0.05, "target": 0.05},
     'min_solution': 1,
     'max_crates': 2,
-    'max_targets': 2,
     'solver_power': 5000,
     'num_level_generation': mode_GAN['generate_levels'],
     # 'solver_path': "runs/sokoban_solver_turtle_9_3_log/solver_model/model.pkl",
-    'solver_max_solved': np.inf
+    'infer_solver_max_solved': np.inf
 }
 
 experiment_name = get_exp_name(game, representation, experiment, **kwargs)
@@ -222,10 +221,10 @@ if __name__ == '__main__':
                 infer_kwargs['infer_solver_max_solved'] = 1
 
             if i == 1:
-                infer_kwargs['infer_max_solution'] = 1
+                infer_kwargs['infer_max_solution'] = 3
                 infer_kwargs['infer_max_crates'] = 1
 
-            training_levels = os.path.join('runs', f'{game}_{representation}_{experiment}_training_levels')
+            training_levels = os.path.join('runs', 'training_levels', f'{game}_{representation}_{experiment}')
             if not os.path.exists(training_levels):
                 os.mkdir(training_levels)
 
