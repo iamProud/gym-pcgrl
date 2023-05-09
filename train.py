@@ -129,13 +129,13 @@ game = 'sokoban_solver'
 representation = 'turtle'
 policy = 'MlpPolicy'
 device='auto'
-experiment = 8
+experiment = 10
 steps = 2e5
 logging = True
 n_cpu = 20
 mode_GAN = {
     'enabled': True,
-    'iterations': 20,
+    'iterations': 10,
     'generator_iterations': steps,
     'generate_levels': 10,
     'solver_iterations': 2e4,
@@ -151,12 +151,13 @@ kwargs = {
     'height': 5,
     'cropped_size': 10,
     'probs': {"empty": 0.45, "solid": 0.4, "player": 0.05, "crate": 0.05, "target": 0.05},
-    'min_solution': 5,
+    'min_solution': 1,
     'max_crates': 2,
     'max_targets': 2,
     'solver_power': 5000,
     'num_level_generation': mode_GAN['generate_levels'],
-    'solver_path': "runs/sokoban_solver_turtle_8_2_log/solver_model/model.pkl"
+    # 'solver_path': "runs/sokoban_solver_turtle_9_3_log/solver_model/model.pkl",
+    'solver_max_solved': np.inf
 }
 
 experiment_name = get_exp_name(game, representation, experiment, **kwargs)
@@ -201,7 +202,7 @@ hotfix = False
 
 if __name__ == '__main__':
     if mode_GAN['enabled']:
-        for i in range(3, mode_GAN['iterations']+1):
+        for i in range(1, mode_GAN['iterations']+1):
             wandb_pcg_session = wandb.init(project=f'pcgarl-{game}', config=wandb_hyperparameter,
                                name=f'{experiment_name}-{i}', group='generator', mode='online')
             kwargs['wandb_session'] = wandb_pcg_session
@@ -216,6 +217,9 @@ if __name__ == '__main__':
             best_model = os.path.join(log_dir, 'pcg_model', 'best_model.zip')
             infer_kwargs = kwargs.copy()
             infer_kwargs['change_percentage'] = 0.5
+            if i > 1:
+                infer_kwargs['solver_max_solved'] = 1
+
             if not hotfix:
                 print("Start inference")
                 infer(game, representation, best_model, **infer_kwargs)

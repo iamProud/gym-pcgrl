@@ -3,7 +3,7 @@ Run a trained agent and get generated maps
 """
 from stable_baselines3 import PPO
 from stable_baselines3.common.policies import obs_as_tensor
-
+import math
 import time
 from utils import make_vec_envs
 
@@ -27,7 +27,7 @@ def infer(game, representation, model_path, **kwargs):
     min_solution = kwargs.get('min_solution', 1)
     env = make_vec_envs(env_name, representation, None, 1, **kwargs)
     agent = PPO.load(model_path) #, custom_objects={'observation_space': env.observation_space})
-    kwargs['solver_max_solved'] = kwargs.get('solver_max_solved', 1)
+    kwargs['solver_max_solved'] = kwargs.get('solver_max_solved', math.inf)
 
     i = 0
     generated = 0
@@ -53,6 +53,7 @@ def infer(game, representation, model_path, **kwargs):
                 if kwargs.get('verbose', False):
                     print(info[0])
                 if dones:
+                    print('INFER-info: sol-length=', info[0]['sol-length'], '| solver=', info[0]['solver'])
                     if info[0]['sol-length'] >= min_solution and \
                             (info[0]['solver'] is None or info[0]['solver'] < kwargs['solver_max_solved']):
                         generated += 1
@@ -80,7 +81,7 @@ kwargs = {
     'max_crates': 2,
     'max_targets': 2,
     'solver_power': 10000,
-    'solver_max_solved': None,
+    #'solver_max_solved': 1,
 }
 
 game_path = f'shared_runs/{kwargs["width"]}x{kwargs["height"]}/sokoban'

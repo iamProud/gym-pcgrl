@@ -13,7 +13,7 @@ import traceback
 import glob
 import re
 
-experiment = 9
+experiment = 10
 
 def get_exp_name(game, representation, experiment, **kwargs):
     exp_name = '{}_{}'.format(game, representation)
@@ -64,6 +64,7 @@ class PcgrlEnv(gym.Env):
         self.viewer = None
         self.render_mode = 'rgb_array'
         self.min_solution = 0
+        self.solver_max_solved = np.inf
         # generated images/environments
         stack = traceback.extract_stack()
         self.is_inference = any('infer' in s for s in stack)
@@ -164,6 +165,7 @@ class PcgrlEnv(gym.Env):
                                                               shape=(self._prob._height, self._prob._width))
         self.render_mode = kwargs.get('render_mode', 'rgb_array')
         self.min_solution = kwargs.get('min_solution', self.min_solution)
+        self.solver_max_solved = kwargs.get('solver_max_solved', self.solver_max_solved)
 
     """
     Advance the environment using a specific action
@@ -218,7 +220,7 @@ class PcgrlEnv(gym.Env):
         with open(self.path_generated + "/info.json", "w") as f:
             json.dump(data, f)
 
-        if info["sol-length"] >= self.min_solution:
+        if info["sol-length"] >= self.min_solution and info["solver"] < self.solver_max_solved:
             self.log_successful(info, successful)
         else:
             self.log_failed(info)

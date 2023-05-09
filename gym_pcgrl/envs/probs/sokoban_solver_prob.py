@@ -218,7 +218,7 @@ class SokobanSolverProblem(Problem):
     """
     def get_episode_over(self, new_stats, old_stats):
         return len(new_stats["solution"]) >= self._target_solution and \
-            (self._solver_path is None or new_stats["solver"] > 0)
+            (self._solver_path is None or (new_stats["solver"] > 0 and new_stats["solver"] < 1))
 
     """
     Get any debug information need to be printed
