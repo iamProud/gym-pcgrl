@@ -11,7 +11,7 @@ from stable_baselines3.common.callbacks import BaseCallback, CallbackList
 
 # from model import FullyConvPolicyBigMap, FullyConvPolicySmallMap, CustomPolicyBigMap, CustomPolicySmallMap
 from model import CustomCNNPolicy
-from utils import get_exp_name, max_exp_idx, load_model, make_vec_envs, eval_feasibility
+from utils import get_exp_name, max_exp_idx, load_model, make_vec_envs
 
 import wandb
 from wandb.integration.sb3 import WandbCallback
@@ -48,10 +48,16 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
         if self.n_calls % self.check_freq == 0:
 
             # Retrieve training reward
-            x, y = ts2xy(load_results(self.log_dir), "timesteps")
+            results_df = load_results(self.log_dir)
+            x, y = ts2xy(results_df, "timesteps")
             if len(x) > 0:
                 # Mean training reward over the last 100 episodes
                 mean_reward = np.mean(y[-100:])
+                sol_length_mean = np.mean(results_df['sol-length'][-100:])
+                feasibility_mean = np.mean(results_df['sol-length'][-100:] > 0)
+                crates_mean = np.mean(results_df['crate'][-100:])
+                solver_mean = np.mean(results_df['solver'][-100:])
+
                 if self.verbose >= 1:
                     print(f"Num timesteps: {self.num_timesteps}")
                     print(f"Best mean reward: {self.best_mean_reward:.2f} - Last mean reward per episode: {mean_reward:.2f}")
@@ -70,19 +76,13 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                     print(f"Saving latest model to {curr_model_path}")
                     self.model.save(curr_model_path)
 
-                    # Evaluate the feasibility of the current model
-                    print('===== Starting feasibility Test =====')
-                    t0 = time.time()
-                    env = make_vec_envs(f'{game}-{representation}-v0', representation, None, 1, **self.kwargs)
-                    feasibility = eval_feasibility(env, self.model, self.kwargs['min_solution'], 20)
-                    # print("Feasibility: {:.2f}".format(feasibility))
-                    self.kwargs['wandb_session'].log(data={'feasibility': feasibility}, step=self.num_timesteps)
-                    env.close
-                    t1 = time.time()
-                    print('===== Finished feasibility Test ===== | duration:', t1-t0)
-
                 # save episode reward mean
-                self.kwargs['wandb_session'].log(data={'ep_rew_mean': mean_reward}, step=self.num_timesteps)
+                self.kwargs['wandb_session'].log(data={'ep_rew_mean': mean_reward,
+                                                       'sol-length_mean': sol_length_mean,
+                                                       'feasibility': feasibility_mean,
+                                                       'crates_mean': crates_mean,
+                                                       'solver_mean': solver_mean},
+                                                 step=self.num_timesteps)
                 # print("Episode reward: {:.2f}".format(mean_reward))
 
         return True
@@ -146,6 +146,7 @@ kwargs = {
     'resume': True,
     'render': False,
     'render_mode': 'rgb_array',
+    'info_keywords': ('sol-length', 'crate', 'solver'),
     'change_percentage': 0.2,
     'width': 5,
     'height': 5,
@@ -207,6 +208,9 @@ if __name__ == '__main__':
                                name=f'{experiment_name}-{i}', group='generator', mode='online')
             kwargs['wandb_session'] = wandb_pcg_session
 
+            if i == 1:
+                kwargs['max_crates'] = 1
+
             if not hotfix:
                 main(game, representation, experiment, steps, n_cpu, logging, **kwargs)
 
@@ -256,7 +260,7 @@ if __name__ == '__main__':
 
     else:
         wandb_pcg_session = wandb.init(project=f'pcgarl-{game}', config=wandb_hyperparameter,
-                                name=f'{experiment_name}-{i}', group='generator', mode='online')
+                                name=f'{experiment_name}', group='generator', mode='online')
         kwargs['wandb_session'] = wandb_pcg_session
         main(game, representation, experiment, steps, n_cpu, logging, **kwargs)
 
