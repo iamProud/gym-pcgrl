@@ -19,9 +19,10 @@ class RenderMonitor(Monitor):
         self.rank = rank
         self.render_gui = kwargs.get('render', False)
         self.render_rank = kwargs.get('render_rank', 0)
+        self.info_keywords = kwargs.get('info_keywords', ())
         if log_dir is not None:
             log_dir = os.path.join(log_dir, str(rank))
-        Monitor.__init__(self, env, log_dir)
+        Monitor.__init__(self, env, log_dir, info_keywords=self.info_keywords)
 
     def step(self, action):
         if self.render_gui and self.rank == self.render_rank:
@@ -105,28 +106,3 @@ def load_model(log_dir):
             raise Exception('No models are saved')
     model = PPO.load(model_path)
     return model
-
-def eval_feasibility(env, model, min_sol_length=1, total_runs=100):
-    """
-    Evaluate the feasibility of the model. This is done by running the current best model.
-
-    :param model: (PPO) The current best model to evaluate.
-    :param kwargs: (dict) The kwargs to pass to the environment.
-    """
-    feasible_runs = 0
-
-    for i in range(total_runs):
-        obs = env.reset()
-        done = False
-
-        while not done:
-            action, _ = model.predict(obs)
-            obs, rewards, done, info = env.step(action)
-
-            if done:
-                if info[0]['sol-length'] >= min_sol_length:
-                    feasible_runs += 1
-                break
-
-    env.close()
-    return feasible_runs / total_runs
