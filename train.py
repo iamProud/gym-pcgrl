@@ -137,7 +137,7 @@ mode_GAN = {
     'enabled': True,
     'iterations': 10,
     'generator_iterations': steps,
-    'generate_levels': 10,
+    'generate_levels': 20,
     'solver_iterations': 2e4,
 }
 
