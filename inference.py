@@ -20,7 +20,7 @@ def predict_probability(model, state):
 
 def is_desired_solution(info, **kwargs):
     return info['sol-length'] >= kwargs.get('min_solution', 1) and \
-        (info.get('solver') is None or info['solver'] < kwargs.get('infer_solver_max_solved'), np.inf) and \
+        (info['solver'] is None or info['solver'] < kwargs.get('infer_solver_max_solved'), np.inf) and \
         kwargs.get('infer_min_crate', 1) <= info.get('crate') <= kwargs.get('infer_max_crate', np.inf) and \
         kwargs.get('infer_min_solution', 1) <= info.get('sol-length') <= kwargs.get('infer_max_solution', np.inf)
 
@@ -61,7 +61,7 @@ def infer(game, representation, model_path, **kwargs):
                     print(info[0])
                 if dones:
                     print('INFER-info: sol-length=', info[0]['sol-length'], '| solver=', info[0]['solver'])
-                    if is_desired_solution(info[0], kwargs):
+                    if is_desired_solution(info[0], **kwargs):
                         generated += 1
                     break
             # time.sleep(0.2)
