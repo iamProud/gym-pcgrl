@@ -65,7 +65,12 @@ class PcgrlEnv(gym.Env):
         self.viewer = None
         self.render_mode = 'rgb_array'
         self.min_solution = 0
-        self.solver_max_solved = np.inf
+        self.infer_solver_max_solved = np.inf
+        self.infer_min_crate = 1
+        self.infer_max_crate = np.inf
+        self.infer_min_solution = 1
+        self.infer_max_solution = np.inf
+
         # generated images/environments
         stack = traceback.extract_stack()
         self.is_inference = any('infer' in s for s in stack)
@@ -166,7 +171,11 @@ class PcgrlEnv(gym.Env):
                                                               shape=(self._prob._height, self._prob._width))
         self.render_mode = kwargs.get('render_mode', 'rgb_array')
         self.min_solution = kwargs.get('min_solution', self.min_solution)
-        self.solver_max_solved = kwargs.get('solver_max_solved', self.solver_max_solved)
+        self.infer_solver_max_solved = kwargs.get('infer_solver_max_solved', self.infer_solver_max_solved)
+        self.infer_min_crate = kwargs.get('infer_min_crate', self.infer_min_crate)
+        self.infer_max_crate = kwargs.get('infer_max_crate', self.infer_max_crate)
+        self.infer_min_solution = kwargs.get('infer_min_solution', self.infer_min_solution)
+        self.infer_max_solution = kwargs.get('infer_max_solution', self.infer_max_solution)
 
     """
     Advance the environment using a specific action
@@ -221,7 +230,9 @@ class PcgrlEnv(gym.Env):
         with open(self.path_generated + "/info.json", "w") as f:
             json.dump(data, f)
 
-        if info["sol-length"] >= self.min_solution and info["solver"] < self.solver_max_solved:
+        if info["sol-length"] >= self.min_solution and info["solver"] < self.infer_solver_max_solved and \
+                self.infer_min_crate <= info.get('crate') <= self.infer_max_crate and \
+                self.infer_min_solution <= info.get('sol-length') <= self.infer_max_solution:
             self.log_successful(info, successful)
         else:
             self.log_failed(info)
