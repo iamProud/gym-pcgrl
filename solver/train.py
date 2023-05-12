@@ -31,4 +31,4 @@ def train_solver(env_name, policy, timesteps, n_cpu, **kwargs):
         model.set_env(env)
 
     check_freq = 1000 / n_cpu
-    model.learn(total_timesteps=timesteps, callback=SaveOnBestTrainingRewardCallback(check_freq, log_dir))
+    model.learn(total_timesteps=timesteps, callback=SaveOnBestTrainingRewardCallback(check_freq, log_dir, kwargs=kwargs))

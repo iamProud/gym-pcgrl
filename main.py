@@ -90,7 +90,7 @@ if __name__ == '__main__':
                                               name=f'{experiment_name}-{i}', reinit=True, group='solver',
                                               mode=wand_mode)
 
-            config = wandb.config
+            solver_kwargs['wandb_session'] = wandb_solver_session
 
             train_solver('Sokoban-arl-v0', 'CnnPolicy', solver_kwargs['num_steps'], solver_kwargs['num_envs'], **solver_kwargs)
 
