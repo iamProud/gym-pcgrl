@@ -18,7 +18,7 @@ class SokobanEnvARL(gym.Env):
                  max_steps=120,
                  generator_path=None,
                  infer_kwargs={},
-                 reset=False):
+                 reset=True):
 
         # General Configuration
         self.dim_room = dim_room

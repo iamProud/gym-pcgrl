@@ -12,17 +12,17 @@ from solver.train import train_solver
 ################################## MAIN ########################################
 game = 'arl-sokoban'
 representation = 'turtle'
-experiment = 11
+experiment = 12
 experiment_name = get_exp_name(game, representation, experiment)
 
 steps = 1e5
-n_cpu = 1
+n_cpu = 20
 
 adversarial_learning = {
     'enabled': True,
     'iterations': 10,
     'generator_iterations': steps,
-    'solver_iterations': 1e5,
+    'solver_iterations': 1e4,
 }
 
 generator_kwargs = {
@@ -38,26 +38,26 @@ generator_kwargs = {
     'min_solution': 1,
     'max_crates': 2,
     'solver_power': 5000,
-    'solver_path': "runs/arl-sokoban_turtle_11_1_log/solver/model/best_model",
+    # 'solver_path': "runs/arl-sokoban_turtle_11_1_log/solver/model/best_model",
     'infer_solver_max_solved': np.inf
 }
 
 solver_kwargs = {
     'experiment': experiment,
     'num_steps': adversarial_learning['solver_iterations'],
-    'num_envs': 1,
+    'num_envs': 20,
     'eval_freq': 1000,
     'eval_num': 20,
     'generator_path': None,
     'infer_kwargs': None
 }
 
-wand_mode = 'disabled'
+wand_mode = 'online'
 start_with_solver = True
 
 if __name__ == '__main__':
     if adversarial_learning['enabled']:
-        for i in range(2, adversarial_learning['iterations']+1):
+        for i in range(1, adversarial_learning['iterations']+1):
             wandb_pcg_session = wandb.init(project=f'arlpcg-{game}', config=generator_kwargs,
                                name=f'{experiment_name}-{i}', group='generator', mode=wand_mode)
             generator_kwargs['wandb_session'] = wandb_pcg_session

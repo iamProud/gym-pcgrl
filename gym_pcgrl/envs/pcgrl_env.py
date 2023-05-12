@@ -14,7 +14,7 @@ import glob
 import re
 
 
-experiment = 11
+experiment = 12
 
 def get_exp_name(game, representation, experiment, **kwargs):
     exp_name = '{}_{}'.format(game, representation)
