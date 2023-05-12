@@ -78,7 +78,7 @@ class PcgrlEnv(gym.Env):
         if self.is_inference:
             experiment_name = get_exp_name(prob, rep, experiment)
             experiment_idx = max_exp_idx(experiment_name)
-            self.path_generated = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'generated')
+            self.path_generated = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'generator', 'generated')
             if not os.path.exists(self.path_generated):
                 os.makedirs(self.path_generated)
 
@@ -210,6 +210,7 @@ class PcgrlEnv(gym.Env):
         info["changes"] = self._changes
         info["max_iterations"] = self._max_iterations
         info["max_changes"] = self._max_changes
+        info["map"] = np.pad(self._rep._map, 1, constant_values=1)
         # return the values
 
         if done and self.is_inference:
