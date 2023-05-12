@@ -58,15 +58,18 @@ start_with_solver = True
 if __name__ == '__main__':
     if adversarial_learning['enabled']:
         for i in range(1, adversarial_learning['iterations']+1):
-            wandb_pcg_session = wandb.init(project=f'arlpcg-{game}', config=generator_kwargs,
-                               name=f'{experiment_name}-{i}', group='generator', mode=wand_mode)
-            generator_kwargs['wandb_session'] = wandb_pcg_session
-
             if i == 1:
                 generator_kwargs['max_crates'] = 1
 
             if not start_with_solver:
+                wandb_pcg_session = wandb.init(project=f'arlpcg-{game}', config=generator_kwargs,
+                                               name=f'{experiment_name}-{i}', group='generator', mode=wand_mode)
+                generator_kwargs['wandb_session'] = wandb_pcg_session
+
                 train_generator(game, representation, experiment, steps, n_cpu, **generator_kwargs)
+
+                wandb_pcg_session.finish()
+
             start_with_solver = False
 
             experiment_idx = max_exp_idx(experiment_name)
@@ -82,7 +85,6 @@ if __name__ == '__main__':
                 infer_kwargs['infer_max_solution'] = 5
                 infer_kwargs['infer_max_crates'] = 1
 
-            wandb_pcg_session.finish()
 
             solver_kwargs['generator_path'] = os.path.join(log_dir, 'generator', 'model', 'best_model')
             solver_kwargs['infer_kwargs'] = infer_kwargs
