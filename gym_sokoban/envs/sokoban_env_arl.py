@@ -201,7 +201,8 @@ class SokobanEnvARL(gym.Env):
 
     def reset(self, second_player=False, render_mode='rgb_array'):
         if self.room_state is None or self._check_if_all_boxes_on_target():
-            print("[SOKOBAN] Game Won! Generating new Room . . .")
+            msg = "Initialization!" if self.room_state is None else "Game Won!"
+            print("[SOKOBAN] " + msg + " Generating new Room . . .")
             self.room_fixed, self.room_state = infer_room(self.generator_path, **self.infer_kwargs)
             self.initial_room_state = self.room_state.copy()
             self.num_boxes = np.where(self.room_state == 3)[0].shape[0]

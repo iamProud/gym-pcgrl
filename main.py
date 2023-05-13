@@ -22,7 +22,7 @@ adversarial_learning = {
     'enabled': True,
     'iterations': 10,
     'generator_iterations': steps,
-    'solver_iterations': 1e4,
+    'solver_iterations': 1e5,
 }
 
 generator_kwargs = {
@@ -46,7 +46,7 @@ solver_kwargs = {
     'experiment': experiment,
     'num_steps': adversarial_learning['solver_iterations'],
     'num_envs': 20,
-    'eval_freq': 1000,
+    'eval_freq': 10000,
     'eval_num': 20,
     'generator_path': None,
     'infer_kwargs': None
@@ -82,7 +82,7 @@ if __name__ == '__main__':
                 infer_kwargs['infer_solver_max_solved'] = 1
 
             if i == 1:
-                infer_kwargs['infer_max_solution'] = 5
+                infer_kwargs['infer_max_solution'] = 3
                 infer_kwargs['infer_max_crates'] = 1
 
 
@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
             solver_kwargs['wandb_session'] = wandb_solver_session
 
-            train_solver('Sokoban-arl-v0', 'CnnPolicy', solver_kwargs['num_steps'], solver_kwargs['num_envs'], **solver_kwargs)
+            train_solver(env_name='Sokoban-arl-v0', policy='CnnPolicy', timesteps=solver_kwargs['num_steps'], n_cpu=solver_kwargs['num_envs'], **solver_kwargs)
 
             generator_kwargs['solver_path'] = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'solver', 'model', 'best_model')
 
