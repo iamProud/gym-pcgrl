@@ -14,11 +14,14 @@ class SokobanEnvARL(gym.Env):
     }
 
     def __init__(self,
+                 env_id=0,
                  dim_room=(10, 10),
                  max_steps=120,
                  generator_path=None,
                  infer_kwargs={},
                  reset=False):
+
+        self._env_id = env_id
 
         # General Configuration
         self.dim_room = dim_room
@@ -202,7 +205,7 @@ class SokobanEnvARL(gym.Env):
         if self.room_state is None or self._check_if_all_boxes_on_target():
             msg = "Initialization!" if self.room_state is None else "Game Won!"
             print("[SOKOBAN] " + msg + " Generating new Room . . .")
-            self.room_fixed, self.room_state = infer_room(self.generator_path, **self.infer_kwargs)
+            self.room_fixed, self.room_state = infer_room(self.generator_path, env_id=self._env_id, **self.infer_kwargs)
             self.initial_room_state = self.room_state.copy()
             self.num_boxes = np.where(self.room_state == 3)[0].shape[0]
 

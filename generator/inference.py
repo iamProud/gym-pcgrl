@@ -14,7 +14,7 @@ def is_desired_solution(info, **kwargs):
         kwargs.get('infer_min_solution', 1) <= info.get('sol-length') <= kwargs.get('infer_max_solution', np.inf)
 
 
-def infer(game, representation, model_path, **kwargs):
+def infer(game, representation, model_path, device='auto', **kwargs):
     """
      - max_trials: The number of trials per evaluation.
      - infer_kwargs: Args to pass to the environment.
@@ -23,7 +23,7 @@ def infer(game, representation, model_path, **kwargs):
     kwargs['render'] = kwargs.get('render', True)
 
     env = make_vec_envs(env_name, representation, None, 1, **kwargs)
-    agent = PPO.load(model_path)
+    agent = PPO.load(model_path, device=device)
 
     i = 0
     generated = 0

@@ -2,6 +2,7 @@ import random
 import numpy as np
 import marshal
 from generator.inference import infer
+from torch import cuda
 
 
 def generate_room(dim=(13, 13), p_change_directions=0.35, num_steps=25, num_boxes=3, tries=4, second_player=False):
@@ -48,14 +49,17 @@ def generate_room(dim=(13, 13), p_change_directions=0.35, num_steps=25, num_boxe
     return room_structure, room_state, box_mapping
 
 
-def infer_room(model_path, **kwargs):
+def infer_room(model_path, env_id=0, **kwargs):
     '''
     Infer a room from a trained model.
     :param model_path: Path to the trained model
+    :param env_id: Environment ID
     '''
     kwargs['num_level_generation'] = 1
+    device_id = (env_id % (cuda.device_count() - 1)) + 1
+    device = f"cuda:{device_id}" if cuda.is_available() else "auto"
 
-    room = infer('arl-sokoban', 'turtle', model_path, **kwargs)
+    room = infer('arl-sokoban', 'turtle', model_path, device, **kwargs)
 
     room_state = np.copy(room)
     '''
