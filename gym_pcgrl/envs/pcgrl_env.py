@@ -226,7 +226,7 @@ class PcgrlEnv(gym.Env):
         if info["sol-length"] >= self.min_solution and info["solver"] < self.infer_solver_max_solved and \
                 self.infer_min_crate <= info.get('crate') <= self.infer_max_crate and \
                 self.infer_min_solution <= info.get('sol-length') <= self.infer_max_solution:
-            self.log_successful(info) #, successful)
+            self.log_successful() #info, successful)
         # else:
         #     self.log_failed(info)
         #     self.render(mode=self.render_mode)
@@ -234,7 +234,7 @@ class PcgrlEnv(gym.Env):
     """
     Logs the results of the successful inference to a file
     """
-    def log_successful(self, info, successful):
+    def log_successful(self): #, info, successful):
         # with open(self.path_generated + "/info.json", "r") as f:
         #     data = json.load(f)
         #
