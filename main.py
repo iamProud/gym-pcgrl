@@ -1,6 +1,7 @@
 import os
 import wandb
 import numpy as np
+import json
 import gym
 import gym_pcgrl
 import gym_sokoban
@@ -71,6 +72,16 @@ if __name__ == '__main__':
 
             experiment_idx = max_exp_idx(experiment_name)
             log_dir = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log')
+
+            path_generated = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'generator', 'generated')
+            if not os.path.exists(path_generated):
+                os.makedirs(path_generated)
+
+                with open(path_generated + '/info.json', 'w') as f:
+                    json.dump({'trials': 0, 'success-rate': 0, 'avg-sol-length': 0, 'avg-crates': 0, 'avg-free-percent': 0,
+                               'failed': {
+                                   'total': 0, '0-player': 0, '2+players': 0, 'region': 0, 'crate-target': 0
+                               }}, f)
 
             infer_kwargs = generator_kwargs.copy()
             infer_kwargs['change_percentage'] = 0.5

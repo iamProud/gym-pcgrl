@@ -79,14 +79,6 @@ class PcgrlEnv(gym.Env):
             experiment_name = get_exp_name(prob, rep, experiment)
             experiment_idx = max_exp_idx(experiment_name)
             self.path_generated = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'generator', 'generated')
-            if not os.path.exists(self.path_generated):
-                os.makedirs(self.path_generated)
-
-                with open(self.path_generated + '/info.json', 'w') as f:
-                    json.dump({'trials': 0, 'success-rate': 0, 'avg-sol-length': 0, 'avg-crates': 0, 'avg-free-percent': 0,
-                               'failed': {
-                                   'total': 0, '0-player': 0, '2+players': 0, 'region': 0, 'crate-target': 0
-                               }}, f)
 
         self.action_space = self._rep.get_action_space(self._prob._width, self._prob._height, self.get_num_tiles())
         self.observation_space = self._rep.get_observation_space(self._prob._width, self._prob._height,
@@ -213,7 +205,7 @@ class PcgrlEnv(gym.Env):
         info["map"] = np.pad(self._rep._map, 1, constant_values=1)
         # return the values
 
-        if False:# done and self.is_inference:
+        if done and self.is_inference:
             self.log_inference(info)
 
         return observation, reward, done, info
@@ -222,37 +214,37 @@ class PcgrlEnv(gym.Env):
     Logs the results of the inference to a file
     """
     def log_inference(self, info):
-        with open(self.path_generated + "/info.json", "r") as f:
-            data = json.load(f)
-            data["trials"] += 1
-            successful = data['success-rate'] * (data['trials'] - 1)
-            data['success-rate'] = (successful + 1) / (data['trials']) if (info["sol-length"] > 0) else successful / (
-            data['trials'])
-        with open(self.path_generated + "/info.json", "w") as f:
-            json.dump(data, f)
+        # with open(self.path_generated + "/info.json", "r") as f:
+        #     data = json.load(f)
+        #     data["trials"] += 1
+        #     successful = data['success-rate'] * (data['trials'] - 1)
+        #     data['success-rate'] = (successful + 1) / (data['trials']) if (info["sol-length"] > 0) else successful / (
+        #     data['trials'])
+        # with open(self.path_generated + "/info.json", "w") as f:
+        #     json.dump(data, f)
 
         if info["sol-length"] >= self.min_solution and info["solver"] < self.infer_solver_max_solved and \
                 self.infer_min_crate <= info.get('crate') <= self.infer_max_crate and \
                 self.infer_min_solution <= info.get('sol-length') <= self.infer_max_solution:
-            self.log_successful(info, successful)
-        else:
-            self.log_failed(info)
-            self.render(mode=self.render_mode)
+            self.log_successful(info) #, successful)
+        # else:
+        #     self.log_failed(info)
+        #     self.render(mode=self.render_mode)
 
     """
     Logs the results of the successful inference to a file
     """
     def log_successful(self, info, successful):
-        with open(self.path_generated + "/info.json", "r") as f:
-            data = json.load(f)
-
-            data['avg-sol-length'] = (data['avg-sol-length'] * successful + info["sol-length"]) / (successful + 1)
-            data['avg-crates'] = (data['avg-crates'] * successful + info["crate"]) / (successful + 1)
-            free_ratio = np.count_nonzero(self._rep._map == 0) / (self._prob._width * self._prob._height)
-            data['avg-free-percent'] = (data['avg-free-percent'] * successful + free_ratio) / (successful + 1)
-        with open(self.path_generated + "/info.json", "w") as f:
-            json.dump(data, f)
-
+        # with open(self.path_generated + "/info.json", "r") as f:
+        #     data = json.load(f)
+        #
+        #     data['avg-sol-length'] = (data['avg-sol-length'] * successful + info["sol-length"]) / (successful + 1)
+        #     data['avg-crates'] = (data['avg-crates'] * successful + info["crate"]) / (successful + 1)
+        #     free_ratio = np.count_nonzero(self._rep._map == 0) / (self._prob._width * self._prob._height)
+        #     data['avg-free-percent'] = (data['avg-free-percent'] * successful + free_ratio) / (successful + 1)
+        # with open(self.path_generated + "/info.json", "w") as f:
+        #     json.dump(data, f)
+        #
         # get file number
         listdir = os.listdir(self.path_generated)
 
