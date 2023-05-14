@@ -21,7 +21,6 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
         self.save_path = os.path.join(log_dir, 'model')
         self.best_mean_reward = -np.inf
         self.kwargs = kwargs
-        self.kwargs['change_percentage'] = 1
 
     def _init_callback(self) -> None:
         # Create folder if needed
@@ -61,11 +60,11 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                     self.model.save(curr_model_path)
 
                 # save episode reward mean
-                self.kwargs['wandb_session'].log(data={'ep_rew_mean': mean_reward,
-                                                       'sol-length_mean': sol_length_mean,
-                                                       'feasibility': feasibility_mean,
-                                                       'crates_mean': crates_mean,
-                                                       'solver_mean': solver_mean},
+                self.kwargs['wandb_session'].log(data={'GEN:ep_rew_mean': mean_reward,
+                                                       'GEN:sol-length_mean': sol_length_mean,
+                                                       'GEN:feasibility': feasibility_mean,
+                                                       'GEN:crates_mean': crates_mean,
+                                                       'GEN:solver_mean': solver_mean},
                                                  step=self.num_timesteps)
                 # print("Episode reward: {:.2f}".format(mean_reward))
 

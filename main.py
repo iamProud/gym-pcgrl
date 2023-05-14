@@ -15,7 +15,7 @@ representation = 'turtle'
 experiment = 12
 experiment_name = get_exp_name(game, representation, experiment)
 
-steps = 1e5
+steps = 3e5
 n_cpu = 20
 
 adversarial_learning = {
@@ -36,7 +36,7 @@ generator_kwargs = {
     'cropped_size': 10,
     'probs': {"empty": 0.45, "solid": 0.4, "player": 0.05, "crate": 0.05, "target": 0.05},
     'min_solution': 1,
-    'max_crates': 2,
+    'max_crates': 1,
     'solver_power': 5000,
     # 'solver_path': "runs/arl-sokoban_turtle_11_1_log/solver/model/best_model",
     'infer_solver_max_solved': np.inf
@@ -45,22 +45,18 @@ generator_kwargs = {
 solver_kwargs = {
     'experiment': experiment,
     'num_steps': adversarial_learning['solver_iterations'],
-    'num_envs': 20,
+    'num_envs': 30,
     'eval_freq': 10000,
-    'eval_num': 20,
     'generator_path': None,
     'infer_kwargs': None
 }
 
 wand_mode = 'online'
-start_with_solver = True
+start_with_solver = False
 
 if __name__ == '__main__':
     if adversarial_learning['enabled']:
         for i in range(1, adversarial_learning['iterations']+1):
-            if i == 1:
-                generator_kwargs['max_crates'] = 1
-
             if not start_with_solver:
                 wandb_pcg_session = wandb.init(project=f'arlpcg-{game}', config=generator_kwargs,
                                                name=f'{experiment_name}-{i}', group='generator', mode=wand_mode)
@@ -82,7 +78,7 @@ if __name__ == '__main__':
                 infer_kwargs['infer_solver_max_solved'] = 1
 
             if i == 1:
-                infer_kwargs['infer_max_solution'] = 3
+                infer_kwargs['infer_max_solution'] = 2
                 infer_kwargs['infer_max_crates'] = 1
 
 
@@ -103,7 +99,7 @@ if __name__ == '__main__':
     else:
         wandb_pcg_session = wandb.init(project=f'pcg-{game}', config=generator_kwargs,
                                 name=f'{experiment_name}', group='generator', mode=wand_mode)
-        generator_kwargs['wandb_session'] = wandb_pcg_session
-        train_generator(game, representation, experiment, steps, n_cpu, **generator_kwargs)
+        init_generator_kwargs['wandb_session'] = wandb_pcg_session
+        train_generator(game, representation, experiment, steps, n_cpu, **init_generator_kwargs)
 
         wandb_pcg_session.finish()

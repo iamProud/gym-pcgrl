@@ -30,7 +30,7 @@ class ArlSokobanProblem(Problem):
         self._solver_power = 20000
 
         self._max_crates = 5
-
+        self._max_solution = np.inf
         self._target_solution = 30
 
         self._rewards = {
@@ -78,6 +78,7 @@ class ArlSokobanProblem(Problem):
 
         self._solver_power = kwargs.get('solver_power', self._solver_power)
         self._max_crates = kwargs.get('max_crates', self._max_crates)
+        self._max_solution = kwargs.get('max_solution', self._max_solution)
 
         self._target_solution = kwargs.get('min_solution', self._target_solution)
 
@@ -189,7 +190,7 @@ class ArlSokobanProblem(Problem):
             "regions": get_range_reward(new_stats["regions"], old_stats["regions"], 1, 1),
             "ratio": get_range_reward(abs(new_stats["crate"]-new_stats["target"]), abs(old_stats["crate"]-old_stats["target"]), -np.inf, -np.inf),
             "dist-win": get_range_reward(new_stats["dist-win"], old_stats["dist-win"], -np.inf, -np.inf),
-            "sol-length": get_range_reward(len(new_stats["solution"]), len(old_stats["solution"]), np.inf, np.inf),
+            "sol-length": get_range_reward(len(new_stats["solution"]), len(old_stats["solution"]), np.inf, self._max_solution),
             "solver": get_range_reward(new_stats["solver"], old_stats["solver"], 0.5, 0.5)
         }
         #calculate the total reward

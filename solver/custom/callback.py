@@ -46,6 +46,6 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                       print(f"Saving new best model to {self.save_path}")
                     self.model.save(self.save_path+'/best_model')
 
-                self.kwargs['wandb_session'].log(data={'ep_rew_mean': mean_reward}, step=self.num_timesteps)
+                self.kwargs['wandb_session'].log(data={'SOL:ep_rew_mean': mean_reward}, step=self.num_timesteps)
 
         return True

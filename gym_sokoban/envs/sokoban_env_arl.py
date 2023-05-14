@@ -18,13 +18,12 @@ class SokobanEnvARL(gym.Env):
                  max_steps=120,
                  generator_path=None,
                  infer_kwargs={},
-                 reset=True):
+                 reset=False):
 
         # General Configuration
         self.dim_room = dim_room
         self.generator_path = generator_path
         self.infer_kwargs = infer_kwargs
-
         self.num_boxes = None
         self.boxes_on_target = 0
         self.room_state = None
