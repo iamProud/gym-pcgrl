@@ -34,7 +34,7 @@ def train_solver(env_name, policy, timesteps, n_cpu, **kwargs):
     policy_kwargs = dict(
         features_extractor_class=CustomCNN,
         features_extractor_kwargs=dict(features_dim=512),
-        net_arch=[dict(pi=[512, num_actions], vf=[512, 1])],
+        net_arch=dict(pi=[512, num_actions], vf=[512, 1]),
     )
 
     if not resume or model is None:
