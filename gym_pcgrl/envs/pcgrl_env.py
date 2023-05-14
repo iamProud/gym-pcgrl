@@ -14,7 +14,7 @@ import glob
 import re
 
 
-experiment = 12
+experiment = 1
 
 def get_exp_name(game, representation, experiment, **kwargs):
     exp_name = '{}_{}'.format(game, representation)
@@ -213,7 +213,7 @@ class PcgrlEnv(gym.Env):
         info["map"] = np.pad(self._rep._map, 1, constant_values=1)
         # return the values
 
-        if done and self.is_inference:
+        if False:# done and self.is_inference:
             self.log_inference(info)
 
         return observation, reward, done, info

@@ -30,10 +30,15 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
         if self.n_calls % self.check_freq == 0:
 
             # Retrieve training reward
-            x, y = ts2xy(load_results(self.log_dir), "timesteps")
+            results_df = load_results(self.log_dir)
+            x, y = ts2xy(results_df, 'timesteps')
             if len(x) > 0:
                 # Mean training reward over the last 100 episodes
                 mean_reward = np.mean(y[-100:])
+                was_solved = results_df['all_boxes_on_target'][-100:].to_numpy()
+                was_solved = was_solved.astype(int)
+                solved_mean = np.mean(was_solved)
+
                 if self.verbose >= 1:
                     print(f"Num timesteps: {self.num_timesteps}")
                     print(f"Best mean reward: {self.best_mean_reward:.2f} - Last mean reward per episode: {mean_reward:.2f}")
@@ -46,6 +51,7 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                       print(f"Saving new best model to {self.save_path}")
                     self.model.save(self.save_path+'/best_model')
 
-                self.kwargs['wandb_session'].log(data={'SOL:ep_rew_mean': mean_reward}, step=self.num_timesteps)
+                self.kwargs['wandb_session'].log(data={'SOL:ep_rew_mean': mean_reward, 'SOL:solved_mean': solved_mean},
+                                                 step=self.num_timesteps)
 
         return True

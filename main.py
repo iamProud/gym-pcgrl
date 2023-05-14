@@ -12,17 +12,17 @@ from solver.train import train_solver
 ################################## MAIN ########################################
 game = 'arl-sokoban'
 representation = 'turtle'
-experiment = 12
+experiment = 1
 experiment_name = get_exp_name(game, representation, experiment)
 
-steps = 3e5
+steps = 4e5
 n_cpu = 20
 
 adversarial_learning = {
     'enabled': True,
     'iterations': 10,
     'generator_iterations': steps,
-    'solver_iterations': 1e5,
+    'solver_iterations': 2e5,
 }
 
 generator_kwargs = {
@@ -44,15 +44,16 @@ generator_kwargs = {
 
 solver_kwargs = {
     'experiment': experiment,
+    'info_keywords': ('all_boxes_on_target',),
     'num_steps': adversarial_learning['solver_iterations'],
-    'num_envs': 30,
+    'num_envs': 20,
     'eval_freq': 10000,
     'generator_path': None,
     'infer_kwargs': None
 }
 
 wand_mode = 'online'
-start_with_solver = False
+start_with_solver = True
 
 if __name__ == '__main__':
     if adversarial_learning['enabled']:
@@ -76,10 +77,13 @@ if __name__ == '__main__':
 
             if i > 1:
                 infer_kwargs['infer_solver_max_solved'] = 1
+                solver_kwargs['max_steps'] = 200
 
             if i == 1:
                 infer_kwargs['infer_max_solution'] = 2
                 infer_kwargs['infer_max_crates'] = 1
+
+                solver_kwargs['max_steps'] = 100
 
 
             solver_kwargs['generator_path'] = os.path.join(log_dir, 'generator', 'model', 'best_model')
@@ -99,7 +103,7 @@ if __name__ == '__main__':
     else:
         wandb_pcg_session = wandb.init(project=f'pcg-{game}', config=generator_kwargs,
                                 name=f'{experiment_name}', group='generator', mode=wand_mode)
-        init_generator_kwargs['wandb_session'] = wandb_pcg_session
-        train_generator(game, representation, experiment, steps, n_cpu, **init_generator_kwargs)
+        generator_kwargs['wandb_session'] = wandb_pcg_session
+        train_generator(game, representation, experiment, steps, n_cpu, **generator_kwargs)
 
         wandb_pcg_session.finish()
