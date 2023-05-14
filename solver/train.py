@@ -1,7 +1,7 @@
 import os
 
 from stable_baselines3 import PPO, A2C
-from solver.custom.utils import make_vec_envs
+from stable_baselines3.common.env_util import make_vec_env
 from solver.custom.callback import SaveOnBestTrainingRewardCallback
 from utils import get_exp_name, max_exp_idx, load_model
 from stable_baselines3.common.vec_env import SubprocVecEnv
@@ -24,7 +24,11 @@ def train_solver(env_name, policy, timesteps, n_cpu, **kwargs):
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
-    env = make_vec_envs(env_name, log_dir=log_dir, n_cpu=n_cpu, **kwargs)
+    env = make_vec_env(env_name, n_envs=n_cpu, monitor_dir=log_dir, vec_env_cls=SubprocVecEnv,
+                       monitor_kwargs={'info_keywords': kwargs.get('info_keywords', ())},
+                       env_kwargs={'generator_path': kwargs.get('generator_path', None),
+                                   'infer_kwargs': kwargs.get('infer_kwargs', None),
+                                   'max_steps': kwargs.get('max_steps', 200)})
 
     num_actions = env.action_space.n
     policy_kwargs = dict(
