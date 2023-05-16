@@ -34,8 +34,8 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
             x, y = ts2xy(results_df, 'timesteps')
             if len(x) > 0:
                 # Mean training reward over the last 100 episodes
-                mean_reward = np.mean(y[-100:])
-                was_solved = results_df['all_boxes_on_target'][-100:].to_numpy()
+                mean_reward = np.mean(y[-1000:])
+                was_solved = results_df['all_boxes_on_target'][-1000:].to_numpy()
                 was_solved = was_solved.astype(int)
                 solved_mean = np.mean(was_solved)
 

@@ -206,15 +206,12 @@ class SokobanEnvARL(gym.Env):
 
     def reset(self, second_player=False, render_mode='rgb_array'):
         if self.room_state is None or self.level_counter >= self.level_repetitions:
-            msg = "Initialization!" if self.room_state is None else "Reset!"
-            print("[SOKOBAN] " + msg + " Generating new Room . . .")
             self.room_fixed, self.room_state, optimal_sol_length = infer_room(self.generator_path, env_id=self._env_id, **self.infer_kwargs)
             self.initial_room_state = self.room_state.copy()
             self.num_boxes = np.where(self.room_state == 3)[0].shape[0]
             self.set_maxsteps(optimal_sol_length*5)
             self.level_counter = 0
         else:
-            print(f'[SOKOBAN] Replay! Try {self.level_counter+1} of same room . . .')
             self.room_fixed = self.room_fixed.copy()
             self.room_state = self.initial_room_state.copy()
 
