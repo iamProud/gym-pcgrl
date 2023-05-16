@@ -56,7 +56,7 @@ def infer(game, representation, model_path, device='auto', **kwargs):
 
     env.close()
 
-    return info[0]['map']
+    return info[0]['map'], info[0]['sol-length']
 
 ################################## MAIN ########################################
 game = 'sokoban_solver'

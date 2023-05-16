@@ -50,7 +50,8 @@ solver_kwargs = {
     'num_envs': 20,
     'eval_freq': 10000,
     'generator_path': None,
-    'infer_kwargs': None
+    'infer_kwargs': None,
+    'level_repetitions': 10,
 }
 
 wand_mode = 'online'

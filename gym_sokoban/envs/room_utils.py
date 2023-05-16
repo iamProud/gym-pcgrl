@@ -59,7 +59,7 @@ def infer_room(model_path, env_id=0, **kwargs):
     device_id = (env_id % (cuda.device_count() - 1)) + 1
     device = f"cuda:{device_id}" if cuda.is_available() else "auto"
 
-    room = infer('arl-sokoban', 'turtle', model_path, device, **kwargs)
+    room, optimal_sol_length = infer('arl-sokoban', 'turtle', model_path, device, **kwargs)
 
     room_state = np.copy(room)
     '''
@@ -89,7 +89,7 @@ def infer_room(model_path, env_id=0, **kwargs):
     room_structure[room_state == 4] = 1
     room_structure[room_state == 5] = 1
 
-    return room_structure, room_state
+    return room_structure, room_state, optimal_sol_length
 
 
 def room_topology_generation(dim=(10, 10), p_change_directions=0.35, num_steps=15):

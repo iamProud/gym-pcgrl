@@ -19,12 +19,15 @@ class SokobanEnvARL(gym.Env):
                  max_steps=120,
                  generator_path=None,
                  infer_kwargs={},
+                 level_repetitions=1,
                  reset=False):
 
         self._env_id = env_id
 
         # General Configuration
         self.dim_room = dim_room
+        self.level_repetitions = level_repetitions
+        self.level_counter = 0
         self.generator_path = generator_path
         self.infer_kwargs = infer_kwargs
         self.num_boxes = None
@@ -202,18 +205,20 @@ class SokobanEnvARL(gym.Env):
         return (self.max_steps == self.num_env_steps)
 
     def reset(self, second_player=False, render_mode='rgb_array'):
-        if self.room_state is None or self._check_if_all_boxes_on_target():
-            msg = "Initialization!" if self.room_state is None else "Game Won!"
+        if self.room_state is None or self.level_counter >= self.level_repetitions:
+            msg = "Initialization!" if self.room_state is None else "Reset!"
             print("[SOKOBAN] " + msg + " Generating new Room . . .")
-            self.room_fixed, self.room_state = infer_room(self.generator_path, env_id=self._env_id, **self.infer_kwargs)
+            self.room_fixed, self.room_state, optimal_sol_length = infer_room(self.generator_path, env_id=self._env_id, **self.infer_kwargs)
             self.initial_room_state = self.room_state.copy()
             self.num_boxes = np.where(self.room_state == 3)[0].shape[0]
-
+            self.set_maxsteps(optimal_sol_length*5)
+            self.level_counter = 0
         else:
-            print("[SOKOBAN] Game Lost! Retry of same room . . .")
+            print(f'[SOKOBAN] Replay! Try {self.level_counter+1} of same room . . .')
             self.room_fixed = self.room_fixed.copy()
             self.room_state = self.initial_room_state.copy()
 
+        self.level_counter += 1
         self.player_position = np.argwhere(self.room_state == 5)[0]
         self.num_env_steps = 0
         self.reward_last = 0
