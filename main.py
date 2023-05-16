@@ -13,7 +13,7 @@ from solver.train import train_solver
 ################################## MAIN ########################################
 game = 'arl-sokoban'
 representation = 'turtle'
-experiment = 1
+experiment = 2
 experiment_name = get_exp_name(game, representation, experiment)
 
 steps = 4e5
@@ -23,7 +23,7 @@ adversarial_learning = {
     'enabled': True,
     'iterations': 10,
     'generator_iterations': steps,
-    'solver_iterations': 2e5,
+    'solver_iterations': 1e5,
 }
 
 generator_kwargs = {
@@ -39,7 +39,7 @@ generator_kwargs = {
     'min_solution': 1,
     'max_crates': 1,
     'solver_power': 5000,
-    # 'solver_path': "runs/arl-sokoban_turtle_11_1_log/solver/model/best_model",
+    # 'solver_path': "runs/arl-sokoban_turtle_2_1_log/solver/model/best_model",
     'infer_solver_max_solved': np.inf
 }
 
@@ -47,8 +47,8 @@ solver_kwargs = {
     'experiment': experiment,
     'info_keywords': ('all_boxes_on_target',),
     'num_steps': adversarial_learning['solver_iterations'],
-    'num_envs': 20,
-    'eval_freq': 10000,
+    'num_envs': 8,
+    'eval_freq': 2000,
     'generator_path': None,
     'infer_kwargs': None
 }
@@ -94,7 +94,7 @@ if __name__ == '__main__':
                 infer_kwargs['infer_max_solution'] = 2
                 infer_kwargs['infer_max_crates'] = 1
 
-                solver_kwargs['max_steps'] = 100
+                # solver_kwargs['max_steps'] = 100
 
 
             solver_kwargs['generator_path'] = os.path.join(log_dir, 'generator', 'model', 'best_model')

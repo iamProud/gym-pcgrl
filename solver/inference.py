@@ -21,8 +21,8 @@ def test_the_solver(agent, env_name, USE_CUDA, eval_num, display=False, level=No
         i = 1
 
         while not done:
-            if USE_CUDA:
-                state = state.cuda(device=device)
+            #if USE_CUDA:
+            #    state = state.cuda(device=device)
             action, _ = agent.predict(state)
 
             if display:
