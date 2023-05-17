@@ -214,8 +214,8 @@ class ArlSokobanProblem(Problem):
         boolean: True if the level reached satisfying quality based on the stats and False otherwise
     """
     def get_episode_over(self, new_stats, old_stats):
-        return len(new_stats["solution"]) >= self._target_solution and \
-            (self._solver_path is None or (new_stats["solver"] > 0 and new_stats["solver"] < 1))
+        return len(new_stats["solution"]) >= self._target_solution #and \
+            #(self._solver_path is None or (new_stats["solver"] > 0 and new_stats["solver"] < 1))
 
     """
     Get any debug information need to be printed
