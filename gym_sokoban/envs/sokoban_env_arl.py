@@ -20,6 +20,7 @@ class SokobanEnvARL(gym.Env):
                  generator_path=None,
                  infer_kwargs={},
                  level_repetitions=1,
+                 opt_steps_mult=1,
                  reset=False):
 
         self._env_id = env_id
@@ -28,13 +29,18 @@ class SokobanEnvARL(gym.Env):
         self.dim_room = dim_room
         self.level_repetitions = level_repetitions
         self.level_counter = 0
+        self.solved_counter = 0
+        self.failed_counter = 0
+        self.success_rate_threshold = 0.11
+        self.consecutive_episodes_window = 10
+        self.consecutive_episodes_criterion = 3
         self.generator_path = generator_path
         self.infer_kwargs = infer_kwargs
         self.num_boxes = None
         self.boxes_on_target = 0
         self.room_state = None
         self.initial_room_state = None
-
+        self.opt_steps_mult = opt_steps_mult
         # Penalties and Rewards
         self.penalty_for_step = -0.1
         self.penalty_box_off_target = -1
@@ -205,12 +211,32 @@ class SokobanEnvARL(gym.Env):
         return (self.max_steps == self.num_env_steps)
 
     def reset(self, second_player=False, render_mode='rgb_array'):
-        if self.room_state is None or self.level_counter >= self.level_repetitions:
+        threshold_reset = False
+
+        if self.room_state is not None and self._check_if_all_boxes_on_target():
+            self.solved_counter += 1
+
+        if self.level_counter > 0 and self.level_counter % self.consecutive_episodes_window == 0:
+            success_rate = self.solved_counter / self.consecutive_episodes_window
+
+            if success_rate < self.success_rate_threshold or success_rate > 1 - self.success_rate_threshold:
+                self.failed_counter += 1
+            else:
+                self.failed_counter = 0
+
+            if self.failed_counter >= self.consecutive_episodes_criterion:
+                threshold_reset = True
+
+            self.solved_counter = 0
+
+        if self.room_state is None or self.level_counter > self.level_repetitions or threshold_reset:
+            print('LEVEL COUNTER:', self.level_counter)
             self.room_fixed, self.room_state, optimal_sol_length = infer_room(self.generator_path, env_id=self._env_id, **self.infer_kwargs)
             self.initial_room_state = self.room_state.copy()
             self.num_boxes = np.where(self.room_state == 3)[0].shape[0]
-            self.set_maxsteps(optimal_sol_length*5)
+            self.set_maxsteps(optimal_sol_length*self.opt_steps_mult)
             self.level_counter = 0
+            self.solved_counter = 0
         else:
             self.room_fixed = self.room_fixed.copy()
             self.room_state = self.initial_room_state.copy()

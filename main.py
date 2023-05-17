@@ -13,7 +13,7 @@ from solver.train import train_solver
 ################################## MAIN ########################################
 game = 'arl-sokoban'
 representation = 'turtle'
-experiment = 2
+experiment = 1
 experiment_name = get_exp_name(game, representation, experiment)
 
 steps = 4e5
@@ -23,7 +23,7 @@ adversarial_learning = {
     'enabled': True,
     'iterations': 10,
     'generator_iterations': steps,
-    'solver_iterations': 1e5,
+    'solver_iterations': 3e5,
 }
 
 generator_kwargs = {
@@ -40,18 +40,20 @@ generator_kwargs = {
     'max_crates': 1,
     'solver_power': 5000,
     # 'solver_path': "runs/arl-sokoban_turtle_2_1_log/solver/model/best_model",
-    'infer_solver_max_solved': np.inf
+    'infer_solver_max_solved': np.inf,
+    'check_freq': 5000
 }
 
 solver_kwargs = {
     'experiment': experiment,
     'info_keywords': ('all_boxes_on_target',),
     'num_steps': adversarial_learning['solver_iterations'],
-    'num_envs': 8,
-    'eval_freq': 2000,
+    'num_envs': 16,
+    'eval_freq': 5000,
     'generator_path': None,
     'infer_kwargs': None,
-    'level_repetitions': 10,
+    'level_repetitions': 100,
+    'opt_steps_mult': 5
 }
 
 wand_mode = 'online'
@@ -59,7 +61,7 @@ start_with_solver = True
 
 if __name__ == '__main__':
     if adversarial_learning['enabled']:
-        for i in range(1, adversarial_learning['iterations']+1):
+        for i in range(2, adversarial_learning['iterations']+1):
             if not start_with_solver:
                 wandb_pcg_session = wandb.init(project=f'arlpcg-{game}', config=generator_kwargs,
                                                name=f'{experiment_name}-{i}', group='generator', mode=wand_mode)
@@ -85,17 +87,14 @@ if __name__ == '__main__':
                                }}, f)
 
             infer_kwargs = generator_kwargs.copy()
-            infer_kwargs['change_percentage'] = 0.5
+            # infer_kwargs['change_percentage'] = 0.5
 
             if i > 1:
                 infer_kwargs['infer_solver_max_solved'] = 1
-                solver_kwargs['max_steps'] = 200
 
             if i == 1:
                 infer_kwargs['infer_max_solution'] = 2
                 infer_kwargs['infer_max_crates'] = 1
-
-                # solver_kwargs['max_steps'] = 100
 
 
             solver_kwargs['generator_path'] = os.path.join(log_dir, 'generator', 'model', 'best_model')

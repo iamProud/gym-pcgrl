@@ -31,7 +31,7 @@ def train_generator(game, representation, experiment, steps, n_cpu, **kwargs):
     else:
         model.set_env(env)
 
-    check_freq = 10000 / n_cpu
+    check_freq = kwargs.get('check_freq', 10000) / n_cpu
     model.learn(
         total_timesteps=int(steps),
         callback=SaveOnBestTrainingRewardCallback(check_freq=check_freq, log_dir=log_dir, verbose=2, kwargs=kwargs)

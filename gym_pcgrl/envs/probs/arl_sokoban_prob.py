@@ -164,8 +164,7 @@ class ArlSokobanProblem(Problem):
 
                 if len(map_stats["solution"]) > 0 and self._solver_path is not None:
                     avg_solved, reward_mean = test_the_solver(agent=self.solver_agent, env_name='Single-Sokoban-v0',
-                                                             USE_CUDA= torch.cuda.is_available(),
-                                                             eval_num=20, display=False, level=self.current_map, device=f'cuda:{self._ID}')
+                                                             eval_num=20, display=False, level=self.current_map)
                     print_args = (self._ID, avg_solved, round(reward_mean, 2), map_stats["crate"], len(map_stats["solution"]))
                     print('AGENT ID: {0:<3}  avg_solved: {1:<4}  reward_mean: {2:=4}  crates: {3:<2}  sol-length: {4:<3}'.format(*print_args))
                     map_stats["solver"] = avg_solved

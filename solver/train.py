@@ -29,18 +29,19 @@ def train_solver(env_name, policy, timesteps, n_cpu, **kwargs):
                        env_kwargs={'generator_path': kwargs.get('generator_path', None),
                                    'infer_kwargs': kwargs.get('infer_kwargs', None),
                                    'max_steps': kwargs.get('max_steps', 200),
-                                   'level_repetitions': kwargs.get('level_repetitions', 1)
+                                   'level_repetitions': kwargs.get('level_repetitions', 1),
+                                   'opt_steps_mult': kwargs.get('opt_steps_mult', 1)
                                     })
 
     num_actions = env.action_space.n
     policy_kwargs = dict(
         features_extractor_class=CustomCNN,
         features_extractor_kwargs=dict(features_dim=512),
-        net_arch=[dict(pi=[512, num_actions], vf=[512, 1])],
+        net_arch=dict(pi=[512, num_actions], vf=[512, 1]),
     )
 
     if not resume or model is None:
-        model = A2C(policy, env, policy_kwargs=policy_kwargs, verbose=1)
+        model = PPO(policy, env, policy_kwargs=policy_kwargs, verbose=1)
     else:
         model.set_env(env)
 

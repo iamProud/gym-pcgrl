@@ -3,7 +3,7 @@ import numpy as np
 import time
 
 
-def test_the_solver(agent, env_name, USE_CUDA, eval_num, display=False, level=None, device='cuda'):
+def test_the_solver(agent, env_name, eval_num, display=False, level=None):
     solved = []
     rewards = []
 
@@ -21,8 +21,6 @@ def test_the_solver(agent, env_name, USE_CUDA, eval_num, display=False, level=No
         i = 1
 
         while not done:
-            if USE_CUDA:
-                state = state.cuda(device=device)
             action, _ = agent.predict(state)
 
             if display:

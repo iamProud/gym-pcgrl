@@ -34,12 +34,12 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
             results_df = load_results(self.log_dir)
             x, y = ts2xy(results_df, "timesteps")
             if len(x) > 0:
-                # Mean training reward over the last 100 episodes
-                mean_reward = np.mean(y[-100:])
-                sol_length_mean = np.mean(results_df['sol-length'][-100:])
-                feasibility_mean = np.mean(results_df['sol-length'][-100:] > 0)
-                crates_mean = np.mean(results_df['crate'][-100:])
-                solver_mean = np.mean(results_df['solver'][-100:])
+                # Mean training reward over the last 1000 episodes
+                mean_reward = np.mean(y[-1000:])
+                sol_length_mean = np.mean(results_df['sol-length'][-1000:])
+                feasibility_mean = np.mean(results_df['sol-length'][-1000:] > 0)
+                crates_mean = np.mean(results_df['crate'][-1000:])
+                solver_mean = np.mean(results_df['solver'][-1000:])
 
                 if self.verbose >= 1:
                     print(f"Num timesteps: {self.num_timesteps}")
@@ -54,10 +54,10 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                     self.model.save(self.save_path+'/best_model')
 
                 # Save current model
-                if self.num_timesteps % 20000 == 0:
-                    curr_model_path = os.path.join(self.save_path, str(self.num_timesteps))
-                    print(f"Saving latest model to {curr_model_path}")
-                    self.model.save(curr_model_path)
+                #if self.num_timesteps % 20000 == 0:
+                #    curr_model_path = os.path.join(self.save_path, str(self.num_timesteps))
+                #    print(f"Saving latest model to {curr_model_path}")
+                #    self.model.save(curr_model_path)
 
                 # save episode reward mean
                 self.kwargs['wandb_session'].log(data={'GEN:ep_rew_mean': mean_reward,
