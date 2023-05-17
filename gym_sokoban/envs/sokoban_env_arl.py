@@ -226,6 +226,7 @@ class SokobanEnvARL(gym.Env):
 
             if self.failed_counter >= self.consecutive_episodes_criterion:
                 threshold_reset = True
+                self.failed_counter = 0
 
             self.solved_counter = 0
 
