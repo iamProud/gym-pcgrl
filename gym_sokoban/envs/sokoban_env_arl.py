@@ -21,6 +21,7 @@ class SokobanEnvARL(gym.Env):
                  infer_kwargs={},
                  level_repetitions=1,
                  opt_steps_mult=1,
+                 use_success_threshold=False,
                  reset=False):
 
         self._env_id = env_id
@@ -31,8 +32,9 @@ class SokobanEnvARL(gym.Env):
         self.level_counter = 0
         self.solved_counter = 0
         self.failed_counter = 0
-        self.success_rate_threshold = 0.11
-        self.consecutive_episodes_window = 10
+        self.use_success_threshold = use_success_threshold
+        self.success_rate_threshold = 0
+        self.consecutive_episodes_window = 8
         self.consecutive_episodes_criterion = 3
         self.generator_path = generator_path
         self.infer_kwargs = infer_kwargs
@@ -219,7 +221,7 @@ class SokobanEnvARL(gym.Env):
         if self.level_counter > 0 and self.level_counter % self.consecutive_episodes_window == 0:
             success_rate = self.solved_counter / self.consecutive_episodes_window
 
-            if success_rate < self.success_rate_threshold or success_rate > 1 - self.success_rate_threshold:
+            if success_rate <= self.success_rate_threshold: # or success_rate >= 1 - self.success_rate_threshold:
                 self.failed_counter += 1
             else:
                 self.failed_counter = 0
@@ -230,11 +232,12 @@ class SokobanEnvARL(gym.Env):
 
             self.solved_counter = 0
 
-        if self.room_state is None or self.level_counter > self.level_repetitions or threshold_reset:
-            print('LEVEL COUNTER:', self.level_counter)
+        if self.room_state is None or self.level_counter >= self.level_repetitions or (self.use_success_threshold and threshold_reset):
+            # print('LEVEL COUNTER:', self.level_counter)
             self.room_fixed, self.room_state, optimal_sol_length = infer_room(self.generator_path, env_id=self._env_id, **self.infer_kwargs)
             self.initial_room_state = self.room_state.copy()
             self.num_boxes = np.where(self.room_state == 3)[0].shape[0]
+            # print('OPTIMAL SOL-LENGTH', optimal_sol_length)
             self.set_maxsteps(optimal_sol_length*self.opt_steps_mult)
             self.level_counter = 0
             self.solved_counter = 0

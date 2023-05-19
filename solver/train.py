@@ -1,4 +1,6 @@
 import os
+import gc
+import torch
 
 from stable_baselines3 import PPO, A2C
 from stable_baselines3.common.env_util import make_vec_env
@@ -13,7 +15,7 @@ def train_solver(env_name, policy, timesteps, n_cpu, **kwargs):
     experiment = kwargs.get('experiment', None)
     exp_name = get_exp_name('arl-sokoban', 'turtle', experiment)
     n = max_exp_idx(exp_name)
-    resume = kwargs.get('resume', False)
+    resume = kwargs.get('resume', True)
 
     model = None
 
@@ -30,7 +32,8 @@ def train_solver(env_name, policy, timesteps, n_cpu, **kwargs):
                                    'infer_kwargs': kwargs.get('infer_kwargs', None),
                                    'max_steps': kwargs.get('max_steps', 200),
                                    'level_repetitions': kwargs.get('level_repetitions', 1),
-                                   'opt_steps_mult': kwargs.get('opt_steps_mult', 1)
+                                   'opt_steps_mult': kwargs.get('opt_steps_mult', 1),
+                                   'use_success_threshold': kwargs.get('use_success_threshold', False)
                                     })
 
     num_actions = env.action_space.n
@@ -47,3 +50,9 @@ def train_solver(env_name, policy, timesteps, n_cpu, **kwargs):
 
     check_freq = kwargs.get('eval_freq', 10000) / n_cpu
     model.learn(total_timesteps=timesteps, callback=SaveOnBestTrainingRewardCallback(check_freq, log_dir, kwargs=kwargs))
+
+    # Free Memory
+    model = None
+    gc.collect()
+    with torch.no_grad():
+        torch.cuda.empty_cache()

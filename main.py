@@ -13,17 +13,17 @@ from solver.train import train_solver
 ################################## MAIN ########################################
 game = 'arl-sokoban'
 representation = 'turtle'
-experiment = 1
+experiment = 3
 experiment_name = get_exp_name(game, representation, experiment)
 
-steps = 4e5
-n_cpu = 20
+steps = 5e5
+n_cpu = 16
 
 adversarial_learning = {
     'enabled': True,
     'iterations': 10,
     'generator_iterations': steps,
-    'solver_iterations': 3e5,
+    'solver_iterations': 1e6,
 }
 
 generator_kwargs = {
@@ -52,8 +52,9 @@ solver_kwargs = {
     'eval_freq': 5000,
     'generator_path': None,
     'infer_kwargs': None,
-    'level_repetitions': 100,
-    'opt_steps_mult': 5
+    'level_repetitions': 512,
+    'opt_steps_mult': 5,
+    'use_success_threshold': False
 }
 
 wand_mode = 'online'
@@ -61,7 +62,7 @@ start_with_solver = True
 
 if __name__ == '__main__':
     if adversarial_learning['enabled']:
-        for i in range(2, adversarial_learning['iterations']+1):
+        for i in range(1, adversarial_learning['iterations']+1):
             if not start_with_solver:
                 wandb_pcg_session = wandb.init(project=f'arlpcg-{game}', config=generator_kwargs,
                                                name=f'{experiment_name}-{i}', group='generator', mode=wand_mode)
@@ -89,13 +90,16 @@ if __name__ == '__main__':
             infer_kwargs = generator_kwargs.copy()
             # infer_kwargs['change_percentage'] = 0.5
 
-            if i > 1:
-                infer_kwargs['infer_solver_max_solved'] = 1
+            #if i > 1:
+                #infer_kwargs['infer_solver_min_solved'] = 0
 
             if i == 1:
                 infer_kwargs['infer_max_solution'] = 2
                 infer_kwargs['infer_max_crates'] = 1
 
+            if i > 1:
+                solver_kwargs['use_success_threshold'] = True
+            infer_kwargs['solver_path'] = None
 
             solver_kwargs['generator_path'] = os.path.join(log_dir, 'generator', 'model', 'best_model')
             solver_kwargs['infer_kwargs'] = infer_kwargs
@@ -104,7 +108,7 @@ if __name__ == '__main__':
                                               mode=wand_mode)
 
             solver_kwargs['wandb_session'] = wandb_solver_session
-
+            # solver_kwargs['avg_sol_length'] = 
             train_solver(env_name='Sokoban-arl-v0', policy='CnnPolicy', timesteps=solver_kwargs['num_steps'], n_cpu=solver_kwargs['num_envs'], **solver_kwargs)
 
             generator_kwargs['solver_path'] = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'solver', 'model', 'best_model')

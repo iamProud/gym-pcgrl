@@ -9,7 +9,7 @@ from utils import make_vec_envs
 
 def is_desired_solution(info, **kwargs):
     return info['sol-length'] >= kwargs.get('min_solution', 1) and \
-        (info['solver'] is None or info['solver'] < kwargs.get('infer_solver_max_solved'), np.inf) and \
+        (info['solver'] is None or (kwargs.get('infer_solver_min_solved', -np.inf) < info['solver'] < kwargs.get('infer_solver_max_solved'), np.inf)) and \
         kwargs.get('infer_min_crate', 1) <= info.get('crate') <= kwargs.get('infer_max_crate', np.inf) and \
         kwargs.get('infer_min_solution', 1) <= info.get('sol-length') <= kwargs.get('infer_max_solution', np.inf)
 

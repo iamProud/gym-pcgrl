@@ -1,4 +1,6 @@
 import os
+import gc
+import torch
 
 from stable_baselines3 import PPO
 from utils import get_exp_name, max_exp_idx, load_model, make_vec_envs
@@ -36,3 +38,9 @@ def train_generator(game, representation, experiment, steps, n_cpu, **kwargs):
         total_timesteps=int(steps),
         callback=SaveOnBestTrainingRewardCallback(check_freq=check_freq, log_dir=log_dir, verbose=2, kwargs=kwargs)
     )
+
+    # Free Memory
+    model = None
+    gc.collect()
+    with torch.no_grad():
+        torch.cuda.empty_cache()
