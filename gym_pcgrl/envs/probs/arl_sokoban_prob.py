@@ -32,6 +32,7 @@ class ArlSokobanProblem(Problem):
         self._max_crates = 5
         self._max_solution = np.inf
         self._target_solution = 30
+        self.optimal_multiplier = 5
 
         self._rewards = {
             "player": 5,
@@ -79,8 +80,8 @@ class ArlSokobanProblem(Problem):
         self._solver_power = kwargs.get('solver_power', self._solver_power)
         self._max_crates = kwargs.get('max_crates', self._max_crates)
         self._max_solution = kwargs.get('max_solution', self._max_solution)
-
         self._target_solution = kwargs.get('min_solution', self._target_solution)
+        self.optimal_multiplier = kwargs.get('optimal_multiplier', self.optimal_multiplier)
 
         rewards = kwargs.get('rewards')
         if rewards is not None:
@@ -164,7 +165,9 @@ class ArlSokobanProblem(Problem):
 
                 if len(map_stats["solution"]) > 0 and self._solver_path is not None:
                     avg_solved, reward_mean = test_the_solver(agent=self.solver_agent, env_name='Single-Sokoban-v0',
-                                                             eval_num=20, display=False, level=self.current_map, opt_steps=len(map_stats["solution"]))
+                                                              eval_num=20, display=False, level=self.current_map,
+                                                              optimal_solution={'steps': len(map_stats["solution"]),
+                                                                                'mult': self.optimal_multiplier})
                     print_args = (self._ID, avg_solved, round(reward_mean, 2), map_stats["crate"], len(map_stats["solution"]))
                     print('AGENT ID: {0:<3}  avg_solved: {1:<4}  reward_mean: {2:=4}  crates: {3:<2}  sol-length: {4:<3}'.format(*print_args))
                     map_stats["solver"] = avg_solved

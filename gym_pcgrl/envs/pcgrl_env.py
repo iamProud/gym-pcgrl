@@ -4,34 +4,7 @@ from gym_pcgrl.envs.helper import get_int_prob, get_string_map
 import numpy as np
 import gym
 from gym import spaces
-import PIL
-from PIL import Image
-import os
-from gym_pcgrl.envs.helper import safe_map
-import json
-import traceback
-import glob
-import re
 
-
-experiment = 3
-
-def get_exp_name(game, representation, experiment, **kwargs):
-    exp_name = '{}_{}'.format(game, representation)
-    if experiment is not None:
-        exp_name = '{}_{}'.format(exp_name, experiment)
-    return exp_name
-
-def max_exp_idx(exp_name):
-    log_dir = os.path.join("./runs", exp_name)
-    log_files = glob.glob('{}*'.format(log_dir))
-    if len(log_files) == 0:
-        n = 0
-    else:
-        log_ns = [re.search(r'{}_(\d+)'.format(exp_name), f).group(1) for f in log_files]
-        log_ns = [int(n) for n in log_ns]
-        n = max(log_ns)
-    return int(n)
 
 """
 The PCGRL GYM Environment
@@ -63,22 +36,6 @@ class PcgrlEnv(gym.Env):
 
         self.seed()
         self.viewer = None
-        self.render_mode = 'rgb_array'
-        self.min_solution = 0
-        self.infer_solver_max_solved = np.inf
-        self.infer_min_crate = 1
-        self.infer_max_crate = np.inf
-        self.infer_min_solution = 1
-        self.infer_max_solution = np.inf
-
-        # generated images/environments
-        stack = traceback.extract_stack()
-        self.is_inference = any('infer' in s for s in stack)
-
-        if self.is_inference:
-            experiment_name = get_exp_name(prob, rep, experiment)
-            experiment_idx = max_exp_idx(experiment_name)
-            self.path_generated = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'generator', 'generated')
 
         self.action_space = self._rep.get_action_space(self._prob._width, self._prob._height, self.get_num_tiles())
         self.observation_space = self._rep.get_observation_space(self._prob._width, self._prob._height,
@@ -161,13 +118,7 @@ class PcgrlEnv(gym.Env):
                                                                  self.get_num_tiles())
         self.observation_space.spaces['heatmap'] = spaces.Box(low=0, high=self._max_changes, dtype=np.uint8,
                                                               shape=(self._prob._height, self._prob._width))
-        self.render_mode = kwargs.get('render_mode', 'rgb_array')
-        self.min_solution = kwargs.get('min_solution', self.min_solution)
-        self.infer_solver_max_solved = kwargs.get('infer_solver_max_solved', self.infer_solver_max_solved)
-        self.infer_min_crate = kwargs.get('infer_min_crate', self.infer_min_crate)
-        self.infer_max_crate = kwargs.get('infer_max_crate', self.infer_max_crate)
-        self.infer_min_solution = kwargs.get('infer_min_solution', self.infer_min_solution)
-        self.infer_max_solution = kwargs.get('infer_max_solution', self.infer_max_solution)
+
 
     """
     Advance the environment using a specific action
@@ -202,87 +153,13 @@ class PcgrlEnv(gym.Env):
         info["changes"] = self._changes
         info["max_iterations"] = self._max_iterations
         info["max_changes"] = self._max_changes
-        info["map"] = np.pad(self._rep._map, 1, constant_values=1)
-        # return the values
 
-        if done and self.is_inference:
-            self.log_inference(info)
+        if done:
+            info["map"] = np.pad(self._rep._map, 1, constant_values=1)
+            info["solution"] = self._rep_stats["solution"]
+            info["img"] = self.render("rgb_array")
 
         return observation, reward, done, info
-
-    """
-    Logs the results of the inference to a file
-    """
-    def log_inference(self, info):
-        # with open(self.path_generated + "/info.json", "r") as f:
-        #     data = json.load(f)
-        #     data["trials"] += 1
-        #     successful = data['success-rate'] * (data['trials'] - 1)
-        #     data['success-rate'] = (successful + 1) / (data['trials']) if (info["sol-length"] > 0) else successful / (
-        #     data['trials'])
-        # with open(self.path_generated + "/info.json", "w") as f:
-        #     json.dump(data, f)
-
-        if info["sol-length"] >= self.min_solution and info["solver"] < self.infer_solver_max_solved and \
-                self.infer_min_crate <= info.get('crate') <= self.infer_max_crate and \
-                self.infer_min_solution <= info.get('sol-length') <= self.infer_max_solution:
-            self.log_successful() #info, successful)
-        # else:
-        #     self.log_failed(info)
-        #     self.render(mode=self.render_mode)
-
-    """
-    Logs the results of the successful inference to a file
-    """
-    def log_successful(self): #, info, successful):
-        # with open(self.path_generated + "/info.json", "r") as f:
-        #     data = json.load(f)
-        #
-        #     data['avg-sol-length'] = (data['avg-sol-length'] * successful + info["sol-length"]) / (successful + 1)
-        #     data['avg-crates'] = (data['avg-crates'] * successful + info["crate"]) / (successful + 1)
-        #     free_ratio = np.count_nonzero(self._rep._map == 0) / (self._prob._width * self._prob._height)
-        #     data['avg-free-percent'] = (data['avg-free-percent'] * successful + free_ratio) / (successful + 1)
-        # with open(self.path_generated + "/info.json", "w") as f:
-        #     json.dump(data, f)
-        #
-        # get file number
-        listdir = os.listdir(self.path_generated)
-
-        if len(listdir) == 0:
-            file_count = 0
-        else:
-            file_count = -1
-            for generated_file in listdir:
-                try:
-                    val = int(generated_file.split('.')[0])
-                    file_count = max(file_count, val)
-                except ValueError:
-                    continue
-
-            file_count += 1
-
-        # save map as image
-        img = self.render(mode='rgb_array')
-        img.save(f'{self.path_generated}/{file_count}.jpeg')
-
-        # save map as .txt
-        final_map = np.pad(self._rep._map, 1, constant_values=1)
-        safe_map(final_map, self._rep_stats['solution'], self.path_generated, file_count)
-
-    """
-    Logs the results of the failed inference to a file
-    failed obj: 'total', '0-player', '2+players', 'region', 'crate-target'
-    """
-    def log_failed(self, info):
-        with open(self.path_generated + "/info.json", "r") as f:
-            data = json.load(f)
-            data['failed']['total'] += 1
-            data['failed']['0-player'] += 1 if info['player'] == 0 else 0
-            data['failed']['2+players'] += 1 if info['player'] >= 2 else 0
-            data['failed']['region'] += 1 if info['regions'] > 1 else 0
-            data['failed']['crate-target'] += 1 if info['crate'] != info['target'] else 0
-        with open(self.path_generated + "/info.json", "w") as f:
-            json.dump(data, f)
 
 
     """

@@ -59,7 +59,8 @@ def infer_room(model_path, env_id=0, **kwargs):
     device_id = (env_id % (cuda.device_count() - 1)) + 1
     device = f"cuda:{device_id}" if cuda.is_available() else "auto"
 
-    room, optimal_sol_length = infer('arl-sokoban', 'turtle', model_path, device, **kwargs)
+    inferred_map = infer('arl-sokoban', 'turtle', model_path, device, **kwargs)[0]
+    room, optimal_sol_length = inferred_map['map'], inferred_map['sol-length']
 
     room_state = np.copy(room)
     '''

@@ -30,7 +30,6 @@ def train_solver(env_name, policy, timesteps, n_cpu, **kwargs):
                        monitor_kwargs={'info_keywords': kwargs.get('info_keywords', ())},
                        env_kwargs={'generator_path': kwargs.get('generator_path', None),
                                    'infer_kwargs': kwargs.get('infer_kwargs', None),
-                                   'max_steps': kwargs.get('max_steps', 200),
                                    'level_repetitions': kwargs.get('level_repetitions', 1),
                                    'opt_steps_mult': kwargs.get('opt_steps_mult', 1),
                                    'use_success_threshold': kwargs.get('use_success_threshold', False)

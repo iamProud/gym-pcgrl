@@ -41,7 +41,11 @@ generator_kwargs = {
     'solver_power': 5000,
     # 'solver_path': "runs/arl-sokoban_turtle_2_1_log/solver/model/best_model",
     'infer_solver_max_solved': np.inf,
-    'check_freq': 5000
+    'check_freq': 5000,
+    'infer': {
+        'crate': {'max': 1},
+        'sol-length': {'max': 2},
+    },
 }
 
 solver_kwargs = {
@@ -77,28 +81,16 @@ if __name__ == '__main__':
             experiment_idx = max_exp_idx(experiment_name)
             log_dir = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log')
 
-            path_generated = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'generator', 'generated')
-            if not os.path.exists(path_generated):
-                os.makedirs(path_generated)
-
-                with open(path_generated + '/info.json', 'w') as f:
-                    json.dump({'trials': 0, 'success-rate': 0, 'avg-sol-length': 0, 'avg-crates': 0, 'avg-free-percent': 0,
-                               'failed': {
-                                   'total': 0, '0-player': 0, '2+players': 0, 'region': 0, 'crate-target': 0
-                               }}, f)
-
             infer_kwargs = generator_kwargs.copy()
-            # infer_kwargs['change_percentage'] = 0.5
 
-            #if i > 1:
-                #infer_kwargs['infer_solver_min_solved'] = 0
-
-            if i == 1:
-                infer_kwargs['infer_max_solution'] = 2
-                infer_kwargs['infer_max_crates'] = 1
+            path_generated = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'generator', 'generated')
+            infer_kwargs['path_generated'] = path_generated
 
             if i > 1:
+                infer_kwargs['infer']['sol-length']['max'] = np.inf
+                infer_kwargs['infer_max_crates'] = np.inf
                 solver_kwargs['use_success_threshold'] = True
+
             infer_kwargs['solver_path'] = None
 
             solver_kwargs['generator_path'] = os.path.join(log_dir, 'generator', 'model', 'best_model')
@@ -108,7 +100,7 @@ if __name__ == '__main__':
                                               mode=wand_mode)
 
             solver_kwargs['wandb_session'] = wandb_solver_session
-            # solver_kwargs['avg_sol_length'] = 
+
             train_solver(env_name='Sokoban-arl-v0', policy='CnnPolicy', timesteps=solver_kwargs['num_steps'], n_cpu=solver_kwargs['num_envs'], **solver_kwargs)
 
             generator_kwargs['solver_path'] = os.path.join('runs', f'{experiment_name}_{experiment_idx}_log', 'solver', 'model', 'best_model')

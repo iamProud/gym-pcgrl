@@ -407,5 +407,4 @@ class SokobanAdversarial_Env0(SokobanEnvARL):
 
     def __init__(self, **kwargs):
         kwargs['dim_room'] = kwargs.get('dim_room', (7, 7))
-        kwargs['max_steps'] = kwargs.get('max_steps', 200)
         super(SokobanAdversarial_Env0, self).__init__(**kwargs)

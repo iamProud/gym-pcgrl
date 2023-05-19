@@ -16,7 +16,6 @@ class SokobanEnvARL(gym.Env):
     def __init__(self,
                  env_id=0,
                  dim_room=(10, 10),
-                 max_steps=120,
                  generator_path=None,
                  infer_kwargs={},
                  level_repetitions=1,
@@ -28,6 +27,13 @@ class SokobanEnvARL(gym.Env):
 
         # General Configuration
         self.dim_room = dim_room
+        self.generator_path = generator_path
+        self.infer_kwargs = infer_kwargs
+        self.num_boxes = None
+        self.boxes_on_target = 0
+        self.room_state = None
+        self.initial_room_state = None
+
         self.level_repetitions = level_repetitions
         self.level_counter = 0
         self.solved_counter = 0
@@ -36,12 +42,6 @@ class SokobanEnvARL(gym.Env):
         self.success_rate_threshold = 0
         self.consecutive_episodes_window = 8
         self.consecutive_episodes_criterion = 3
-        self.generator_path = generator_path
-        self.infer_kwargs = infer_kwargs
-        self.num_boxes = None
-        self.boxes_on_target = 0
-        self.room_state = None
-        self.initial_room_state = None
         self.opt_steps_mult = opt_steps_mult
         # Penalties and Rewards
         self.penalty_for_step = -0.1
@@ -52,7 +52,7 @@ class SokobanEnvARL(gym.Env):
 
         # Other Settings
         self.viewer = None
-        self.max_steps = max_steps
+        self.max_steps = 200  # will be overwritten by max_steps in generator
         self.action_space = Discrete(len(ACTION_LOOKUP))
         screen_height, screen_width = (dim_room[0] * 16, dim_room[1] * 16)
         self.observation_space = Box(low=0, high=255, shape=(screen_height, screen_width, 3), dtype=np.uint8)

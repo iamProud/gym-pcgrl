@@ -1,17 +1,9 @@
 """
 Run a trained agent and get generated maps
 """
-import numpy as np
-
 from stable_baselines3 import PPO
 from utils import make_vec_envs
-
-
-def is_desired_solution(info, **kwargs):
-    return info['sol-length'] >= kwargs.get('min_solution', 1) and \
-        (info['solver'] is None or (kwargs.get('infer_solver_min_solved', -np.inf) < info['solver'] < kwargs.get('infer_solver_max_solved'), np.inf)) and \
-        kwargs.get('infer_min_crate', 1) <= info.get('crate') <= kwargs.get('infer_max_crate', np.inf) and \
-        kwargs.get('infer_min_solution', 1) <= info.get('sol-length') <= kwargs.get('infer_max_solution', np.inf)
+from generator.custom.log import *
 
 
 def infer(game, representation, model_path, device='auto', **kwargs):
@@ -25,8 +17,20 @@ def infer(game, representation, model_path, device='auto', **kwargs):
     env = make_vec_envs(env_name, representation, None, 1, **kwargs)
     agent = PPO.load(model_path, device=device)
 
+    path_generated = kwargs.get('path_generated', './generated')
+    if not os.path.exists(path_generated):
+        os.makedirs(path_generated)
+
+        with open(path_generated + '/info.json', 'w') as f:
+            json.dump({'trials': 0, 'success-rate': 0, 'avg-sol-length': 0, 'avg-crates': 0, 'avg-free-percent': 0,
+                       'failed': {
+                           'total': 0, '0-player': 0, '2+players': 0, 'region': 0, 'crate-target': 0
+                       }}, f)
+
     i = 0
     generated = 0
+    generated_maps = []
+
     while True:
         if kwargs.get('num_level_generation', None) is not None:
             if generated >= kwargs.get('num_level_generation'):
@@ -48,22 +52,25 @@ def infer(game, representation, model_path, device='auto', **kwargs):
                 if kwargs.get('verbose', False):
                     print(info[0])
                 if dones:
+                    success = log_inference(info[0], **kwargs)
                     # print('INFER-info: sol-length=', info[0]['sol-length'], '| solver=', info[0]['solver'])
-                    if is_desired_solution(info[0], **kwargs):
+                    if success:
                         generated += 1
+                        generated_maps.append({'map': info[0]['map'], 'sol-length': info[0]['sol-length']})
                     break
             # time.sleep(0.2)
 
     env.close()
 
-    return info[0]['map'], info[0]['sol-length']
+    return generated_maps
 
 ################################## MAIN ########################################
-game = 'sokoban_solver'
+game = 'arl-sokoban'
 representation = 'turtle'
-experiment = 10
+experiment = 11
 
 kwargs = {
+    'log_json': True,
     'change_percentage': 0.5,
     'trials': 1,
     # 'verbose': True,
@@ -73,20 +80,20 @@ kwargs = {
     'height': 5,
     'cropped_size': 10,
     'probs': {"empty": 0.45, "solid": 0.4, "player": 0.05, "crate": 0.05, "target": 0.05},
-    'min_solution': 1,
-    'max_crates': 2,
-    'solver_power': 10000,
+    'solver_power': 5000,
     # only save levels with the following properties
-    # 'solver_max_solved': np.inf,
-    # 'infer_min_crate': 1,
-    # 'infer_max_crate': 2,
-    # 'infer_max_solution': 2,
-    'num_level_generation': 100,
-    'solver': 'shared_runs/5x5/sokoban/sokoban_solver_turtle_10_7_log/solver_model/model.zip'
+    'infer': {
+        'crate': {'max': 1},
+        'sol-length': {'min': 1, 'max': 3},
+        'solver': {'min': 0}
+    },
+    'num_level_generation': 2,
+    'solver': 'shared_runs/5x5/sokoban/sokoban_solver_turtle_11_10_log/solver_model/model.pkl',
+    'path_generated': 'test'
 }
 
 game_path = f'shared_runs/{kwargs["width"]}x{kwargs["height"]}/sokoban'
-run_path = f'{game_path}/sokoban_solver_{representation}_{experiment}_7_log/'
+run_path = f'{game_path}/sokoban_solver_{representation}_{experiment}_10_log/'
 model_path = run_path + 'pcg_model/best_model.zip'
 # model_path = 'shared_runs/5x5/sokoban/sokoban_solver_turtle_8_5_log/pcg_model/best_model.zip'
 if __name__ == '__main__':
