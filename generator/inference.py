@@ -67,7 +67,7 @@ def infer(game, representation, model_path, device='auto', **kwargs):
 ################################## MAIN ########################################
 game = 'arl-sokoban'
 representation = 'turtle'
-experiment = 11
+experiment = 3
 
 kwargs = {
     'log_json': True,
@@ -93,7 +93,7 @@ kwargs = {
 }
 
 game_path = f'shared_runs/{kwargs["width"]}x{kwargs["height"]}/sokoban'
-run_path = f'{game_path}/sokoban_solver_{representation}_{experiment}_10_log/'
+run_path = f'runs/arl-sokoban_{representation}_{experiment}_10_log/'
 model_path = run_path + 'pcg_model/best_model.zip'
 # model_path = 'shared_runs/5x5/sokoban/sokoban_solver_turtle_8_5_log/pcg_model/best_model.zip'
 if __name__ == '__main__':

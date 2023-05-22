@@ -54,6 +54,7 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
                     self.model.save(self.save_path+'/best_model')
 
                 # Save current model
+                self.model.save(self.save_path+'/latest_model')
                 #if self.num_timesteps % 20000 == 0:
                 #    curr_model_path = os.path.join(self.save_path, str(self.num_timesteps))
                 #    print(f"Saving latest model to {curr_model_path}")
