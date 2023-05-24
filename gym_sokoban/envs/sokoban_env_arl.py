@@ -40,8 +40,8 @@ class SokobanEnvARL(gym.Env):
         self.failed_counter = 0
         self.use_success_threshold = use_success_threshold
         self.success_rate_threshold = 0
-        self.consecutive_episodes_window = 8
-        self.consecutive_episodes_criterion = 3
+        self.consecutive_episodes_window = 32
+        self.consecutive_episodes_criterion = 8
         self.opt_steps_mult = opt_steps_mult
         # Penalties and Rewards
         self.penalty_for_step = -0.1
@@ -221,7 +221,7 @@ class SokobanEnvARL(gym.Env):
         if self.level_counter > 0 and self.level_counter % self.consecutive_episodes_window == 0:
             success_rate = self.solved_counter / self.consecutive_episodes_window
 
-            if success_rate <= self.success_rate_threshold: # or success_rate >= 1 - self.success_rate_threshold:
+            if success_rate <= self.success_rate_threshold or success_rate >= 1 - self.success_rate_threshold:
                 self.failed_counter += 1
             else:
                 self.failed_counter = 0
@@ -233,7 +233,7 @@ class SokobanEnvARL(gym.Env):
             self.solved_counter = 0
 
         if self.room_state is None or self.level_counter >= self.level_repetitions or (self.use_success_threshold and threshold_reset):
-            # print('LEVEL COUNTER:', self.level_counter)
+            print('LEVEL COUNTER:', self.level_counter, self.max_steps)
             self.room_fixed, self.room_state, optimal_sol_length = infer_room(self.generator_path, env_id=self._env_id, **self.infer_kwargs)
             self.initial_room_state = self.room_state.copy()
             self.num_boxes = np.where(self.room_state == 3)[0].shape[0]

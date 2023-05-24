@@ -13,7 +13,7 @@ from solver.train import train_solver
 ################################## MAIN ########################################
 game = 'arl-sokoban'
 representation = 'turtle'
-experiment = 4
+experiment = 5
 experiment_name = get_exp_name(game, representation, experiment)
 
 steps = 5e5
@@ -39,7 +39,7 @@ generator_kwargs = {
     'min_solution': 1,
     'max_crates': 1,
     'solver_power': 5000,
-    'solver_path': "runs/arl-sokoban_turtle_4_1_log/solver/model/latest_model",
+    # 'solver_path': "runs/arl-sokoban_turtle_4_1_log/solver/model/latest_model",
     'infer_solver_max_solved': np.inf,
     'check_freq': 5000,
     'infer': {
@@ -56,13 +56,13 @@ solver_kwargs = {
     'eval_freq': 5000,
     'generator_path': None,
     'infer_kwargs': None,
-    'level_repetitions': 512,
+    'level_repetitions': 1024,
     'opt_steps_mult': 5,
     'use_success_threshold': False
 }
 
 wand_mode = 'online'
-start_with_solver = False
+start_with_solver = True
 
 if __name__ == '__main__':
     if adversarial_learning['enabled']:
