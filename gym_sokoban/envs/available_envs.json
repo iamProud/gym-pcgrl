@@ -120,6 +120,10 @@
     "entry_point": "gym_sokoban.envs:Boxban_Env1_val"
   },
   {
+    "id": "Curriculum-Sokoban-v2",
+    "entry_point": "gym_sokoban.envs:Curriculum_Env2"
+  },
+  {
     "id": "Single-Sokoban-v0",
     "entry_point": "gym_sokoban.envs:Single_Sokoban_Env"
   },

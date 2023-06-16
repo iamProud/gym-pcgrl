@@ -5,6 +5,7 @@ from .sokoban_env_two_player import TwoPlayerSokobanEnv
 from .boxoban_env import BoxobanEnv
 from .single_sokoban_env import SingleSokobanEnv
 from .sokoban_env_arl import SokobanEnvARL
+from .curriculum_sokoban_env_v2 import CurriculumSokobanEnv_v2
 
 
 class SokobanEnv1(SokobanEnv):
@@ -390,6 +391,17 @@ class Boxban_Env1_val(BoxobanEnv):
         kwargs['difficulty'] = kwargs.get('difficulty', 'medium')
         kwargs['split'] = kwargs.get('split', 'valid')
         super(Boxban_Env1_val, self).__init__(**kwargs)
+
+class Curriculum_Env2(CurriculumSokobanEnv_v2):
+    metadata = {
+        'render.modes': ['human', 'rgb_array', 'tiny_human', 'tiny_rgb_array'],
+        'render_modes': ['human', 'rgb_array', 'tiny_human', 'tiny_rgb_array'],
+    }
+
+    def __init__(self, **kwargs):
+        kwargs['max_steps'] = kwargs.get('max_steps', 200)
+        # kwargs['difficulty'] = kwargs.get('difficulty', 'medium')
+        super(Curriculum_Env2, self).__init__(**kwargs)
 
 class Single_Sokoban_Env(SingleSokobanEnv):
     metadata = {

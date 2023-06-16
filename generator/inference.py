@@ -65,36 +65,39 @@ def infer(game, representation, model_path, device='auto', **kwargs):
     return generated_maps
 
 ################################## MAIN ########################################
-game = 'arl-sokoban'
+game = 'sokoban'
 representation = 'turtle'
-experiment = 3
+experiment = 1
 
 kwargs = {
     'log_json': True,
-    'change_percentage': 0.5,
+    # 'change_percentage': 0.5,
     'trials': 1,
     # 'verbose': True,
     'num_executions': 1,
-    'render': False,
+    'render': True,
     'width': 5,
     'height': 5,
     'cropped_size': 10,
     'probs': {"empty": 0.45, "solid": 0.4, "player": 0.05, "crate": 0.05, "target": 0.05},
     'solver_power': 5000,
+    'min_solution': 1,
     # only save levels with the following properties
     'infer': {
-        'crate': {'max': 1},
-        'sol-length': {'min': 1, 'max': 3},
-        'solver': {'min': 0}
+        # 'crate': {'max': 1},
+        'sol-length': {'min': 1},
+        # 'solver': {'min': 0}
     },
-    'num_level_generation': 2,
-    'solver': 'shared_runs/5x5/sokoban/sokoban_solver_turtle_11_10_log/solver_model/model.pkl',
-    'path_generated': 'test'
+    'num_level_generation': 100,
+    # 'solver': 'shared_runs/5x5/sokoban/sokoban_solver_turtle_11_10_log/solver_model/model.pkl',
+    'path_generated': 'foo'
 }
 
-game_path = f'shared_runs/{kwargs["width"]}x{kwargs["height"]}/sokoban'
-run_path = f'runs/arl-sokoban_{representation}_{experiment}_10_log/'
-model_path = run_path + 'pcg_model/best_model.zip'
+# game_path = f'shared_runs/{kwargs["width"]}x{kwargs["height"]}/sokoban/arl-sokoban_{representation}_{experiment}_10_log/'
+game_path = f'shared_runs/{kwargs["width"]}x{kwargs["height"]}/sokoban/{game}_{representation}_{experiment}_log/'
+# run_path = f'runs/arl-sokoban_{representation}_{experiment}_10_log/'
+model_path = game_path + 'best_model.zip'
+# model_path = game_path + 'generator/model/latest_model.zip'
 # model_path = 'shared_runs/5x5/sokoban/sokoban_solver_turtle_8_5_log/pcg_model/best_model.zip'
 if __name__ == '__main__':
     infer(game, representation, model_path, **kwargs)

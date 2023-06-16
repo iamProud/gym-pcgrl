@@ -3,16 +3,20 @@ import numpy as np
 import time
 
 
-def test_the_solver(agent, env_name, eval_num, display=False, level=None, optimal_solution=None):
+def test_the_solver(agent, env_name, eval_num, display=False, level=None, optimal_solution=None, data_path=None):
     solved = []
     rewards = []
 
-    if level is None:
-        raise ValueError('No level is provided for testing the agent.')
+    if data_path is not None:
+        env = gym.make(env_name, data_path=data_path)
+    else:
+        env = gym.make(env_name, level=level)
 
-    env = gym.make(env_name, level=level)
+    # if level is None:
+    #     raise ValueError('No level is provided for testing the agent.')
 
-    env._max_episode_steps = optimal_solution['mult'] * optimal_solution['steps'] if optimal_solution is not None else env._max_episode_steps
+
+    # env._max_episode_steps = optimal_solution['mult'] * optimal_solution['steps'] if optimal_solution is not None else env._max_episode_steps
     for i in range(eval_num):
 
         episode_reward = 0

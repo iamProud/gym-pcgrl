@@ -60,7 +60,7 @@ def log_successful(info, path_generated, log_json):
 
             data['avg-sol-length'] = (data['avg-sol-length'] * successful + info["sol-length"]) / (successful + 1)
             data['avg-crates'] = (data['avg-crates'] * successful + info["crate"]) / (successful + 1)
-            free_ratio = np.count_nonzero(info['map'] == 0) / (info['map'].shape[0] * info['map'].shape[1])
+            free_ratio = np.count_nonzero(info['map'] == 0) / ((info['map'].shape[0]-2) * (info['map'].shape[1]-2))
             data['avg-free-percent'] = (data['avg-free-percent'] * successful + free_ratio) / (successful + 1)
         with open(path_generated + "/info.json", "w") as f:
             json.dump(data, f)
@@ -85,8 +85,7 @@ def log_successful(info, path_generated, log_json):
     info['img'].save(f'{path_generated}/{file_count}.jpeg')
 
     # save map as .txt
-    final_map = np.pad(info['map'], 1, constant_values=1)
-    safe_map(final_map, info['solution'], path_generated, file_count)
+    safe_map(info['map'], info['solution'], path_generated, file_count)
 
 
 """
