@@ -1,0 +1,73 @@
+SOKOBAN TURTLE RUNS
+default settings:
+    - steps: 1e8
+    - n_cpu: 100
+    - size 10x10
+    - solver_power = 50000
+    - rewards = {
+            "player": 6,
+            "crate": 2,
+            "target": 2,
+            "regions": 5,
+            "ratio": 2,
+            "dist-win": 0.0,
+            "sol-length": 1
+        }
+
+variable settings:
+max_crates:
+    C1 - value: 2
+    C2 - value: 4
+    C3 - value: 8
+
+target_solution:
+    T1 - value: 10
+    T2 - value: 20
+    T3 - value: 30
+
+prob:
+    P1  - value: {"empty":0.80, "solid":0.05, "player": 0.01, "crate": 0.07, "target": 0.07}
+    P1* - value: {"empty":0.60, "solid":0.25, "player": 0.01, "crate": 0.07, "target": 0.07}
+    P2  - value: {"empty":0.30, "solid":0.55, "player": 0.01, "crate": 0.07, "target": 0.07}
+    P3  - value: {"empty":0.80, "solid":0.13, "player": 0.01, "crate": 0.03, "target": 0.03}
+    P3* - value: {"empty":0.60, "solid":0.33, "player": 0.01, "crate": 0.03, "target": 0.03}
+    P4  - value: {"empty":0.30, "solid":0.55, "player": 0.01, "crate": 0.03, "target": 0.03}
+
+
+RUN FILES:
+sokoban_turtle_1 - C1, T1, P1
+sokoban_turtle_2 - C1, T1, P2
+sokoban_turtle_3 - C1, T1, P3
+sokoban_turtle_4 - C1, T1, P4
+sokoban_turtle_5 - C1, T2, P1
+sokoban_turtle_6 - C1, T2, P2
+sokoban_turtle_7 - C1, T2, P3
+sokoban_turtle_8 - C1, T2, P4
+sokoban_turtle_9 - C1, T3, P1
+sokoban_turtle_10 - C1, T3, P2
+sokoban_turtle_11 - C1, T3, P3
+sokoban_turtle_12 - C1, T3, P4
+sokoban_turtle_13 - C2, T1, P1
+sokoban_turtle_14 - C2, T1, P2
+sokoban_turtle_15 - C2, T1, P3
+sokoban_turtle_16 - C2, T1, P4
+sokoban_turtle_17 - C2, T2, P1
+sokoban_turtle_18 - C2, T2, P2
+sokoban_turtle_19 - C2, T2, P3
+sokoban_turtle_20 - C2, T2, P4
+sokoban_turtle_21 - C2, T3, P1
+sokoban_turtle_22 - C2, T3, P2
+sokoban_turtle_23 - C2, T3, P3
+sokoban_turtle_24 - C2, T3, P4
+sokoban_turtle_25 - C3, T1, P1*
+sokoban_turtle_26 - C3, T1, P2
+sokoban_turtle_27 - C3, T1, P3*
+sokoban_turtle_28 - C3, T1, P4
+sokoban_turtle_29 - C3, T2, P1*
+sokoban_turtle_30 - C3, T2, P2
+sokoban_turtle_31 - C3, T2, P3*
+sokoban_turtle_32 - C3, T2, P4
+sokoban_turtle_33 - C3, T3, P1*
+sokoban_turtle_34 - C3, T3, P2
+sokoban_turtle_35 - C3, T3, P3*
+sokoban_turtle_36 - C3, T3, P4

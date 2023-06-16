@@ -16,17 +16,17 @@ class SokobanProblem(Problem):
         super().__init__()
         self._width = 5
         self._height = 5
-        self._prob = {"empty":0.45, "solid":0.4, "player": 0.05, "crate": 0.05, "target": 0.05}
+        self._prob = {"empty":0.30, "solid":0.55, "player": 0.01, "crate": 0.07, "target": 0.07}
         self._border_tile = "solid"
 
-        self._solver_power = 5000
+        self._solver_power = 20000
 
-        self._max_crates = 3
+        self._max_crates = 5
 
-        self._target_solution = 18
+        self._target_solution = 30
 
         self._rewards = {
-            "player": 3,
+            "player": 5,
             "crate": 2,
             "target": 2,
             "regions": 5,

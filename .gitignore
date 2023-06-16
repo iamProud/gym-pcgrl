@@ -31,12 +31,17 @@ MANIFEST
 # Jupyter logs
 .ipynb_checkpoints/
 
-# Saved models
-*.zip
-
-# runs
-runs/
-
 # editors
 .idea
 .vscode
+.python-version
+
+# envs
+pcgenenv/
+pcgenenv3_8/
+
+# logs
+z.log.global
+
+# wandb
+wandb/

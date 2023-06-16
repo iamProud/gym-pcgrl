@@ -376,31 +376,10 @@ def get_range_reward(new_value, old_value, low, high):
         return high - old_value + new_value - low
 
 """
-A Method to get a int map with the border tiles
-
-Parameters:
-    map (any[][]): the current map
-    border_tile (string): the name of the border tile type
+Safe the current Map and the solution to a .txt file
 """
-def get_int_map(map, border_tile):
-    border_vertical = np.full((map.shape[0], 1), border_tile)
-    map = np.insert(map, 0, border_tile, axis=1)
-    map = np.append(map, border_vertical, 1)
-
-    border_horizontal = np.full(map.shape[1], border_tile)
-    map = np.insert(map, 0, border_tile, axis=0)
-    map = np.append(map, [border_horizontal], 0)
-
-    return map
-
-"""
-Safe the current Map to a file
-"""
-SAFE_FILE = 'demo.txt'
-SAFE_DIR = '/home/basti/Dokumente/Bachelorarbeit/Observations/{}'.format(SAFE_FILE)
-
-def safe(int_map):
-    f = open(SAFE_DIR, 'w')
+def safe_map(int_map, solution, path, file):
+    f = open(f'{path}/{file}.txt', 'w')
 
     for row in range(int_map.shape[0]):
         s = ''
@@ -409,6 +388,20 @@ def safe(int_map):
             s += str(idx)
 
         f.write(s + '\n')
+
+    f.write('\n')
+    for action in solution:
+        if action['x'] == -1:
+            f.write('l')
+
+        if action['x'] == 1:
+            f.write('r')
+
+        if action['y'] == -1:
+            f.write('u')
+
+        if action['y'] == 1:
+            f.write('d')
 
     f.close()
 

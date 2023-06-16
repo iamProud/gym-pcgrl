@@ -5,10 +5,10 @@ import numpy as np
 import gym
 from gym import spaces
 
+
 """
 The PCGRL GYM Environment
 """
-
 class PcgrlEnv(gym.Env):
     """
     The type of supported rendering
@@ -119,6 +119,7 @@ class PcgrlEnv(gym.Env):
         self.observation_space.spaces['heatmap'] = spaces.Box(low=0, high=self._max_changes, dtype=np.uint8,
                                                               shape=(self._prob._height, self._prob._width))
 
+
     """
     Advance the environment using a specific action
 
@@ -153,15 +154,13 @@ class PcgrlEnv(gym.Env):
         info["max_iterations"] = self._max_iterations
         info["max_changes"] = self._max_changes
 
-        # render if executed by inference
         if done:
-            self.render()
+            info["map"] = np.pad(self._rep._map, 1, constant_values=1)
+            info["solution"] = self._rep_stats["solution"]
+            info["img"] = self.render("rgb_array")
 
-            if info["sol-length"] > 0:
-                print("--- Solution found with length: " + str(info["sol-length"]))
-
-        # return the values
         return observation, reward, done, info
+
 
     """
     Render the current state of the environment

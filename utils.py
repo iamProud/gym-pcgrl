@@ -6,9 +6,9 @@ import re
 import glob
 import numpy as np
 from gym_pcgrl import wrappers
-from stable_baselines import PPO2
-from stable_baselines.bench import Monitor
-from stable_baselines.common.vec_env import SubprocVecEnv, DummyVecEnv
+from stable_baselines3 import PPO
+from stable_baselines3.common.monitor import Monitor
+from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
 
 class RenderMonitor(Monitor):
     """
@@ -19,9 +19,10 @@ class RenderMonitor(Monitor):
         self.rank = rank
         self.render_gui = kwargs.get('render', False)
         self.render_rank = kwargs.get('render_rank', 0)
+        self.info_keywords = kwargs.get('info_keywords', ())
         if log_dir is not None:
             log_dir = os.path.join(log_dir, str(rank))
-        Monitor.__init__(self, env, log_dir)
+        Monitor.__init__(self, env, log_dir, info_keywords=self.info_keywords)
 
     def step(self, action):
         if self.render_gui and self.rank == self.render_rank:
@@ -50,6 +51,7 @@ def make_env(env_name, representation, rank=0, log_dir=None, **kwargs):
             env = wrappers.ActionMapImagePCGRLWrapper(env_name, **kwargs)
         else:
             crop_size = kwargs.get('cropped_size', 28)
+            kwargs['env_id'] = rank
             env = wrappers.CroppedImagePCGRLWrapper(env_name, crop_size, **kwargs)
         # RenderMonitor must come last
         if render or log_dir is not None and len(log_dir) > 0:
@@ -82,7 +84,8 @@ def max_exp_idx(exp_name):
     if len(log_files) == 0:
         n = 0
     else:
-        log_ns = [re.search('_(\d+)', f).group(1) for f in log_files]
+        log_ns = [re.search(r'{}_(\d+)'.format(exp_name), f).group(1) for f in log_files]
+        log_ns = [int(n) for n in log_ns]
         n = max(log_ns)
     return int(n)
 
@@ -101,5 +104,5 @@ def load_model(log_dir):
             model_path = os.path.join(log_dir, np.random.choice(files))
         else:
             raise Exception('No models are saved')
-    model = PPO2.load(model_path)
+    model = PPO.load(model_path)
     return model
