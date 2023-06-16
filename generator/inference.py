@@ -71,7 +71,6 @@ experiment = 1
 
 kwargs = {
     'log_json': True,
-    # 'change_percentage': 0.5,
     'trials': 1,
     # 'verbose': True,
     'num_executions': 1,
@@ -93,13 +92,7 @@ kwargs = {
     'path_generated': 'foo'
 }
 
-# game_path = f'shared_runs/{kwargs["width"]}x{kwargs["height"]}/sokoban/arl-sokoban_{representation}_{experiment}_10_log/'
 game_path = f'shared_runs/{kwargs["width"]}x{kwargs["height"]}/sokoban/{game}_{representation}_{experiment}_log/'
-# run_path = f'runs/arl-sokoban_{representation}_{experiment}_10_log/'
 model_path = game_path + 'best_model.zip'
-# model_path = game_path + 'generator/model/latest_model.zip'
-# model_path = 'shared_runs/5x5/sokoban/sokoban_solver_turtle_8_5_log/pcg_model/best_model.zip'
 if __name__ == '__main__':
     infer(game, representation, model_path, **kwargs)
-
-    # input("Press enter to exit!")

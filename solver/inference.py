@@ -12,11 +12,7 @@ def test_the_solver(agent, env_name, eval_num, display=False, level=None, optima
     else:
         env = gym.make(env_name, level=level)
 
-    # if level is None:
-    #     raise ValueError('No level is provided for testing the agent.')
-
-
-    # env._max_episode_steps = optimal_solution['mult'] * optimal_solution['steps'] if optimal_solution is not None else env._max_episode_steps
+    env._max_episode_steps = optimal_solution['mult'] * optimal_solution['steps'] if optimal_solution is not None else env._max_episode_steps
     for i in range(eval_num):
 
         episode_reward = 0

@@ -1,7 +1,6 @@
 import os
 import wandb
 import numpy as np
-import json
 import gym
 import gym_pcgrl
 import gym_sokoban
@@ -13,7 +12,7 @@ from solver.train import train_solver
 ################################## MAIN ########################################
 game = 'arl-sokoban'
 representation = 'turtle'
-experiment = 5
+experiment = 1
 experiment_name = get_exp_name(game, representation, experiment)
 
 steps = 5e5
@@ -62,11 +61,11 @@ solver_kwargs = {
 }
 
 wand_mode = 'online'
-start_with_solver = True
+start_with_solver = False
 
 if __name__ == '__main__':
     if adversarial_learning['enabled']:
-        for i in range(2, adversarial_learning['iterations']+1):
+        for i in range(1, adversarial_learning['iterations']+1):
             if not start_with_solver:
                 wandb_pcg_session = wandb.init(project=f'arlpcg-{game}', config=generator_kwargs,
                                                name=f'{experiment_name}-{i}', group='generator', mode=wand_mode)
