@@ -154,6 +154,9 @@ class PcgrlEnv(gym.Env):
         info["max_iterations"] = self._max_iterations
         info["max_changes"] = self._max_changes
 
+        # save step as image
+        # self.render("rgb_array").save(f'runs/inferred_levels/{self._iteration}.png')
+
         if done:
             info["map"] = np.pad(self._rep._map, 1, constant_values=1)
             info["solution"] = self._rep_stats["solution"]

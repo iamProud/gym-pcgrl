@@ -4,6 +4,7 @@ Run a trained agent and get generated maps
 from stable_baselines3 import PPO
 from utils import make_vec_envs
 from generator.custom.log import *
+import time
 
 
 def infer(game, representation, model_path, device='auto', **kwargs):
@@ -43,7 +44,7 @@ def infer(game, representation, model_path, device='auto', **kwargs):
         obs = env.reset()
         dones = False
 
-        for i in range(kwargs.get('trials', 1)):
+        for _ in range(kwargs.get('trials', 1)):
             while not dones:
                 action, _ = agent.predict(obs)
 
@@ -65,9 +66,9 @@ def infer(game, representation, model_path, device='auto', **kwargs):
     return generated_maps
 
 ################################## MAIN ########################################
-game = 'sokoban'
+game = 'arl-sokoban'
 representation = 'turtle'
-experiment = 1
+experiment = 3
 
 kwargs = {
     'log_json': True,
@@ -87,12 +88,12 @@ kwargs = {
         'sol-length': {'min': 1},
         # 'solver': {'min': 0}
     },
-    'num_level_generation': 100,
+    'num_level_generation': None,
     # 'solver': 'shared_runs/5x5/sokoban/sokoban_solver_turtle_11_10_log/solver_model/model.pkl',
-    'path_generated': 'foo'
+    'path_generated': 'runs/inferred_levels/'
 }
 
-game_path = f'shared_runs/{kwargs["width"]}x{kwargs["height"]}/sokoban/{game}_{representation}_{experiment}_log/'
+game_path = f'shared_runs/{kwargs["width"]}x{kwargs["height"]}/sokoban/{game}_{representation}_{experiment}_10_log/generator/model/'
 model_path = game_path + 'best_model.zip'
 if __name__ == '__main__':
     infer(game, representation, model_path, **kwargs)
